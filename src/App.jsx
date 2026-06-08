@@ -10,6 +10,23 @@ const C = {
 const GH = `linear-gradient(90deg,${C.p} 0%,${C.o} 35%,${C.t} 68%,${C.s} 100%)`;
 const G1 = `linear-gradient(135deg,${C.p} 0%,${C.o} 35%,${C.t} 68%,${C.s} 100%)`;
 
+function smoothScroll(id, duration = 900) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const start = window.scrollY;
+  const end = el.getBoundingClientRect().top + start;
+  const diff = end - start;
+  let t0 = null;
+  const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const step = (ts) => {
+    if (!t0) t0 = ts;
+    const p = Math.min((ts - t0) / duration, 1);
+    window.scrollTo(0, start + diff * ease(p));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 function GradientText({ children, style = {} }) {
   return (
     <span style={{ background: G1, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", ...style }}>
@@ -65,7 +82,7 @@ function ChartCanvas({ config, height = 220 }) {
   useEffect(() => {
     if (!ref.current) return;
     if (chartRef.current) chartRef.current.destroy();
-    Chart.defaults.font.family = "'Outfit', sans-serif";
+    Chart.defaults.font.family = "Arial, sans-serif";
     Chart.defaults.font.size = 12;
     Chart.defaults.color = C.mid;
     Chart.defaults.plugins.legend.display = false;
@@ -85,15 +102,29 @@ function HScrollTrack({ children }) {
     boxShadow: "0 4px 20px rgba(0,0,0,.1)", display: "flex", alignItems: "center",
     justifyContent: "center",
   };
+  useEffect(() => {
+    const el = ref.current;
+    const onMove = (e) => {
+      if (!drag.current.down) return;
+      e.preventDefault();
+      el.scrollLeft = drag.current.sl - (e.pageX - drag.current.sx);
+    };
+    const onUp = () => {
+      if (!drag.current.down) return;
+      drag.current.down = false;
+      el.style.cursor = "grab";
+    };
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+    return () => { document.removeEventListener("mousemove", onMove); document.removeEventListener("mouseup", onUp); };
+  }, []);
   return (
     <div style={{ position: "relative" }}>
       <button onClick={() => scroll(-400)} style={{ ...arrowStyle, left: 14, transform: "translateY(-65%)" }}>←</button>
       <div ref={ref}
-        onMouseDown={(e) => { drag.current = { down: true, sx: e.pageX - ref.current.offsetLeft, sl: ref.current.scrollLeft }; }}
-        onMouseLeave={() => { drag.current.down = false; }}
-        onMouseUp={() => { drag.current.down = false; }}
-        onMouseMove={(e) => { if (!drag.current.down) return; e.preventDefault(); ref.current.scrollLeft = drag.current.sl - (e.pageX - ref.current.offsetLeft - drag.current.sx) * 1.5; }}
-        style={{ display: "flex", gap: "1.5rem", padding: "0.5rem 6vw 2.5rem", overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}
+        onMouseDown={(e) => { drag.current = { down: true, sx: e.pageX, sl: ref.current.scrollLeft }; ref.current.style.cursor = "grabbing"; ref.current.style.userSelect = "none"; }}
+        onMouseUp={() => { drag.current.down = false; ref.current.style.cursor = "grab"; ref.current.style.userSelect = ""; }}
+        style={{ display: "flex", gap: "1.5rem", padding: "0.5rem 6vw 2.5rem", overflowX: "auto", scrollSnapType: "x mandatory", scrollPaddingLeft: "6vw", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", cursor: "grab" }}
       >{children}</div>
       <button onClick={() => scroll(400)} style={{ ...arrowStyle, right: 14, transform: "translateY(-65%)" }}>→</button>
     </div>
@@ -110,7 +141,7 @@ function NavOverlay({ open, onClose }) {
     { id: "regulatory", label: "Regulatory action" },
     { id: "priorities", label: "Strategy 2026/27" },
   ];
-  const handleClick = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); onClose(); };
+  const handleClick = (id) => { smoothScroll(id); onClose(); };
   useEffect(() => {
     const esc = (e) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", esc);
@@ -128,7 +159,7 @@ function NavOverlay({ open, onClose }) {
         {sections.map((s, i) => (
           <li key={s.id} style={{ opacity: open ? 1 : 0, transform: open ? "none" : "translateX(-24px)", transition: `opacity 0.4s ${0.1 + i * 0.05}s, transform 0.4s ${0.1 + i * 0.05}s` }}>
             <button onClick={() => handleClick(s.id)} style={{
-              background: "none", border: "none", cursor: "pointer", fontFamily: "'Fraunces', serif",
+              background: "none", border: "none", cursor: "pointer", fontFamily: "Arial, sans-serif",
               fontSize: "clamp(1.8rem, 4vw, 3.5rem)", color: "rgba(13,13,26,.2)", textAlign: "left",
               lineHeight: 1.6, display: "flex", alignItems: "center", gap: "1.2rem", padding: 0,
               transition: "color 0.2s",
@@ -155,7 +186,7 @@ function SLabel({ children, light = false }) {
   );
 }
 function SH2({ children, light = false }) {
-  return <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(2rem, 3.5vw, 3rem)", lineHeight: 1.08, marginBottom: "1rem", fontWeight: 700, color: light ? "white" : C.ink }}>{children}</h2>;
+  return <h2 style={{ fontFamily: "Arial, sans-serif", fontSize: "clamp(2rem, 3.5vw, 3rem)", lineHeight: 1.08, marginBottom: "1rem", fontWeight: 700, color: light ? "white" : C.ink }}>{children}</h2>;
 }
 function SIntro({ children, light = false }) {
   return <p style={{ fontSize: "1rem", color: light ? "rgba(255,255,255,.65)" : C.mid, lineHeight: 1.8, maxWidth: 600, marginBottom: "3rem", fontWeight: 300 }}>{children}</p>;
@@ -234,12 +265,10 @@ export default function App() {
 
   return (
     <>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Outfit', sans-serif; background: ${C.off}; color: ${C.ink}; overflow-x: hidden; }
+        body { font-family: Arial, sans-serif; background: ${C.off}; color: ${C.ink}; overflow-x: hidden; }
         @keyframes float { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(20px,-20px) scale(1.05); } }
         @keyframes float-logo { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
         @keyframes spin-slow { to { transform: rotate(360deg); } }
@@ -275,14 +304,14 @@ export default function App() {
           <div style={{ display: "inline-flex", alignItems: "center", gap: 12, marginBottom: "2.5rem" }}>
             <div style={{ background: GH, padding: "6px 18px", borderRadius: 40, fontSize: 11, letterSpacing: ".15em", textTransform: "uppercase", color: "white", fontWeight: 500 }}>Annual Report · June 2026</div>
           </div>
-          <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(3rem, 5.5vw, 5.5rem)", lineHeight: 1.05, marginBottom: "1.5rem", fontWeight: 900 }}>
+          <h1 style={{ fontFamily: "Arial, sans-serif", fontSize: "clamp(3rem, 5.5vw, 5.5rem)", lineHeight: 1.05, marginBottom: "1.5rem", fontWeight: 900 }}>
             <GradientText>Information</GradientText>
             <span style={{ display: "block" }}>Commissioner's</span>
             <span style={{ display: "block", fontStyle: "italic", fontWeight: 300, fontSize: ".85em" }}>Annual Report 2025/26</span>
           </h1>
           <p style={{ fontSize: "1.05rem", color: C.mid, lineHeight: 1.8, maxWidth: 420, marginBottom: "3rem", fontWeight: 300 }}>Compliance through collaboration. A year of growth, modernisation, and deepening our impact across the Isle of Man and beyond.</p>
           <div style={{ display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap" }}>
-            <a href="#foreword" onClick={(e) => { e.preventDefault(); document.getElementById("foreword")?.scrollIntoView({ behavior: "smooth" }); }} style={{ display: "inline-flex", alignItems: "center", gap: 10, background: G1, color: "white", textDecoration: "none", padding: "16px 32px", borderRadius: 50, fontSize: 13, fontWeight: 600, letterSpacing: ".04em", textTransform: "uppercase", boxShadow: "0 8px 32px rgba(42,191,191,.3)" }}>Explore the report ↓</a>
+            <a href="#foreword" onClick={(e) => { e.preventDefault(); smoothScroll("foreword"); }} style={{ display: "inline-flex", alignItems: "center", gap: 10, background: G1, color: "white", textDecoration: "none", padding: "16px 32px", borderRadius: 50, fontSize: 13, fontWeight: 600, letterSpacing: ".04em", textTransform: "uppercase", boxShadow: "0 8px 32px rgba(42,191,191,.3)" }}>Explore the report ↓</a>
             <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, color: C.p, fontSize: 13, fontWeight: 500, textDecoration: "none", borderBottom: `1.5px solid ${C.p}`, paddingBottom: 2 }}>Visit inforights.im →</a>
           </div>
         </div>
@@ -292,20 +321,7 @@ export default function App() {
             <div style={{ position: "absolute", inset: -2, borderRadius: "50%", background: GH, opacity: .12, animation: "spin-slow 20s linear infinite" }} />
             <div style={{ position: "absolute", inset: 20, borderRadius: "50%", border: "1px solid rgba(42,191,191,.15)", animation: "spin-slow 14s linear infinite reverse" }} />
             <div style={{ width: "72%", position: "relative", zIndex: 2, animation: "float-logo 6s ease-in-out infinite" }}>
-              <svg viewBox="0 0 200 200" style={{ width: "100%", filter: "drop-shadow(0 8px 32px rgba(123,79,191,.3))" }}>
-                <defs><linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor={C.p}/><stop offset="35%" stopColor={C.o}/><stop offset="68%" stopColor={C.t}/><stop offset="100%" stopColor={C.s}/></linearGradient></defs>
-                <circle cx="100" cy="100" r="90" fill="white" opacity=".92"/>
-                <text x="100" y="62" textAnchor="middle" fontFamily="'Fraunces',serif" fontSize="11" fontWeight="700" fill={C.ink} letterSpacing="1.5">INFORMATION</text>
-                <text x="100" y="78" textAnchor="middle" fontFamily="'Fraunces',serif" fontSize="11" fontWeight="700" fill={C.ink} letterSpacing="1.5">COMMISSIONER'S</text>
-                <text x="100" y="94" textAnchor="middle" fontFamily="'Fraunces',serif" fontSize="11" fontWeight="700" fill={C.ink} letterSpacing="1.5">OFFICE</text>
-                <g transform="translate(100,138) scale(0.5)">
-                  <path d="M0-46 C8-46 22-38 22-22 C22-6 8,4 0,10 C-8,4 -22,-6 -22,-22 C-22,-38 -8,-46 0,-46Z" fill="url(#heroGrad)"/>
-                  <path d="M0-46 C8-46 22-38 22-22 C22-6 8,4 0,10 C-8,4 -22,-6 -22,-22 C-22,-38 -8,-46 0,-46Z" fill="url(#heroGrad)" transform="rotate(120)" opacity=".85"/>
-                  <path d="M0-46 C8-46 22-38 22-22 C22-6 8,4 0,10 C-8,4 -22,-6 -22,-22 C-22,-38 -8,-46 0,-46Z" fill="url(#heroGrad)" transform="rotate(240)" opacity=".7"/>
-                  <circle cx="0" cy="0" r="7" fill="url(#heroGrad)"/>
-                </g>
-                <text x="100" y="185" textAnchor="middle" fontFamily="'Outfit',sans-serif" fontSize="8.5" fill={C.mid} letterSpacing="2.5">ISLE OF MAN</text>
-              </svg>
+              <img src="/ICO LOGO Background Removed.png" alt="Information Commissioner's Office Logo" style={{ width: "100%", filter: "drop-shadow(0 8px 32px rgba(123,79,191,.3))" }} />
             </div>
           </div>
         </div>
@@ -314,7 +330,7 @@ export default function App() {
         <div style={{ position: "absolute", bottom: "2.5rem", left: "6vw", right: "6vw", display: "flex", alignItems: "center", gap: "3rem", borderTop: "1px solid rgba(0,0,0,.07)", paddingTop: "1.5rem", zIndex: 2, flexWrap: "wrap" }}>
           {[{v:200,l:"Breaches reported"},{v:53,l:"Total complaints"},{v:31600,l:"People impacted"},{v:10,l:"Staff members"},{v:81,l:"Fee consultation responses"}].map((t,i) => (
             <div key={i} style={{ display: "flex", flexDirection: "column", gap: ".25rem", flexShrink: 0 }}>
-              <div style={{ fontFamily: "'Fraunces',serif", fontSize: "1.8rem", fontWeight: 700, lineHeight: 1 }}><GradientText><Counter target={t.v}/></GradientText></div>
+              <div style={{ fontFamily: "Arial, sans-serif", fontSize: "1.8rem", fontWeight: 700, lineHeight: 1 }}><GradientText><Counter target={t.v}/></GradientText></div>
               <div style={{ fontSize: 11, color: C.mid }}>{t.l}</div>
             </div>
           ))}
@@ -339,21 +355,14 @@ export default function App() {
       {/* ═══ FOREWORD ═══════════════════════════════════════════════════════ */}
       <section id="foreword" style={{ padding: "6rem 6vw", background: C.paper }}>
         <Reveal><SLabel>Information Commissioner's foreword</SLabel><SH2>A year of significant change</SH2></Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: ".9fr 1.1fr", gap: "5rem", alignItems: "start", marginTop: "3rem" }}>
-          <Reveal direction="left">
-            <div style={{ aspectRatio: "3/4", borderRadius: 24, overflow: "hidden", background: C.lite, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem", padding: "3rem", textAlign: "center" }}>
-                <div style={{ width:80,height:80,borderRadius:"50%",background:G1,opacity:.4 }}/>
-                <div style={{ fontSize:12,color:C.mid }}>Dr Alexandra<br/>Delaney-Bhattacharya<br/>Information Commissioner</div>
-              </div>
-              <div style={{ position:"absolute",bottom:-16,right:-16,background:C.white,borderRadius:16,padding:".8rem 1.2rem",boxShadow:"0 8px 32px rgba(123,79,191,.15)",border:"1px solid rgba(0,0,0,.07)" }}>
-                <div style={{ fontFamily:"'Fraunces',serif",fontSize:"1.4rem",fontWeight:700 }}><GradientText>May</GradientText></div>
-                <div style={{ fontSize:10,color:C.mid }}>2026</div>
-              </div>
+        <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "4rem", alignItems: "start", marginTop: "3rem" }}>
+          <Reveal direction="left" style={{ maxWidth: 260 }}>
+            <div style={{ width: 260, aspectRatio: "3/4", borderRadius: 24, overflow: "hidden", background: C.lite }}>
+              <img src="/Alex head with background.png" alt="Dr Alexandra Delaney-Bhattacharya, Information Commissioner" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }} />
             </div>
           </Reveal>
           <Reveal direction="right" style={{ paddingTop: "1rem" }}>
-            <p style={{ fontFamily:"'Fraunces',serif",fontSize:"clamp(1.2rem,2vw,1.55rem)",fontStyle:"italic",fontWeight:300,lineHeight:1.65,color:C.ink,marginBottom:"2rem",paddingLeft:"1.5rem",borderLeft:`3px solid ${C.t}` }}>
+            <p style={{ fontFamily:"Arial, sans-serif",fontSize:"clamp(1.2rem,2vw,1.55rem)",fontStyle:"italic",fontWeight:300,lineHeight:1.65,color:C.ink,marginBottom:"2rem",paddingLeft:"1.5rem",borderLeft:`3px solid ${C.t}` }}>
               "Our strategy for 2026/27, <em>Compliance Through Collaboration</em>, reflects our commitment to listening, learning, and working together to protect the people of the Isle of Man."
             </p>
             <GradBar/>
@@ -384,8 +393,8 @@ export default function App() {
             ].map((v) => (
               <div key={v.title} className="val-card" style={{ background:C.white,borderRadius:20,padding:"2rem",border:"1px solid rgba(0,0,0,.07)",position:"relative",overflow:"hidden",transition:"transform .3s, box-shadow .3s" }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>
-                <div style={{ fontFamily:"'Fraunces',serif",fontSize:"4rem",fontWeight:900,position:"absolute",top:".25rem",right:"1rem",opacity:.05,color:C.p }}>C</div>
-                <div style={{ fontFamily:"'Fraunces',serif",fontSize:"1.2rem",fontWeight:700,color:C.ink,marginBottom:".5rem",marginTop:".25rem" }}>{v.title}</div>
+                <div style={{ fontFamily:"Arial, sans-serif",fontSize:"4rem",fontWeight:900,position:"absolute",top:".25rem",right:"1rem",opacity:.05,color:C.p }}>C</div>
+                <div style={{ fontFamily:"Arial, sans-serif",fontSize:"1.2rem",fontWeight:700,color:C.ink,marginBottom:".5rem",marginTop:".25rem" }}>{v.title}</div>
                 <div style={{ fontSize:12,color:C.mid,lineHeight:1.65 }}>{v.body}</div>
               </div>
             ))}
@@ -407,7 +416,7 @@ export default function App() {
                 <div key={s.tag} className="stat-card" style={{ background:C.white,padding:"2.5rem 1.75rem",position:"relative",overflow:"hidden" }}>
                   <div style={{ position:"absolute",bottom:0,left:0,right:0,height:3,background:GH,transform:"scaleX(0)",transition:"transform .4s" }}/>
                   <div style={tagStyle(s.tc,s.tb)}>{s.tag}</div>
-                  <div style={{ fontFamily:"'Fraunces',serif",fontSize:"3.2rem",fontWeight:900,lineHeight:1,marginBottom:".4rem" }}><GradientText><Counter target={s.v} plus={s.plus}/></GradientText></div>
+                  <div style={{ fontFamily:"Arial, sans-serif",fontSize:"3.2rem",fontWeight:900,lineHeight:1,marginBottom:".4rem" }}><GradientText><Counter target={s.v} plus={s.plus}/></GradientText></div>
                   <div style={{ fontSize:12,color:C.mid,lineHeight:1.4 }}>{s.l}</div>
                 </div>
               ))}
@@ -459,9 +468,9 @@ export default function App() {
           ].map((c) => (
             <div key={c.num} className="cc-card" style={{ flex:"0 0 380px",scrollSnapAlign:"start",borderRadius:24,padding:"2.5rem",background:c.bg,position:"relative",overflow:"hidden",minHeight:300,display:"flex",flexDirection:"column",justifyContent:"flex-end",border:c.light?"1px solid rgba(0,0,0,.07)":"none",transition:"transform .35s, box-shadow .35s" }}>
               {c.light && <div style={{ height:3,background:GH,borderRadius:2,marginBottom:"1.5rem" }}/>}
-              <div style={{ position:"absolute",top:"1.5rem",right:"2rem",fontFamily:"'Fraunces',serif",fontSize:"5.5rem",fontWeight:900,opacity:.1,lineHeight:1,color:c.light?C.ink:"white" }}>{c.num}</div>
+              <div style={{ position:"absolute",top:"1.5rem",right:"2rem",fontFamily:"Arial, sans-serif",fontSize:"5.5rem",fontWeight:900,opacity:.1,lineHeight:1,color:c.light?C.ink:"white" }}>{c.num}</div>
               <div style={{ fontSize:10,letterSpacing:".12em",textTransform:"uppercase",marginBottom:"1rem",color:c.light?C.mid:"rgba(255,255,255,.65)",fontWeight:500 }}>{c.tag}</div>
-              <div style={{ fontFamily:"'Fraunces',serif",fontSize:"1.35rem",color:c.light?C.ink:"white",lineHeight:1.3,marginBottom:".75rem",fontWeight:700 }}>{c.title}</div>
+              <div style={{ fontFamily:"Arial, sans-serif",fontSize:"1.35rem",color:c.light?C.ink:"white",lineHeight:1.3,marginBottom:".75rem",fontWeight:700 }}>{c.title}</div>
               <div style={{ fontSize:13,color:c.light?C.mid:"rgba(255,255,255,.65)",lineHeight:1.65 }}>{c.body}</div>
             </div>
           ))}
@@ -518,7 +527,7 @@ export default function App() {
             <div key={sc.tag} style={{ flex:"0 0 280px",scrollSnapAlign:"start",background:C.white,borderRadius:20,padding:"2rem",border:"1px solid rgba(0,0,0,.07)",position:"relative",overflow:"hidden" }}>
               <div style={{ position:"absolute",bottom:0,left:0,right:0,height:3,background:GH,transform:"scaleX(0)",transition:"transform .4s" }}/>
               <div style={tagStyle(sc.tc,sc.tb)}>{sc.tag}</div>
-              <div style={{ fontFamily:"'Fraunces',serif",fontSize:"3.5rem",fontWeight:900,lineHeight:1,marginBottom:".5rem" }}><GradientText>{sc.num}</GradientText></div>
+              <div style={{ fontFamily:"Arial, sans-serif",fontSize:"3.5rem",fontWeight:900,lineHeight:1,marginBottom:".5rem" }}><GradientText>{sc.num}</GradientText></div>
               <div style={{ fontSize:13,color:C.mid,lineHeight:1.5 }}>{sc.l}</div>
             </div>
           ))}
@@ -546,7 +555,7 @@ export default function App() {
             <div key={pc.num} style={{ flex:"0 0 320px",scrollSnapAlign:"start",borderRadius:20,padding:"2.25rem",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden" }}>
               <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:GH }}/>
               <div style={{ fontSize:11,letterSpacing:".15em",marginBottom:"1rem",fontWeight:500,background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text" }}>{pc.num}</div>
-              <div style={{ fontFamily:"'Fraunces',serif",fontSize:"1.3rem",color:C.ink,marginBottom:".75rem",lineHeight:1.25,fontWeight:700 }}>{pc.title}</div>
+              <div style={{ fontFamily:"Arial, sans-serif",fontSize:"1.3rem",color:C.ink,marginBottom:".75rem",lineHeight:1.25,fontWeight:700 }}>{pc.title}</div>
               <div style={{ fontSize:13,color:C.mid,lineHeight:1.65 }}>{pc.body}</div>
             </div>
           ))}
@@ -564,7 +573,7 @@ export default function App() {
           ].map((fc) => (
             <div key={fc.num} style={{ borderRadius:20,padding:"2rem",position:"relative",overflow:"hidden",border:fc.accent?"none":"1px solid rgba(0,0,0,.07)",background:fc.accent?G1:C.white }}>
               {!fc.accent && <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>}
-              <div style={{ fontFamily:"'Fraunces',serif",fontSize:"2.4rem",fontWeight:900,marginBottom:".25rem",marginTop:".25rem" }}>
+              <div style={{ fontFamily:"Arial, sans-serif",fontSize:"2.4rem",fontWeight:900,marginBottom:".25rem",marginTop:".25rem" }}>
                 {fc.accent ? <span style={{ color:"white" }}>{fc.num}</span> : <GradientText>{fc.num}</GradientText>}
               </div>
               <div style={{ fontSize:12,color:fc.accent?"rgba(255,255,255,.65)":C.mid }}>{fc.lbl}</div>
@@ -576,7 +585,7 @@ export default function App() {
 
       {/* ═══ FOOTER ══════════════════════════════════════════════════════════ */}
       <footer style={{ background:C.ink,padding:"3rem 6vw",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"1rem" }}>
-        <div style={{ fontFamily:"'Fraunces',serif",fontSize:"1.2rem",fontWeight:700,color:"rgba(255,255,255,.55)" }}>ICO Isle of Man</div>
+        <div style={{ fontFamily:"Arial, sans-serif",fontSize:"1.2rem",fontWeight:700,color:"rgba(255,255,255,.55)" }}>ICO Isle of Man</div>
         <div style={{ display:"flex",gap:"2rem" }}>
           <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ fontSize:11,color:"rgba(255,255,255,.28)",textDecoration:"none" }}>inforights.im</a>
           <button onClick={() => window.scrollTo({top:0,behavior:"smooth"})} style={{ background:"none",border:"none",cursor:"pointer",fontSize:11,color:"rgba(255,255,255,.28)" }}>Back to top ↑</button>
