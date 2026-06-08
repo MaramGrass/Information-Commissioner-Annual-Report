@@ -585,13 +585,13 @@ export default function App() {
 
       {/* ═══ FOOTER ══════════════════════════════════════════════════════════ */}
       <footer style={{ background:C.ink,padding:"3rem 6vw",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"1rem" }}>
-        <div style={{ fontFamily:"Arial, sans-serif",fontSize:"1.2rem",fontWeight:700,color:"rgba(255,255,255,1)" }}>ICO Isle of Man</div>
+        <div style={{ fontFamily:"Arial, sans-serif",fontSize:"1.2rem",fontWeight:700,color:"white" }}>ICO Isle of Man</div>
         <div style={{ display:"flex",gap:"2rem" }}>
-          <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ fontSize:11,color:"rgba(255,255,255,1)",textDecoration:"none" }}>inforights.im</a>
-          <a href="Privacy Policy" target="_blank" rel="noopener noreferrer" style={{ fontSize:11,color:"rgba(255,255,255,1)",textDecoration:"none" }}>inforights.im</a>
-          <button onClick={() => window.scrollTo({top:0,behavior:"smooth"})} style={{ background:"none",border:"none",cursor:"pointer",fontSize:11,color:"rgba(255,255,255,.1)" }}>Back to Top ↑</button>
+          <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ fontSize:11,color:"white",textDecoration:"none" }}>inforights.im</a>
+          <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ fontSize:11,color:"white",textDecoration:"none" }}>Privacy Policy</a>
+          <button onClick={() => window.scrollTo({top:0,behavior:"smooth"})} style={{ background:"none",border:"none",cursor:"pointer",fontSize:11,color:"white" }}>Back to top ↑</button>
         </div>
-        <span style={{ fontSize:11,color:"rgba(255,255,255,.22)" }}>© 2026 Information Commissioner's Office · Isle of Man · Annual Report 2025/26</span>
+        <span style={{ fontSize:11,color:"white" }}>© 2026 Information Commissioner's Office · Isle of Man · Annual Report 2025/26</span>
       </footer>
     </>
   );
