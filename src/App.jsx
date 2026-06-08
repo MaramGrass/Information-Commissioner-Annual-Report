@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { Chart, registerables } from "chart.js";
+Chart.register(...registerables);
 
 const C = {
   p: "#7b4fbf", o: "#8a8b3a", t: "#2abfbf", s: "#1ea8d6", b: "#1e7fd6",
@@ -61,13 +63,13 @@ function ChartCanvas({ config, height = 220 }) {
   const ref = useRef(null);
   const chartRef = useRef(null);
   useEffect(() => {
-    if (!window.Chart || !ref.current) return;
+    if (!ref.current) return;
     if (chartRef.current) chartRef.current.destroy();
-    window.Chart.defaults.font.family = "'Outfit', sans-serif";
-    window.Chart.defaults.font.size = 12;
-    window.Chart.defaults.color = C.mid;
-    window.Chart.defaults.plugins.legend.display = false;
-    chartRef.current = new window.Chart(ref.current, config);
+    Chart.defaults.font.family = "'Outfit', sans-serif";
+    Chart.defaults.font.size = 12;
+    Chart.defaults.color = C.mid;
+    Chart.defaults.plugins.legend.display = false;
+    chartRef.current = new Chart(ref.current, config);
     return () => { if (chartRef.current) chartRef.current.destroy(); };
   }, []);
   return <div style={{ position: "relative", height }}><canvas ref={ref} style={{ maxHeight: height }} /></div>;
@@ -234,7 +236,6 @@ export default function App() {
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" />
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
