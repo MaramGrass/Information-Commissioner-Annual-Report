@@ -10,6 +10,23 @@ const C = {
 const GH = `linear-gradient(90deg,${C.p} 0%,${C.o} 35%,${C.t} 68%,${C.s} 100%)`;
 const G1 = `linear-gradient(135deg,${C.p} 0%,${C.o} 35%,${C.t} 68%,${C.s} 100%)`;
 
+function smoothScroll(id, duration = 900) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const start = window.scrollY;
+  const end = el.getBoundingClientRect().top + start;
+  const diff = end - start;
+  let t0 = null;
+  const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const step = (ts) => {
+    if (!t0) t0 = ts;
+    const p = Math.min((ts - t0) / duration, 1);
+    window.scrollTo(0, start + diff * ease(p));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 function GradientText({ children, style = {} }) {
   return (
     <span style={{ background: G1, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", ...style }}>
@@ -85,15 +102,29 @@ function HScrollTrack({ children }) {
     boxShadow: "0 4px 20px rgba(0,0,0,.1)", display: "flex", alignItems: "center",
     justifyContent: "center",
   };
+  useEffect(() => {
+    const el = ref.current;
+    const onMove = (e) => {
+      if (!drag.current.down) return;
+      e.preventDefault();
+      el.scrollLeft = drag.current.sl - (e.pageX - drag.current.sx);
+    };
+    const onUp = () => {
+      if (!drag.current.down) return;
+      drag.current.down = false;
+      el.style.cursor = "grab";
+    };
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+    return () => { document.removeEventListener("mousemove", onMove); document.removeEventListener("mouseup", onUp); };
+  }, []);
   return (
     <div style={{ position: "relative" }}>
       <button onClick={() => scroll(-400)} style={{ ...arrowStyle, left: 14, transform: "translateY(-65%)" }}>←</button>
       <div ref={ref}
-        onMouseDown={(e) => { drag.current = { down: true, sx: e.pageX - ref.current.offsetLeft, sl: ref.current.scrollLeft }; }}
-        onMouseLeave={() => { drag.current.down = false; }}
-        onMouseUp={() => { drag.current.down = false; }}
-        onMouseMove={(e) => { if (!drag.current.down) return; e.preventDefault(); ref.current.scrollLeft = drag.current.sl - (e.pageX - ref.current.offsetLeft - drag.current.sx) * 1.5; }}
-        style={{ display: "flex", gap: "1.5rem", padding: "0.5rem 6vw 2.5rem", overflowX: "auto", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}
+        onMouseDown={(e) => { drag.current = { down: true, sx: e.pageX, sl: ref.current.scrollLeft }; ref.current.style.cursor = "grabbing"; ref.current.style.userSelect = "none"; }}
+        onMouseUp={() => { drag.current.down = false; ref.current.style.cursor = "grab"; ref.current.style.userSelect = ""; }}
+        style={{ display: "flex", gap: "1.5rem", padding: "0.5rem 6vw 2.5rem", overflowX: "auto", scrollSnapType: "x mandatory", scrollPaddingLeft: "6vw", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", cursor: "grab" }}
       >{children}</div>
       <button onClick={() => scroll(400)} style={{ ...arrowStyle, right: 14, transform: "translateY(-65%)" }}>→</button>
     </div>
@@ -110,7 +141,7 @@ function NavOverlay({ open, onClose }) {
     { id: "regulatory", label: "Regulatory action" },
     { id: "priorities", label: "Strategy 2026/27" },
   ];
-  const handleClick = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); onClose(); };
+  const handleClick = (id) => { smoothScroll(id); onClose(); };
   useEffect(() => {
     const esc = (e) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", esc);
@@ -280,7 +311,7 @@ export default function App() {
           </h1>
           <p style={{ fontSize: "1.05rem", color: C.mid, lineHeight: 1.8, maxWidth: 420, marginBottom: "3rem", fontWeight: 300 }}>Compliance through collaboration. A year of growth, modernisation, and deepening our impact across the Isle of Man and beyond.</p>
           <div style={{ display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap" }}>
-            <a href="#foreword" onClick={(e) => { e.preventDefault(); document.getElementById("foreword")?.scrollIntoView({ behavior: "smooth" }); }} style={{ display: "inline-flex", alignItems: "center", gap: 10, background: G1, color: "white", textDecoration: "none", padding: "16px 32px", borderRadius: 50, fontSize: 13, fontWeight: 600, letterSpacing: ".04em", textTransform: "uppercase", boxShadow: "0 8px 32px rgba(42,191,191,.3)" }}>Explore the report ↓</a>
+            <a href="#foreword" onClick={(e) => { e.preventDefault(); smoothScroll("foreword"); }} style={{ display: "inline-flex", alignItems: "center", gap: 10, background: G1, color: "white", textDecoration: "none", padding: "16px 32px", borderRadius: 50, fontSize: 13, fontWeight: 600, letterSpacing: ".04em", textTransform: "uppercase", boxShadow: "0 8px 32px rgba(42,191,191,.3)" }}>Explore the report ↓</a>
             <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 8, color: C.p, fontSize: 13, fontWeight: 500, textDecoration: "none", borderBottom: `1.5px solid ${C.p}`, paddingBottom: 2 }}>Visit inforights.im →</a>
           </div>
         </div>
@@ -324,14 +355,10 @@ export default function App() {
       {/* ═══ FOREWORD ═══════════════════════════════════════════════════════ */}
       <section id="foreword" style={{ padding: "6rem 6vw", background: C.paper }}>
         <Reveal><SLabel>Information Commissioner's foreword</SLabel><SH2>A year of significant change</SH2></Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: ".9fr 1.1fr", gap: "5rem", alignItems: "start", marginTop: "3rem" }}>
-          <Reveal direction="left">
-            <div style={{ aspectRatio: "3/4", borderRadius: 24, overflow: "hidden", background: C.lite, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "4rem", alignItems: "start", marginTop: "3rem" }}>
+          <Reveal direction="left" style={{ maxWidth: 260 }}>
+            <div style={{ width: 260, aspectRatio: "3/4", borderRadius: 24, overflow: "hidden", background: C.lite }}>
               <img src="/Alex head with background.png" alt="Dr Alexandra Delaney-Bhattacharya, Information Commissioner" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", display: "block" }} />
-              <div style={{ position:"absolute",bottom:-16,right:-16,background:C.white,borderRadius:16,padding:".8rem 1.2rem",boxShadow:"0 8px 32px rgba(123,79,191,.15)",border:"1px solid rgba(0,0,0,.07)" }}>
-                <div style={{ fontFamily:"Arial, sans-serif",fontSize:"1.4rem",fontWeight:700 }}><GradientText>May</GradientText></div>
-                <div style={{ fontSize:10,color:C.mid }}>2026</div>
-              </div>
             </div>
           </Reveal>
           <Reveal direction="right" style={{ paddingTop: "1rem" }}>
