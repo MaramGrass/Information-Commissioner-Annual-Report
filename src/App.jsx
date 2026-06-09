@@ -336,12 +336,12 @@ function NavOverlay({ open, onClose, onNavigate, onPrivacy }) {
     return () => document.removeEventListener("keydown", esc);
   }, [onClose]);
   return (
-    <div style={{ position:"fixed",inset:0,zIndex:1000,background:C.white,display:"flex",alignItems:"center",justifyContent:"flex-start",clipPath:open?"circle(150% at calc(100% - 54px) 50px)":"circle(0% at calc(100% - 54px) 50px)",transition:"clip-path 0.65s cubic-bezier(.77,0,.18,1)",pointerEvents:open?"all":"none" }} onClick={onClose}>
-      <div style={{ position:"absolute",inset:0,background:GH,opacity:.04 }} onClick={(e) => e.stopPropagation()} />
-      <ul style={{ listStyle:"none",padding:0,paddingLeft:"10vw" }} onClick={(e) => e.stopPropagation()}>
+    <div style={{ position:"fixed",inset:0,zIndex:1000,background:C.white,display:"flex",flexDirection:"column",justifyContent:"space-between",padding:"clamp(4rem,8vh,6rem) 0 clamp(1.5rem,3vh,2.5rem)",clipPath:open?"circle(150% at calc(100% - 54px) 50px)":"circle(0% at calc(100% - 54px) 50px)",transition:"clip-path 0.65s cubic-bezier(.77,0,.18,1)",pointerEvents:open?"all":"none",overflowY:"auto" }} onClick={onClose}>
+      <div style={{ position:"absolute",inset:0,background:GH,opacity:.04,pointerEvents:"none" }} />
+      <ul style={{ listStyle:"none",padding:0,paddingLeft:"10vw",position:"relative" }} onClick={(e) => e.stopPropagation()}>
         {sections.map((s, i) => (
           <li key={s.id} style={{ opacity:open?1:0,transform:open?"none":"translateX(-24px)",transition:`opacity 0.4s ${0.1+i*0.05}s, transform 0.4s ${0.1+i*0.05}s` }}>
-            <button onClick={() => handleClick(s.id)} style={{ background:"none",border:"none",cursor:"pointer",fontFamily:"Arial,sans-serif",fontSize:"clamp(1.5rem,2.8vw,2.8rem)",color:C.ink,textAlign:"left",lineHeight:1.6,display:"flex",alignItems:"center",gap:"1.2rem",padding:0,transition:"opacity 0.2s",opacity:.22,userSelect:"none" }}
+            <button onClick={() => handleClick(s.id)} style={{ background:"none",border:"none",cursor:"pointer",fontFamily:"Arial,sans-serif",fontSize:"clamp(1.2rem,2.8vw,2.8rem)",color:C.ink,textAlign:"left",lineHeight:1.6,display:"flex",alignItems:"center",gap:"1.2rem",padding:0,transition:"opacity 0.2s",opacity:.22,userSelect:"none" }}
               onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
               onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.22"; }}
             >
@@ -351,7 +351,7 @@ function NavOverlay({ open, onClose, onNavigate, onPrivacy }) {
           </li>
         ))}
       </ul>
-      <div style={{ position:"absolute",bottom:"2.5rem",left:"10vw",display:"flex",flexDirection:"column",gap:".6rem" }} onClick={(e) => e.stopPropagation()}>
+      <div style={{ paddingLeft:"10vw",display:"flex",flexDirection:"column",gap:".6rem",flexShrink:0,position:"relative" }} onClick={(e) => e.stopPropagation()}>
         <p style={{ fontSize:11,color:"rgba(13,13,26,.3)",letterSpacing:".1em" }}>ESC or click outside to close</p>
         <button onClick={() => { onClose(); onPrivacy(); }} style={{ background:"none",border:"none",cursor:"pointer",fontSize:11,color:C.mid,textDecoration:"underline",textDecorationStyle:"dotted",padding:0,textAlign:"left",letterSpacing:".05em",userSelect:"none" }}>Privacy Policy</button>
       </div>
@@ -362,6 +362,7 @@ function NavOverlay({ open, onClose, onNavigate, onPrivacy }) {
 const tagStyle = (color, bg) => ({ fontSize:10,letterSpacing:".1em",textTransform:"uppercase",padding:"3px 10px",borderRadius:20,display:"inline-block",marginBottom:".6rem",fontWeight:500,background:bg,color });
 
 const CASE_PANEL = 5;
+const PRIO_PANEL = 10;
 
 export default function App() {
   const containerRef = useRef(null);
@@ -384,6 +385,7 @@ export default function App() {
   const csIdxRef   = useRef(null);
   const cardRefs   = useRef([]);
   const caseTrackRef = useRef(null);
+  const prioTrackRef = useRef(null);
 
   const applyPhase = useCallback((phase, idx) => {
     csPhaseRef.current = phase;
@@ -481,6 +483,22 @@ export default function App() {
           }
         }
         return;
+      }
+
+      if (cur === PRIO_PANEL) {
+        const track = prioTrackRef.current;
+        if (track) {
+          const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 20;
+          const atStart = track.scrollLeft <= 20;
+          if (dir === 1 && !atEnd) {
+            track.scrollBy({ left: (track.firstElementChild?.offsetWidth ?? 300) + 20, behavior:"smooth" });
+            return;
+          }
+          if (dir === -1 && !atStart) {
+            track.scrollBy({ left: -((track.firstElementChild?.offsetWidth ?? 300) + 20), behavior:"smooth" });
+            return;
+          }
+        }
       }
 
       if (cooldown) return;
@@ -916,7 +934,7 @@ export default function App() {
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".75rem",fontWeight:300 }}>Our strategic direction for the year ahead, shaped by listening to those we regulate and the communities we serve.</p>
           </Reveal>
           <div style={{ flex:1,display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw" }}>
-          <HScrollTrack>
+          <HScrollTrack innerRef={prioTrackRef}>
             {[
               { num:"Priority 01",title:"Collaboration",body:"Build confidence in how people and organisations use personal information. Help children stay safe online. Improve private sector understanding through simple guidance and practical training.",color:C.p,
                 svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><circle cx="45" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".25"/><circle cx="75" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".25"/><circle cx="60" cy="44" r="12" fill="currentColor" opacity=".08"/><circle cx="60" cy="76" r="12" fill="currentColor" opacity=".08"/><path d="M33 50 Q60 30 87 50" stroke="currentColor" strokeWidth="2" opacity=".15" fill="none"/><path d="M33 70 Q60 90 87 70" stroke="currentColor" strokeWidth="2" opacity=".15" fill="none"/></svg> },
@@ -1005,14 +1023,13 @@ export default function App() {
               </div>
             </div>
 
-            {/* Footer bar */}
-            <div style={{ background:C.ink,borderRadius:16,padding:"1.75rem 2rem",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"1rem" }}>
-              <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.1rem",fontWeight:700,color:"white" }}>ICO Isle of Man</div>
-              <div style={{ display:"flex",gap:"1.5rem" }}>
-                <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ fontSize:11,color:"white",textDecoration:"none" }}>inforights.im</a>
-                <button onClick={() => scrollToPanel("top")} style={{ background:"none",border:"none",cursor:"pointer",fontSize:11,color:"white" }}>Back to start ←</button>
+            {/* Footer */}
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:".75rem",paddingTop:".5rem",borderTop:`1px solid ${C.lite}` }}>
+              <span style={{ fontSize:11,color:C.mid,letterSpacing:".05em" }}>© 2026 Information Commissioner's Office · Isle of Man</span>
+              <div style={{ display:"flex",gap:"1.25rem",alignItems:"center" }}>
+                <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ fontSize:11,color:C.mid,textDecoration:"none" }}>inforights.im</a>
+                <button onClick={() => scrollToPanel("top")} style={{ background:"none",border:"none",cursor:"pointer",fontSize:11,color:C.p,fontWeight:500 }}>↑ Back to start</button>
               </div>
-              <span style={{ fontSize:11,color:"rgba(255,255,255,.6)" }}>© 2026 Information Commissioner's Office · Isle of Man · Annual Report 2025/26</span>
             </div>
           </div>
         </section>
