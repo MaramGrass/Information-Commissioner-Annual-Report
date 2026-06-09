@@ -142,7 +142,7 @@ const CASE_STUDIES = [
 
 const FULL_CLIP = "inset(0px 0px 0px 0px round 0px)";
 
-function CaseOverlay({ csIdx, csClip, csPhase, onClose }) {
+function CaseOverlay({ csIdx, csClip, csPhase, onClose, mob }) {
   const study = csIdx !== null ? CASE_STUDIES[csIdx] : null;
   const isLight = study?.bg === C.white;
   const visible = csPhase !== "closed";
@@ -154,42 +154,44 @@ function CaseOverlay({ csIdx, csClip, csPhase, onClose }) {
   return (
     <div style={{
       position:"fixed",inset:0,zIndex:500,display:"flex",
+      flexDirection:mob?"column":"row",
       clipPath:csClip,transition,
       pointerEvents:visible?"all":"none",
       willChange:"clip-path",
     }}>
-      {/* Art half */}
+      {/* Art section */}
       <div key={`art-${csIdx}`} style={{
-        flex:"0 0 45%",position:"relative",overflow:"hidden",
+        flex:mob?"0 0 38%":"0 0 45%",position:"relative",overflow:"hidden",
         background:study?(isLight?`linear-gradient(135deg,${C.lite},${C.off})`:`linear-gradient(135deg,${study.bg},${study.bg}cc)`):C.p,
         animation:visible?"case-art-in 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s both":"none",
       }}>
         <div style={{ position:"absolute",inset:0,backgroundImage:"radial-gradient(circle,rgba(255,255,255,.07) 1px,transparent 1px)",backgroundSize:"28px 28px" }}/>
-        <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",padding:"3rem" }}>
-          {study && <div style={{ width:"100%",maxHeight:"70%",aspectRatio:"1",color:isLight?C.p:"white" }}>{study.art}</div>}
+        <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",padding:mob?"1.5rem":"3rem" }}>
+          {study && <div style={{ width:mob?"60%":"100%",maxHeight:"70%",aspectRatio:"1",color:isLight?C.p:"white" }}>{study.art}</div>}
         </div>
-        <div style={{ position:"absolute",bottom:"-2rem",left:"1.5rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(8rem,18vw,14rem)",fontWeight:900,lineHeight:1,opacity:.07,color:isLight?C.ink:"white",pointerEvents:"none",userSelect:"none" }}>{study?.num}</div>
-        <div style={{ position:"absolute",top:"2rem",left:"2rem",fontSize:10,letterSpacing:".12em",textTransform:"uppercase",padding:"5px 14px",borderRadius:20,fontWeight:600,background:isLight?"rgba(0,0,0,.06)":"rgba(255,255,255,.15)",color:isLight?C.ink:"white" }}>{study?.tag}</div>
+        {!mob && <div style={{ position:"absolute",bottom:"-2rem",left:"1.5rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(8rem,18vw,14rem)",fontWeight:900,lineHeight:1,opacity:.07,color:isLight?C.ink:"white",pointerEvents:"none",userSelect:"none" }}>{study?.num}</div>}
+        <div style={{ position:"absolute",top:"1rem",left:"1rem",fontSize:10,letterSpacing:".12em",textTransform:"uppercase",padding:"5px 14px",borderRadius:20,fontWeight:600,background:isLight?"rgba(0,0,0,.06)":"rgba(255,255,255,.15)",color:isLight?C.ink:"white" }}>{study?.tag}</div>
       </div>
-      {/* Content half */}
+      {/* Content section */}
       <div key={`content-${csIdx}`} style={{
-        flex:1,background:C.white,padding:"clamp(3rem,6vh,5rem) clamp(3rem,5vw,5rem)",
+        flex:1,background:C.white,
+        padding:mob?"1.5rem 1.25rem":"clamp(3rem,6vh,5rem) clamp(3rem,5vw,5rem)",
         display:"flex",flexDirection:"column",justifyContent:"center",overflowY:"auto",
         animation:visible?"case-slide-in 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both":"none",
       }}>
-        <div style={{ display:"flex",gap:".4rem",marginBottom:"clamp(1.5rem,3vh,2.5rem)" }}>
+        <div style={{ display:"flex",gap:".4rem",marginBottom:mob?"1rem":"clamp(1.5rem,3vh,2.5rem)" }}>
           {CASE_STUDIES.map((_,i) => (
             <div key={i} style={{ height:3,flex:1,borderRadius:2,background:i===csIdx?C.p:i<(csIdx??0)?C.t+"88":C.lite,transition:"background .4s" }}/>
           ))}
         </div>
-        <div style={{ fontSize:"clamp(10px,1.1vh,12px)",letterSpacing:".14em",textTransform:"uppercase",color:C.mid,marginBottom:"clamp(.6rem,1.2vh,1rem)",fontWeight:500 }}>{study?.tag}</div>
-        <h2 style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.6rem,3.5vh,2.8rem)",fontWeight:900,lineHeight:1.1,marginBottom:"clamp(1rem,2vh,1.5rem)",color:C.ink }}><GradientText>{study?.title}</GradientText></h2>
-        <p style={{ fontSize:"clamp(14px,1.7vh,18px)",color:C.ink,lineHeight:1.75,marginBottom:"clamp(1rem,1.8vh,1.5rem)",fontWeight:400 }}>{study?.body}</p>
-        <p style={{ fontSize:"clamp(12px,1.4vh,15px)",color:C.mid,lineHeight:1.8,fontWeight:300 }}>{study?.detail}</p>
-        <div style={{ marginTop:"clamp(1.5rem,3vh,2.5rem)",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
-          <div style={{ fontSize:"clamp(11px,1.2vh,13px)",color:C.mid }}>
+        <div style={{ fontSize:mob?10:"clamp(10px,1.1vh,12px)",letterSpacing:".14em",textTransform:"uppercase",color:C.mid,marginBottom:mob?".5rem":"clamp(.6rem,1.2vh,1rem)",fontWeight:500 }}>{study?.tag}</div>
+        <h2 style={{ fontFamily:"Arial,sans-serif",fontSize:mob?"1.4rem":"clamp(1.6rem,3.5vh,2.8rem)",fontWeight:900,lineHeight:1.1,marginBottom:mob?".75rem":"clamp(1rem,2vh,1.5rem)",color:C.ink }}><GradientText>{study?.title}</GradientText></h2>
+        <p style={{ fontSize:mob?14:"clamp(14px,1.7vh,18px)",color:C.ink,lineHeight:1.75,marginBottom:mob?".75rem":"clamp(1rem,1.8vh,1.5rem)",fontWeight:400 }}>{study?.body}</p>
+        {!mob && <p style={{ fontSize:"clamp(12px,1.4vh,15px)",color:C.mid,lineHeight:1.8,fontWeight:300 }}>{study?.detail}</p>}
+        <div style={{ marginTop:mob?"1rem":"clamp(1.5rem,3vh,2.5rem)",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
+          <div style={{ fontSize:mob?11:"clamp(11px,1.2vh,13px)",color:C.mid }}>
             <span style={{ fontWeight:600,color:C.ink }}>{csIdx!==null?csIdx+1:""} / {CASE_STUDIES.length}</span>
-            <span style={{ marginLeft:".5rem" }}>· Scroll to continue</span>
+            <span style={{ marginLeft:".5rem" }}>· {mob?"Tap card to continue":"Scroll to continue"}</span>
           </div>
           <button onClick={onClose} style={{ background:"none",border:`1.5px solid ${C.lite}`,cursor:"pointer",fontSize:11,color:C.mid,padding:"6px 16px",borderRadius:20,letterSpacing:".08em" }}>Close ✕</button>
         </div>
@@ -336,6 +338,13 @@ export default function App() {
   const containerRef = useRef(null);
   const [navOpen, setNavOpen] = useState(false);
   const [scrollPct, setScrollPct] = useState(0);
+  const [mob, setMob] = useState(() => window.innerWidth < 768);
+  useEffect(() => {
+    const onResize = () => setMob(window.innerWidth < 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  const m = (mobile, desktop) => mob ? mobile : desktop;
 
   // Case study clip-path state machine
   const [csPhase, setCsPhase] = useState("closed");   // "closed"|"expanding"|"open"|"contracting"
@@ -398,6 +407,7 @@ export default function App() {
     if (!el) return;
     let cooldown = false;
     const onWheel = (e) => {
+      if (window.innerWidth < 768) return;
       e.preventDefault();
       const dir = e.deltaY > 0 ? 1 : -1;
       const panelW = el.clientWidth;
@@ -463,13 +473,22 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, []);
+    if (!mob) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [mob]);
 
   useEffect(() => { if (navOpen) document.body.style.overflow = "hidden"; }, [navOpen]);
 
   const scrollToPanel = useCallback((id) => {
+    if (mob) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior:"smooth" });
+      return;
+    }
     const el = document.getElementById(id);
     const container = containerRef.current;
     if (!el || !container) return;
@@ -487,7 +506,7 @@ export default function App() {
       if (p < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
-  }, []);
+  }, [mob]);
 
   const gl = { color:"#eceaf4" };
   const charts = {
@@ -504,18 +523,22 @@ export default function App() {
     Dpia:{ type:"bar",data:{ labels:["2023/24","2024/25","2025/26"],datasets:[{ label:"Public sector",data:[6,4,4],backgroundColor:C.t,borderRadius:4 },{ label:"Private sector",data:[0,0,1],backgroundColor:C.p,borderRadius:4 }] },options:{ responsive:true,maintainAspectRatio:false,plugins:{ legend:{ display:true,position:"top",labels:{ padding:12,usePointStyle:true,pointStyleWidth:10,font:{size:10} } } },scales:{ y:{ grid:gl },x:{ grid:{display:false} } } } },
   };
 
-  const P = (bg, extra = {}) => ({
+  const P = (bg, extra = {}) => mob ? {
+    width:"100%", background:bg, overflow:"visible",
+    display:"flex", flexDirection:"column", padding:"8vw 5vw 6vw",
+    position:"relative", boxSizing:"border-box", ...extra,
+  } : {
     minWidth:"100vw", width:"100vw", height:"100vh", flexShrink:0,
     scrollSnapAlign:"start", background:bg, overflow:"hidden",
     display:"flex", flexDirection:"column", padding:"7vh 6vw 4vh",
     position:"relative", boxSizing:"border-box", ...extra,
-  });
+  };
 
   return (
     <>
       <style>{`
         * { box-sizing:border-box; margin:0; padding:0; }
-        body { font-family:Arial,sans-serif; background:${C.off}; color:${C.ink}; overflow:hidden; }
+        body { font-family:Arial,sans-serif; background:${C.off}; color:${C.ink}; overflow:${mob?"auto":"hidden"}; }
         @keyframes float { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(20px,-20px) scale(1.05)} }
         @keyframes float-logo { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
         @keyframes spin-slow { to{transform:rotate(360deg)} }
@@ -545,7 +568,7 @@ export default function App() {
       <div style={{ position:"fixed",top:0,left:0,height:4,background:GH,width:`${scrollPct}%`,zIndex:998,boxShadow:"0 0 12px rgba(42,191,191,.5)",transition:"width 0.1s" }} />
 
       {/* Hamburger */}
-      <button onClick={() => setNavOpen(v => !v)} style={{ position:"fixed",top:24,right:28,zIndex:1001,width:52,height:52,borderRadius:"50%",background:C.white,border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,boxShadow:"0 4px 24px rgba(123,79,191,.18)" }}>
+      <button onClick={() => setNavOpen(v => !v)} style={{ position:"fixed",top:m(16,24),right:m(16,28),zIndex:1001,width:m(44,52),height:m(44,52),borderRadius:"50%",background:C.white,border:"none",cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,boxShadow:"0 4px 24px rgba(123,79,191,.18)" }}>
         {[C.p,C.t,C.b].map((col, i) => (
           <span key={i} style={{ display:"block",width:22,height:1.5,background:col,transition:"transform .35s ease, opacity .2s, width .3s",transformOrigin:"center",...(navOpen&&i===0?{transform:"translateY(6.5px) rotate(45deg)"}:{}),...(navOpen&&i===1?{opacity:0,width:0}:{}),...(navOpen&&i===2?{transform:"translateY(-6.5px) rotate(-45deg)"}:{}) }} />
         ))}
@@ -553,61 +576,72 @@ export default function App() {
 
       <NavOverlay open={navOpen} onClose={() => setNavOpen(false)} onNavigate={scrollToPanel} />
 
-      <CaseOverlay csIdx={csIdx} csClip={csClip} csPhase={csPhase} onClose={() => closeStudy(null)} />
+      <CaseOverlay csIdx={csIdx} csClip={csClip} csPhase={csPhase} onClose={() => closeStudy(null)} mob={mob} />
 
       {/* ═══ HORIZONTAL SCROLL CONTAINER ════════════════════════════════════ */}
-      <div ref={containerRef} style={{ display:"flex",height:"100vh",overflowX:"scroll",overflowY:"hidden",scrollSnapType:"x mandatory",scrollbarWidth:"none",WebkitOverflowScrolling:"touch" }}>
+      <div ref={containerRef} style={mob ? { display:"flex",flexDirection:"column" } : { display:"flex",height:"100vh",overflowX:"scroll",overflowY:"hidden",scrollSnapType:"x mandatory",scrollbarWidth:"none",WebkitOverflowScrolling:"touch" }}>
 
         {/* ── PANEL 1: HERO ────────────────────────────────────────────────── */}
-        <section id="top" style={{ minWidth:"100vw",width:"100vw",height:"100vh",flexShrink:0,scrollSnapAlign:"start",background:C.white,display:"grid",gridTemplateColumns:"1.1fr .9fr",alignItems:"center",padding:"0 6vw",position:"relative",overflow:"hidden" }}>
+        <section id="top" style={m(
+          { width:"100%",minHeight:"100vh",background:C.white,display:"flex",flexDirection:"column",justifyContent:"center",padding:"5rem 5vw 3rem",position:"relative",overflow:"hidden",boxSizing:"border-box" },
+          { minWidth:"100vw",width:"100vw",height:"100vh",flexShrink:0,scrollSnapAlign:"start",background:C.white,display:"grid",gridTemplateColumns:"1.1fr .9fr",alignItems:"center",padding:"0 6vw",position:"relative",overflow:"hidden" }
+        )}>
           {[{ w:500,h:500,bg:C.p,top:"-10%",left:"-5%",d:0 },{ w:400,h:400,bg:C.t,top:"30%",right:"-5%",d:2.5 },{ w:350,h:350,bg:C.s,bottom:"-5%",left:"30%",d:5 }].map((b,i) => (
             <div key={i} style={{ position:"absolute",borderRadius:"50%",filter:"blur(80px)",opacity:.15,width:b.w,height:b.h,background:b.bg,top:b.top,left:b.left,right:b.right,bottom:b.bottom,animation:`float 8s ease-in-out ${b.d}s infinite` }} />
           ))}
-          <div style={{ padding:"4rem 0",position:"relative",zIndex:2 }}>
-            <div style={{ display:"inline-flex",alignItems:"center",gap:12,marginBottom:"2rem" }}>
+          <div style={{ padding:m("1.5rem 0","4rem 0"),position:"relative",zIndex:2 }}>
+            <div style={{ display:"inline-flex",alignItems:"center",gap:12,marginBottom:"1.5rem" }}>
               <div style={{ background:GH,padding:"6px 18px",borderRadius:40,fontSize:11,letterSpacing:".15em",textTransform:"uppercase",color:"white",fontWeight:500 }}>Annual Report · June 2026</div>
             </div>
-            <h1 style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.8rem,5vw,5rem)",lineHeight:1.05,marginBottom:"1.25rem",fontWeight:900 }}>
+            <h1 style={{ fontFamily:"Arial,sans-serif",fontSize:m("clamp(2.2rem,8vw,3.2rem)","clamp(2.8rem,5vw,5rem)"),lineHeight:1.05,marginBottom:"1.25rem",fontWeight:900 }}>
               <GradientText>Information</GradientText>
               <span style={{ display:"block" }}>Commissioner's</span>
               <span style={{ display:"block",fontStyle:"italic",fontWeight:300,fontSize:".85em" }}>Annual Report 2025/26</span>
             </h1>
-            <p style={{ fontSize:"1rem",color:C.mid,lineHeight:1.75,maxWidth:400,marginBottom:"2.5rem",fontWeight:300 }}>Compliance through collaboration. A year of growth, modernisation, and deepening our impact across the Isle of Man and beyond.</p>
+            <p style={{ fontSize:"1rem",color:C.mid,lineHeight:1.75,maxWidth:400,marginBottom:"2rem",fontWeight:300 }}>Compliance through collaboration. A year of growth, modernisation, and deepening our impact across the Isle of Man and beyond.</p>
             <div style={{ display:"flex",gap:"1rem",alignItems:"center",flexWrap:"wrap" }}>
               <button onClick={() => scrollToPanel("foreword")} style={{ display:"inline-flex",alignItems:"center",gap:10,background:G1,color:"white",border:"none",cursor:"pointer",padding:"14px 28px",borderRadius:50,fontSize:13,fontWeight:600,letterSpacing:".04em",textTransform:"uppercase",boxShadow:"0 8px 32px rgba(42,191,191,.3)" }}>Explore the report →</button>
               <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ display:"inline-flex",alignItems:"center",gap:8,color:C.p,fontSize:13,fontWeight:500,textDecoration:"none",borderBottom:`1.5px solid ${C.p}`,paddingBottom:2 }}>Visit inforights.im →</a>
             </div>
           </div>
-          <div style={{ position:"relative",zIndex:2,display:"flex",alignItems:"center",justifyContent:"center" }}>
-            <div style={{ position:"relative",width:340,height:340,display:"flex",alignItems:"center",justifyContent:"center" }}>
-              <div style={{ position:"absolute",inset:-2,borderRadius:"50%",background:GH,opacity:.12,animation:"spin-slow 20s linear infinite" }} />
-              <div style={{ position:"absolute",inset:20,borderRadius:"50%",border:"1px solid rgba(42,191,191,.15)",animation:"spin-slow 14s linear infinite reverse" }} />
-              <div style={{ width:"72%",position:"relative",zIndex:2,animation:"float-logo 6s ease-in-out infinite" }}>
-                <img src="/ICO LOGO Background Removed.png" alt="Information Commissioner's Office Logo" style={{ width:"100%",filter:"drop-shadow(0 8px 32px rgba(123,79,191,.3))" }} />
+          {/* Logo — hidden on mobile */}
+          {!mob && (
+            <div style={{ position:"relative",zIndex:2,display:"flex",alignItems:"center",justifyContent:"center" }}>
+              <div style={{ position:"relative",width:340,height:340,display:"flex",alignItems:"center",justifyContent:"center" }}>
+                <div style={{ position:"absolute",inset:-2,borderRadius:"50%",background:GH,opacity:.12,animation:"spin-slow 20s linear infinite" }} />
+                <div style={{ position:"absolute",inset:20,borderRadius:"50%",border:"1px solid rgba(42,191,191,.15)",animation:"spin-slow 14s linear infinite reverse" }} />
+                <div style={{ width:"72%",position:"relative",zIndex:2,animation:"float-logo 6s ease-in-out infinite" }}>
+                  <img src="/ICO LOGO Background Removed.png" alt="Information Commissioner's Office Logo" style={{ width:"100%",filter:"drop-shadow(0 8px 32px rgba(123,79,191,.3))" }} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
           {/* Stats ticker */}
-          <div style={{ position:"absolute",bottom:"2rem",left:"6vw",right:"7rem",display:"flex",alignItems:"center",gap:"2.5rem",borderTop:"1px solid rgba(0,0,0,.07)",paddingTop:"1.25rem",zIndex:2,flexWrap:"wrap" }}>
-            {[{v:200,l:"Breaches reported"},{v:53,l:"Total complaints"},{v:31600,l:"People impacted"},{v:10,l:"Staff members"},{v:81,l:"Fee consultation responses"}].map((t,i) => (
+          <div style={m(
+            { display:"flex",alignItems:"center",gap:"1.5rem",borderTop:"1px solid rgba(0,0,0,.07)",paddingTop:"1.25rem",zIndex:2,flexWrap:"wrap",marginTop:"2rem",position:"relative" },
+            { position:"absolute",bottom:"2rem",left:"6vw",right:"7rem",display:"flex",alignItems:"center",gap:"2.5rem",borderTop:"1px solid rgba(0,0,0,.07)",paddingTop:"1.25rem",zIndex:2,flexWrap:"wrap" }
+          )}>
+            {[{v:200,l:"Breaches"},{v:53,l:"Complaints"},{v:31600,l:"Impacted"},{v:10,l:"Staff"},{v:81,l:"Responses"}].map((t,i) => (
               <div key={i} style={{ display:"flex",flexDirection:"column",gap:".2rem",flexShrink:0 }}>
-                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.6rem",fontWeight:700,lineHeight:1 }}><GradientText><Counter target={t.v}/></GradientText></div>
+                <div style={{ fontFamily:"Arial,sans-serif",fontSize:m("1.3rem","1.6rem"),fontWeight:700,lineHeight:1 }}><GradientText><Counter target={t.v}/></GradientText></div>
                 <div style={{ fontSize:11,color:C.mid }}>{t.l}</div>
               </div>
             ))}
           </div>
-          {/* Scroll hint */}
-          <div style={{ position:"absolute",right:"3rem",bottom:"3rem",display:"flex",alignItems:"center",gap:".5rem",zIndex:2 }}>
-            <div style={{ width:48,height:1,background:GH,animation:"pulse-right 1.8s ease-in-out infinite" }} />
-            <span style={{ fontSize:10,letterSpacing:".15em",color:C.mid,textTransform:"uppercase" }}>Scroll</span>
-          </div>
+          {/* Scroll hint — desktop only */}
+          {!mob && (
+            <div style={{ position:"absolute",right:"3rem",bottom:"3rem",display:"flex",alignItems:"center",gap:".5rem",zIndex:2 }}>
+              <div style={{ width:48,height:1,background:GH,animation:"pulse-right 1.8s ease-in-out infinite" }} />
+              <span style={{ fontSize:10,letterSpacing:".15em",color:C.mid,textTransform:"uppercase" }}>Scroll</span>
+            </div>
+          )}
         </section>
 
         {/* ── PANEL 2: FOREWORD ────────────────────────────────────────────── */}
         <section id="foreword" style={{ ...P(C.paper) }}>
-          <div style={{ display:"grid",gridTemplateColumns:"240px 1fr",gap:"4vw",alignItems:"center",height:"100%" }}>
+          <div style={{ display:"grid",gridTemplateColumns:m("1fr","240px 1fr"),gap:m("2rem","4vw"),alignItems:m("start","center"),height:m("auto","100%") }}>
             <Reveal direction="left">
-              <div style={{ width:240,aspectRatio:"3/4",borderRadius:20,overflow:"hidden",background:C.lite,flexShrink:0 }}>
+              <div style={{ width:m("100%","240px"),maxWidth:m(200,"none"),aspectRatio:"3/4",borderRadius:20,overflow:"hidden",background:C.lite,flexShrink:0 }}>
                 <img src="/Alex head with background.png" alt="Dr Alexandra Delaney-Bhattacharya" style={{ width:"100%",height:"100%",objectFit:"cover",objectPosition:"top",display:"block" }} />
               </div>
             </Reveal>
@@ -639,7 +673,7 @@ export default function App() {
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.5rem",fontWeight:300 }}>Everyone can trust that their personal information is respected, protected and used responsibly, supporting a fair, innovative and thriving society and economy.</p>
           </Reveal>
           <Reveal delay={0.08} style={{ flex:1,display:"flex",flexDirection:"column" }}>
-            <div style={{ display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"1.5rem",flex:1 }}>
+            <div style={{ display:"grid",gridTemplateColumns:m("repeat(2,1fr)","repeat(4,1fr)"),gap:"1rem",flex:m("none",1) }}>
               {[
                 { title:"Collaborative",body:"We work openly with others, listening carefully to different views. By sharing ideas and solving problems together, we create solutions that truly help people.",color:C.p,
                   svg:<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"100%",height:"100%"}}><circle cx="30" cy="38" r="18" stroke="currentColor" strokeWidth="2.5" opacity=".35"/><circle cx="50" cy="38" r="18" stroke="currentColor" strokeWidth="2.5" opacity=".35"/><circle cx="30" cy="38" r="8" fill="currentColor" opacity=".08"/><circle cx="50" cy="38" r="8" fill="currentColor" opacity=".08"/></svg> },
@@ -673,18 +707,18 @@ export default function App() {
             <SLabel>The year in numbers</SLabel>
             <SH2>2025/26 at a glance</SH2>
           </Reveal>
-          <Reveal delay={0.06} style={{ flex:1,display:"flex",flexDirection:"column",gap:"0.5rem",minHeight:0 }}>
+          <Reveal delay={0.06} style={{ flex:m("none",1),display:"flex",flexDirection:"column",gap:"0.5rem",minHeight:0 }}>
             {[
               [{ tag:"People affected",tc:C.t,tb:"rgba(42,191,191,.1)",v:31600,l:"Estimated impacted by personal data breaches" },{ tag:"Breaches reported",tc:C.p,tb:"rgba(123,79,191,.1)",v:200,l:"Personal data breaches — up from 152 in 2024/25" },{ tag:"Total complaints",tc:C.b,tb:"rgba(30,127,214,.1)",v:53,l:"Including domestic CCTV — up from 25 last year" },{ tag:"FOI reviews",tc:C.t,tb:"rgba(42,191,191,.1)",v:24,l:"Applications for a decision received" },{ tag:"Staff",tc:C.o,tb:"rgba(138,139,58,.1)",v:10,l:"Members of staff — doubled from 5" }],
               [{ tag:"Fee consultation",tc:C.p,tb:"rgba(123,79,191,.1)",v:81,l:"Responses to our registration fees consultation" },{ tag:"Survey",tc:C.t,tb:"rgba(42,191,191,.1)",v:300,plus:true,l:"Organisations in our island-wide DP survey" },{ tag:"Events",tc:C.b,tb:"rgba(30,127,214,.1)",v:20,plus:true,l:"Domestic events attended or spoken at" },{ tag:"Decisions",tc:C.o,tb:"rgba(138,139,58,.1)",v:21,l:"FOI requests closed — nearly double prior year" },{ tag:"Regulatory actions",tc:C.p,tb:"rgba(123,79,191,.1)",v:5,l:"Enforcement actions including 4 reprimands" }],
             ].map((row, ri) => (
-              <div key={ri} style={{ flex:1,display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:2,background:C.lite,borderRadius:16,overflow:"hidden" }}>
+              <div key={ri} style={{ flex:m("none",1),display:"grid",gridTemplateColumns:m("repeat(2,1fr)","repeat(5,1fr)"),gap:2,background:C.lite,borderRadius:16,overflow:"hidden" }}>
                 {row.map((s, si) => (
                   <PopCard key={s.tag} delay={ri * 0.15 + si * 0.07} style={{ display:"flex",flexDirection:"column" }}>
-                  <div className="stat-card" style={{ flex:1,background:C.white,padding:"clamp(.6rem,1.8vh,1.5rem) 1.25rem",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
+                  <div className="stat-card" style={{ flex:1,background:C.white,padding:m(".75rem","clamp(.6rem,1.8vh,1.5rem) 1.25rem"),position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"space-between",minHeight:m(120,0) }}>
                     <div className="stat-bar" style={{ position:"absolute",bottom:0,left:0,right:0,height:3,background:GH,transform:"scaleX(0)",transition:"transform .4s" }}/>
                     <div style={tagStyle(s.tc,s.tb)}>{s.tag}</div>
-                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.8rem,9vh,7rem)",fontWeight:900,lineHeight:1,margin:"auto 0",padding:"0.2em 0" }}><GradientText><Counter target={s.v} plus={s.plus}/></GradientText></div>
+                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:m("clamp(2rem,8vw,2.8rem)","clamp(2.8rem,9vh,7rem)"),fontWeight:900,lineHeight:1,margin:"auto 0",padding:"0.2em 0" }}><GradientText><Counter target={s.v} plus={s.plus}/></GradientText></div>
                     <div style={{ fontSize:"clamp(11px,1.8vh,15px)",color:C.mid,lineHeight:1.4 }}>{s.l}</div>
                   </div>
                   </PopCard>
@@ -701,10 +735,10 @@ export default function App() {
             <SH2>FOI decision reviews 2025/26</SH2>
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.25rem",fontWeight:300 }}>24 applications received. With the new FOI Specialist in post from June 2025, closed reviews nearly doubled to 21, with 11 decision notices published in Q4 alone.</p>
           </Reveal>
-          <div style={{ display:"grid",gridTemplateColumns:"3fr 2fr",gap:"3vw",flex:1,minHeight:0 }}>
+          <div style={{ display:"grid",gridTemplateColumns:m("1fr","3fr 2fr"),gap:m("1rem","3vw"),flex:m("none",1),minHeight:0 }}>
             <Reveal direction="left" style={{ display:"flex",flexDirection:"column" }}>
-              <CCard title="New requests vs decision notices published" sub="By quarter across three reporting periods — Q4 2025/26 was a record quarter" style={{ flex:1 }}>
-                <ChartCanvas config={charts.FOI} height={80}/>
+              <CCard title="New requests vs decision notices published" sub="By quarter across three reporting periods — Q4 2025/26 was a record quarter" style={{ flex:m("none",1) }}>
+                <ChartCanvas config={charts.FOI} height={m(200,80)}/>
               </CCard>
             </Reveal>
             <Reveal direction="right" style={{ display:"flex",flexDirection:"column",gap:".6rem",flex:1,minHeight:0 }}>
@@ -737,7 +771,7 @@ export default function App() {
           <HScrollTrack innerRef={caseTrackRef}>
             {CASE_STUDIES.map((c, i) => (
               <div key={c.num} ref={el => cardRefs.current[i] = el} className="cc-card"
-                style={{ flex:"0 0 clamp(300px,42vw,520px)",scrollSnapAlign:"start",borderRadius:22,padding:"2.25rem",background:c.bg,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",border:c.bg===C.white?"1px solid rgba(0,0,0,.07)":"none",transition:"transform .35s, box-shadow .35s",cursor:"pointer",
+                style={{ flex:m("0 0 80vw","0 0 clamp(300px,42vw,520px)"),scrollSnapAlign:"start",borderRadius:22,padding:m("1.75rem","2.25rem"),background:c.bg,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",border:c.bg===C.white?"1px solid rgba(0,0,0,.07)":"none",transition:"transform .35s, box-shadow .35s",cursor:"pointer",
                   outline: csIdx===i && csPhase!=="closed" ? `2.5px solid ${C.t}` : "none",
                 }}
                 onClick={() => { if (csPhase==="closed") openStudy(i); }}
@@ -759,11 +793,11 @@ export default function App() {
             <SLabel>Data protection complaints</SLabel>
             <SH2>Complaints in 2025/26</SH2>
           </Reveal>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:"1rem",flex:1,minHeight:0 }}>
-            <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Total complaints by year (excl. domestic CCTV)" sub="Formal and informal investigations" style={{ flex:1 }}><ChartCanvas config={charts.Comp} height={60}/></CCard></Reveal>
-            <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="2025/26 complaints by sector" sub="Including domestic CCTV (32% of total)" style={{ flex:1 }}><ChartCanvas config={charts.Sect} height={60}/></CCard></Reveal>
-            <Reveal direction="left" delay={0.1} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Nature of complaints 2025/26" sub="Subject access requests were most common" style={{ flex:1 }}><ChartCanvas config={charts.Nature} height={60}/></CCard></Reveal>
-            <Reveal direction="right" delay={0.1} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Complaint closure speed (stacked)" sub="Significant improvement — oldest open complaint just 6 months vs 11 months prior year" style={{ flex:1 }}><ChartCanvas config={charts.Speed} height={60}/></CCard></Reveal>
+          <div style={{ display:"grid",gridTemplateColumns:m("1fr","1fr 1fr"),gridTemplateRows:m("auto","1fr 1fr"),gap:"1rem",flex:m("none",1),minHeight:0 }}>
+            <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Total complaints by year (excl. domestic CCTV)" sub="Formal and informal investigations" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Comp} height={m(200,60)}/></CCard></Reveal>
+            <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="2025/26 complaints by sector" sub="Including domestic CCTV (32% of total)" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Sect} height={m(200,60)}/></CCard></Reveal>
+            <Reveal direction="left" delay={0.1} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Nature of complaints 2025/26" sub="Subject access requests were most common" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Nature} height={m(200,60)}/></CCard></Reveal>
+            <Reveal direction="right" delay={0.1} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Complaint closure speed (stacked)" sub="Significant improvement — oldest open complaint just 6 months vs 11 months prior year" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Speed} height={m(200,60)}/></CCard></Reveal>
           </div>
         </section>
 
@@ -774,12 +808,12 @@ export default function App() {
             <SH2>200 breaches reported in 2025/26</SH2>
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.25rem",fontWeight:300 }}>An increase from 152 last year, affecting an estimated 31,600 people. The rise partly reflects greater awareness of reporting obligations and a growth in cyber incidents.</p>
           </Reveal>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.5rem",flex:1,minHeight:0 }}>
+          <div style={{ display:"grid",gridTemplateColumns:m("1fr","1fr 1fr"),gap:"1.5rem",flex:m("none",1),minHeight:0 }}>
             <Reveal direction="left" style={{ display:"flex",flexDirection:"column" }}>
-              <CCard title="Breaches reported by year" sub="Four-year view: 264 → 250 → 152 → 200" style={{ flex:1 }}><ChartCanvas config={charts.BrY} height={80}/></CCard>
+              <CCard title="Breaches reported by year" sub="Four-year view: 264 → 250 → 152 → 200" style={{ flex:m("none",1) }}><ChartCanvas config={charts.BrY} height={m(200,80)}/></CCard>
             </Reveal>
             <Reveal direction="right" style={{ display:"flex",flexDirection:"column" }}>
-              <CCard title="2025/26 breaches by sector" sub="Public and private broadly even — 52% / 48%" style={{ flex:1 }}><ChartCanvas config={charts.BrS} height={80}/></CCard>
+              <CCard title="2025/26 breaches by sector" sub="Public and private broadly even — 52% / 48%" style={{ flex:m("none",1) }}><ChartCanvas config={charts.BrS} height={m(200,80)}/></CCard>
             </Reveal>
           </div>
         </section>
@@ -792,16 +826,16 @@ export default function App() {
             <SH2 light>GDPR articles infringed 2025/26</SH2>
             <p style={{ fontSize:".85rem",color:"rgba(255,255,255,.65)",lineHeight:1.7,maxWidth:550,marginBottom:"1.25rem",fontWeight:300 }}>80% of breaches involved Article 5(1)(f) — the integrity and confidentiality principle. Improved security practices would prevent the majority of incidents.</p>
           </Reveal>
-          <div style={{ display:"grid",gridTemplateColumns:"1.2fr 1fr",gap:"3vw",flex:1,minHeight:0 }}>
-            <Reveal direction="left" delay={0.06} style={{ display:"flex",alignItems:"center" }}>
+          <div style={{ display:"grid",gridTemplateColumns:m("1fr","1.2fr 1fr"),gap:m("1.5rem","3vw"),flex:m("none",1),minHeight:0 }}>
+            <Reveal direction="left" delay={0.06} style={{ display:"flex",alignItems:"center",minHeight:m(280,0) }}>
               <BreachBars/>
             </Reveal>
             <div style={{ display:"flex",flexDirection:"column",gap:"1rem",minHeight:0 }}>
-              <Reveal direction="right" delay={0.08} style={{ flex:1,display:"flex",flexDirection:"column" }}>
-                <CCard dark title="Special category data in breaches" sub="% of total breaches involving special category PD" style={{ flex:1 }}><ChartCanvas config={charts.Spec} height={60}/></CCard>
+              <Reveal direction="right" delay={0.08} style={{ flex:m("none",1),display:"flex",flexDirection:"column" }}>
+                <CCard dark title="Special category data in breaches" sub="% of total breaches involving special category PD" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Spec} height={m(180,60)}/></CCard>
               </Reveal>
-              <Reveal direction="right" delay={0.14} style={{ flex:1,display:"flex",flexDirection:"column" }}>
-                <CCard dark title="Quarterly breach volumes 2025/26" sub="Q1: 62 · Q2: 52 · Q3: 39 · Q4: 47" style={{ flex:1 }}><ChartCanvas config={charts.BrQ} height={60}/></CCard>
+              <Reveal direction="right" delay={0.14} style={{ flex:m("none",1),display:"flex",flexDirection:"column" }}>
+                <CCard dark title="Quarterly breach volumes 2025/26" sub="Q1: 62 · Q2: 52 · Q3: 39 · Q4: 47" style={{ flex:m("none",1) }}><ChartCanvas config={charts.BrQ} height={m(180,60)}/></CCard>
               </Reveal>
             </div>
           </div>
@@ -836,9 +870,9 @@ export default function App() {
                 ))}
               </HScrollTrack>
             </div>
-            <div style={{ flex:1,display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.25rem",minHeight:0 }}>
-              <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column" }}><CCard title="Regulatory actions by year" sub="2023/24: 31 · 2024/25: 14 · 2025/26: 5" style={{ flex:1 }}><ChartCanvas config={charts.Reg} height={60}/></CCard></Reveal>
-              <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column" }}><CCard title="DPIAs submitted for consultation" sub="First private sector submission received in 2025/26" style={{ flex:1 }}><ChartCanvas config={charts.Dpia} height={60}/></CCard></Reveal>
+            <div style={{ flex:m("none",1),display:"grid",gridTemplateColumns:m("1fr","1fr 1fr"),gap:"1.25rem",minHeight:0 }}>
+              <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column" }}><CCard title="Regulatory actions by year" sub="2023/24: 31 · 2024/25: 14 · 2025/26: 5" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Reg} height={m(200,60)}/></CCard></Reveal>
+              <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column" }}><CCard title="DPIAs submitted for consultation" sub="First private sector submission received in 2025/26" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Dpia} height={m(200,60)}/></CCard></Reveal>
             </div>
           </div>
         </section>
@@ -887,7 +921,7 @@ export default function App() {
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.5rem",fontWeight:300 }}>Income outperformed target by £11,091. Pay costs increased significantly, reflecting the doubling of staff — fully supported by Treasury-approved contingency funding of £285,000.</p>
           </Reveal>
           <div style={{ display:"flex",flexDirection:"column",gap:"1.25rem",flex:1,minHeight:0 }}>
-            <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.5rem",flex:1,minHeight:0 }}>
+            <div style={{ display:"grid",gridTemplateColumns:m("1fr","1fr 1fr"),gap:"1.5rem",flex:m("none",1),minHeight:0 }}>
               {[
                 { num:"£162,927",lbl:"Fee income",sub:"Target was £151,836",note:"↑ £11,091 above target — strongest fee year to date",tag:"Income" },
                 { num:"£620,547",lbl:"Total pay costs",sub:"Including temporary staff",note:"Reflects the doubling of the team from 5 to 10 staff during the year, supported by Treasury-approved contingency funding of £285,000",tag:"Expenditure" },
@@ -895,11 +929,11 @@ export default function App() {
                 <PopCard key={fc.num} delay={i * 0.12} style={{ display:"flex",flexDirection:"column",minHeight:0 }}>
                 <div className="fin-card" style={{ flex:1,borderRadius:18,padding:"clamp(1.5rem,3vh,2.8rem) clamp(1.5rem,2.5vw,2.5rem)",position:"relative",overflow:"hidden",border:"1px solid rgba(0,0,0,.07)",background:C.white,display:"flex",flexDirection:"column",justifyContent:"flex-end" }}>
                   <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>
-                  <div style={{ position:"absolute",bottom:"-2rem",right:"1rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(6rem,18vh,14rem)",fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
+                  <div style={{ position:"absolute",bottom:"-2rem",right:"1rem",fontFamily:"Arial,sans-serif",fontSize:m("clamp(4rem,18vw,6rem)","clamp(6rem,18vh,14rem)"),fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
                   <div style={{ marginTop:"auto" }}>
                     <div style={tagStyle(C.mid,"rgba(0,0,0,.04)")}>{fc.tag}</div>
                     <div style={{ fontSize:"clamp(10px,1.3vh,13px)",letterSpacing:".08em",color:C.mid,marginBottom:"clamp(.4rem,1vh,.8rem)",fontWeight:400 }}>{fc.sub}</div>
-                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.8rem,8vh,6.5rem)",fontWeight:900,lineHeight:1,marginBottom:"clamp(.3rem,.8vh,.6rem)" }}><GradientText>{fc.num}</GradientText></div>
+                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:m("clamp(2.2rem,8vw,3rem)","clamp(2.8rem,8vh,6.5rem)"),fontWeight:900,lineHeight:1,marginBottom:"clamp(.3rem,.8vh,.6rem)" }}><GradientText>{fc.num}</GradientText></div>
                     <div style={{ fontSize:"clamp(15px,2.2vh,22px)",color:C.ink,fontWeight:700 }}>{fc.lbl}</div>
                   </div>
                   <div style={{ fontSize:"clamp(12px,1.6vh,15px)",color:C.mid,lineHeight:1.75,fontWeight:300,maxWidth:"85%",paddingTop:"clamp(.5rem,1.2vh,1rem)",borderTop:"1px solid rgba(0,0,0,.06)" }}>{fc.note}</div>
