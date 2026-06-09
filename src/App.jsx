@@ -361,10 +361,10 @@ export default function App() {
     return `inset(${Math.max(0,r.top).toFixed(0)}px ${Math.max(0,W-r.right).toFixed(0)}px ${Math.max(0,H-r.bottom).toFixed(0)}px ${Math.max(0,r.left).toFixed(0)}px round 20px)`;
   }, []);
 
-  const snapCarousel = useCallback((idx) => {
+  const snapCarousel = useCallback((idx, behavior = "instant") => {
     const track = caseTrackRef.current;
     const card  = cardRefs.current[idx];
-    if (track && card) track.scrollTo({ left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2, behavior: "instant" });
+    if (track && card) track.scrollTo({ left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2, behavior });
   }, []);
 
   const openStudy = useCallback((idx) => {
@@ -409,19 +409,20 @@ export default function App() {
 
         if (dir === 1) {
           if (phase === "open") {
-            // Close current study, advance carousel to next card position
+            // Close current study, smoothly scroll carousel to next card
             const nextPos = csIdxRef.current + 1;
             closeStudy(() => {
               csCarouselPos.current = nextPos;
-              snapCarousel(Math.min(nextPos, CASE_STUDIES.length - 1));
+              snapCarousel(Math.min(nextPos, CASE_STUDIES.length - 1), "smooth");
             });
             return;
           }
           // phase === "closed"
           if (csCarouselPos.current >= CASE_STUDIES.length) {
+            // All done — advance to next panel, reset carousel silently after transition
             csCarouselPos.current = 0;
-            snapCarousel(0);
             el.scrollTo({ left: (cur + 1) * panelW, behavior: "smooth" });
+            setTimeout(() => snapCarousel(0), 900);
           } else {
             openStudy(csCarouselPos.current);
           }
@@ -436,8 +437,7 @@ export default function App() {
             el.scrollTo({ left: (cur - 1) * panelW, behavior: "smooth" });
           } else {
             csCarouselPos.current--;
-            snapCarousel(csCarouselPos.current);
-            openStudy(csCarouselPos.current);
+            openStudy(csCarouselPos.current); // openStudy does its own instant snap before measuring
           }
         }
         return;
