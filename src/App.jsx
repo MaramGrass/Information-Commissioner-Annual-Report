@@ -107,6 +107,96 @@ function ChartCanvas({ config, height = 160 }) {
   return <div style={{ position:"relative",flex:1,minHeight:height }}><canvas ref={ref} /></div>;
 }
 
+const CASE_STUDIES = [
+  { num:"01",tag:"CCTV / Data breach",title:"Recording CCTV footage to a personal device",
+    body:"A senior staff member recorded live security footage on a personal phone and shared it with an unauthorised party — knowingly contravening data protection law. Seniority was treated as an aggravating factor.",
+    detail:"The investigation found that the individual had deliberately captured footage from a live security feed onto a personal device on multiple occasions, subsequently sharing clips via a private messaging application with a person who had no legitimate access to the premises. The ICO's assessment concluded that the controller had failed to implement adequate technical measures to prevent such recording, and that the seniority of the individual made the breach more serious, not less. A formal reprimand was issued, accompanied by recommendations for mandatory data protection refresher training, enhanced CCTV usage policies, and a technical review of all monitoring equipment to prevent future unauthorised capture.",
+    bg:C.p,
+    art:<svg viewBox="0 0 400 400" fill="none" style={{width:"100%",height:"100%"}}><circle cx="200" cy="200" r="160" stroke="rgba(255,255,255,.08)" strokeWidth="40"/><circle cx="200" cy="200" r="90" stroke="rgba(255,255,255,.12)" strokeWidth="3"/><circle cx="200" cy="200" r="40" fill="rgba(255,255,255,.1)"/><circle cx="200" cy="200" r="16" fill="rgba(255,255,255,.25)"/><rect x="120" y="185" width="160" height="30" rx="15" fill="rgba(255,255,255,.07)"/><path d="M80 200 L140 200" stroke="rgba(255,255,255,.15)" strokeWidth="2" strokeDasharray="6 4"/><path d="M260 200 L320 200" stroke="rgba(255,255,255,.15)" strokeWidth="2" strokeDasharray="6 4"/><circle cx="60" cy="200" r="12" fill="rgba(255,255,255,.08)"/><circle cx="340" cy="200" r="12" fill="rgba(255,255,255,.08)"/></svg> },
+  { num:"02",tag:"FOI — Food safety",title:"A proactive pivot: food inspection reports",
+    body:"A public authority applied a blanket exemption to food inspection records without evaluating each document. The ICO ruled reprocessing was required and encouraged a proactive publication scheme.",
+    detail:"The complainant had submitted a freedom of information request for food hygiene inspection reports relating to licensed premises. The public authority applied a blanket exemption under public interest grounds without conducting a document-by-document assessment, as required. The ICO found that this approach was unlawful and issued a decision notice requiring the authority to reprocess the request. Beyond the individual decision, the ICO used this case to encourage the adoption of a proactive publication scheme for food inspection data, noting that transparency in this area serves a clear public benefit and reduces the volume of individual FOI requests to the authority.",
+    bg:C.white,
+    art:<svg viewBox="0 0 400 400" fill="none" style={{width:"100%",height:"100%"}}><rect x="100" y="80" width="200" height="260" rx="12" stroke={C.lite} strokeWidth="3" fill={C.paper}/><rect x="120" y="120" width="160" height="8" rx="4" fill={C.lite}/><rect x="120" y="145" width="130" height="8" rx="4" fill={C.lite}/><rect x="120" y="170" width="145" height="8" rx="4" fill={C.lite}/><rect x="120" y="210" width="80" height="8" rx="4" fill={C.t+"55"}/><rect x="120" y="235" width="110" height="8" rx="4" fill={C.t+"33"}/><rect x="120" y="260" width="90" height="8" rx="4" fill={C.t+"44"}/><circle cx="310" cy="120" r="40" fill={C.t+"22"} stroke={C.t+"44"} strokeWidth="2"/><path d="M296 120 L306 130 L326 110" stroke={C.t} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg> },
+  { num:"03",tag:"DPIA consultation",title:"Local processing, local context",
+    body:"A controller relied too heavily on UK precedent without addressing Isle of Man context. Missing risk assessment, no DPO evidence, no stakeholder engagement. The ICO paused consultation and required full resubmission.",
+    detail:"A data controller submitted a Data Protection Impact Assessment for consultation in respect of a new system involving automated decision-making. The submission closely mirrored a UK template without adaptation to Isle of Man legislation or local operational context. The ICO identified several critical omissions: no documented risk assessment proportionate to the specific processing activities, no evidence of DPO involvement despite the high-risk nature of the processing, and no record of stakeholder engagement with the data subjects most likely to be affected. The ICO suspended the consultation period and issued detailed written guidance requiring a full resubmission that addressed the jurisdictional specificities of the Isle of Man Data Protection Act 2018.",
+    bg:C.t,
+    art:<svg viewBox="0 0 400 400" fill="none" style={{width:"100%",height:"100%"}}><rect x="130" y="70" width="140" height="180" rx="10" stroke="rgba(255,255,255,.2)" strokeWidth="3"/><rect x="150" y="100" width="60" height="6" rx="3" fill="rgba(255,255,255,.15)"/><rect x="150" y="120" width="100" height="6" rx="3" fill="rgba(255,255,255,.15)"/><rect x="150" y="140" width="80" height="6" rx="3" fill="rgba(255,255,255,.15)"/><rect x="150" y="175" width="40" height="6" rx="3" fill="rgba(255,255,255,.25)"/><rect x="150" y="195" width="70" height="6" rx="3" fill="rgba(255,255,255,.15)"/><circle cx="200" cy="290" r="50" stroke="rgba(255,255,255,.15)" strokeWidth="3"/><circle cx="200" cy="290" r="20" fill="rgba(255,255,255,.1)"/><path d="M200 270 L200 292" stroke="rgba(255,255,255,.5)" strokeWidth="3" strokeLinecap="round"/><circle cx="200" cy="300" r="3" fill="rgba(255,255,255,.5)"/></svg> },
+  { num:"04",tag:"International collaboration",title:"Stronger together: deepfakes joint statement",
+    body:"The ICO joined 61 regulators worldwide to raise concerns about AI-generated deepfakes. A joint statement with Jersey and Guernsey also provided practical safety advice for parents and carers.",
+    detail:"As part of the Global Privacy Assembly's working group on emerging technologies, the Information Commissioner co-signed an international joint statement with 61 regulatory bodies expressing serious concern about the proliferation of AI-generated deepfake content, particularly non-consensual intimate imagery. Separately, the ICO collaborated with the Jersey Office of the Information Commissioner and the Guernsey Data Protection Authority to publish a joint advisory for parents and carers, providing practical guidance on recognising deepfake content, understanding platform reporting mechanisms, and supporting young people who may have been targeted. The joint statement received widespread media coverage and was cited in subsequent UK parliamentary debate on AI regulation.",
+    bg:C.b,
+    art:<svg viewBox="0 0 400 400" fill="none" style={{width:"100%",height:"100%"}}><circle cx="200" cy="200" r="120" stroke="rgba(255,255,255,.12)" strokeWidth="2"/><circle cx="200" cy="200" r="80" stroke="rgba(255,255,255,.08)" strokeWidth="1.5" strokeDasharray="6 4"/><ellipse cx="200" cy="200" rx="120" ry="48" stroke="rgba(255,255,255,.1)" strokeWidth="1.5"/><line x1="80" y1="200" x2="320" y2="200" stroke="rgba(255,255,255,.1)" strokeWidth="1.5"/><line x1="200" y1="80" x2="200" y2="320" stroke="rgba(255,255,255,.1)" strokeWidth="1.5"/>{[[140,120],[260,110],[300,200],[240,290],[140,280],[80,200]].map(([x,y],i)=><circle key={i} cx={x} cy={y} r="8" fill="rgba(255,255,255,.2)" />)}{[[140,120,260,110],[260,110,300,200],[300,200,240,290],[240,290,140,280],[140,280,80,200],[80,200,140,120]].map(([x1,y1,x2,y2],i)=><line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(255,255,255,.12)" strokeWidth="1.5" />)}<circle cx="200" cy="200" r="14" fill="rgba(255,255,255,.18)"/></svg> },
+  { num:"05",tag:"Engagement",title:"Listening to organisations — shaping strategy",
+    body:"Over 300 organisations participated in the Data Protection in Practice survey. Results explored with 100+ professionals, directly informing the 2026/27 strategy.",
+    detail:"The ICO's Data Protection in Practice survey achieved its highest-ever response rate, with 312 organisations from across the public, private, and third sectors completing the full questionnaire. Key findings highlighted persistent uncertainty around lawful basis selection, practical challenges in fulfilling data subject access requests within statutory timescales, and strong appetite for clearer sector-specific guidance. The results were presented and discussed at a series of roundtable events attended by over 100 data protection professionals. Themes directly influenced the development of the 2026/27 strategic plan, including the commitment to produce simplified guidance materials, expand the practical training programme, and develop an online self-assessment tool for smaller organisations.",
+    bg:C.white,
+    art:<svg viewBox="0 0 400 400" fill="none" style={{width:"100%",height:"100%"}}><rect x="60" y="260" width="40" height="80" rx="6" fill={C.p+"33"}/><rect x="120" y="200" width="40" height="140" rx="6" fill={C.t+"44"}/><rect x="180" y="160" width="40" height="180" rx="6" fill={C.s+"44"}/><rect x="240" y="180" width="40" height="160" rx="6" fill={C.b+"44"}/><rect x="300" y="140" width="40" height="200" rx="6" fill={C.p+"55"}/><path d="M60 260 L140 200 L200 160 L260 180 L320 140" stroke={C.p} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>{[60,140,200,260,320].map((x,i)=><circle key={i} cx={x} cy={[260,200,160,180,140][i]} r="5" fill={C.p}/>)}</svg> },
+  { num:"06",tag:"Brand refresh",title:"A brand new look — shaped by local talent",
+    body:"The ICO's new identity was co-created with final year art students from University College Isle of Man, incorporating the triskelion and Manx tartan colour palette.",
+    detail:"In a first-of-its-kind collaboration for the Office, the ICO partnered with University College Isle of Man to involve final year graphic design and visual communications students in the development of a refreshed brand identity. Students submitted conceptual designs over an eight-week period, with submissions assessed by a panel of staff and external design professionals. The winning concept incorporated the triskelion — the Isle of Man's iconic three-legged symbol — alongside a colour palette inspired by the Manx tartan, reflecting the organisation's deep roots in the island's identity and public life. The new brand launched in March 2026 across all digital and print communications, receiving positive feedback from regulated entities and members of the public alike.",
+    bg:C.o,
+    art:<svg viewBox="0 0 400 400" fill="none" style={{width:"100%",height:"100%"}}><circle cx="200" cy="200" r="100" stroke="rgba(255,255,255,.1)" strokeWidth="2"/>{[0,120,240].map((a,i)=><g key={i} transform={`rotate(${a} 200 200)`}><path d="M200 200 L200 100 Q230 140 260 170 Z" fill="rgba(255,255,255,.12)"/><circle cx="200" cy="100" r="12" fill="rgba(255,255,255,.18)"/></g>)}<circle cx="200" cy="200" r="18" fill="rgba(255,255,255,.15)"/><circle cx="200" cy="200" r="6" fill="rgba(255,255,255,.3)"/>{[0,45,90,135,180,225,270,315].map((a,i)=><circle key={i} cx={200+140*Math.cos(a*Math.PI/180)} cy={200+140*Math.sin(a*Math.PI/180)} r="4" fill="rgba(255,255,255,.1)"/>)}</svg> },
+];
+
+function CaseOverlay({ activeCase, onClose }) {
+  const study = activeCase !== null ? CASE_STUDIES[activeCase] : null;
+  const isLight = study?.bg === C.white;
+  return (
+    <div style={{
+      position:"fixed",inset:0,zIndex:500,display:"flex",
+      opacity:activeCase !== null ? 1 : 0,
+      pointerEvents:activeCase !== null ? "all" : "none",
+      transition:"opacity 0.45s cubic-bezier(0.16,1,0.3,1)",
+    }}>
+      {/* Image / art half */}
+      <div style={{
+        flex:"0 0 45%",position:"relative",overflow:"hidden",
+        background: study ? (isLight ? `linear-gradient(135deg,${C.lite},${C.off})` : `linear-gradient(135deg,${study.bg},${study.bg}cc)`) : C.p,
+      }}>
+        {/* Background dot grid */}
+        <div style={{ position:"absolute",inset:0,backgroundImage:"radial-gradient(circle,rgba(255,255,255,.07) 1px,transparent 1px)",backgroundSize:"28px 28px" }}/>
+        {/* Art */}
+        <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",padding:"3rem" }}>
+          {study && <div style={{ width:"100%",maxHeight:"70%",aspectRatio:"1",color:isLight?C.p:"white" }}>{study.art}</div>}
+        </div>
+        {/* Big ghost number */}
+        <div style={{ position:"absolute",bottom:"-2rem",left:"1.5rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(8rem,18vw,14rem)",fontWeight:900,lineHeight:1,opacity:.07,color:isLight?C.ink:"white",pointerEvents:"none",userSelect:"none" }}>{study?.num}</div>
+        {/* Tag pill */}
+        <div style={{ position:"absolute",top:"2rem",left:"2rem",fontSize:10,letterSpacing:".12em",textTransform:"uppercase",padding:"5px 14px",borderRadius:20,fontWeight:600,background:isLight?"rgba(0,0,0,.06)":"rgba(255,255,255,.15)",color:isLight?C.ink:"white" }}>{study?.tag}</div>
+      </div>
+
+      {/* Content half */}
+      <div key={activeCase} style={{
+        flex:1,background:C.white,padding:"clamp(3rem,6vh,5rem) clamp(3rem,5vw,5rem)",
+        display:"flex",flexDirection:"column",justifyContent:"center",overflowY:"auto",
+        animation:activeCase !== null ? "case-slide-in 0.5s cubic-bezier(0.16,1,0.3,1) both" : "none",
+      }}>
+        {/* Progress dots */}
+        <div style={{ display:"flex",gap:".4rem",marginBottom:"clamp(1.5rem,3vh,2.5rem)" }}>
+          {CASE_STUDIES.map((_,i) => (
+            <div key={i} style={{ height:3,flex:1,borderRadius:2,background:i === activeCase ? C.p : i < (activeCase??0) ? C.t+"99" : C.lite,transition:"background .35s" }}/>
+          ))}
+        </div>
+
+        <div style={{ fontSize:"clamp(10px,1.1vh,12px)",letterSpacing:".14em",textTransform:"uppercase",color:C.mid,marginBottom:"clamp(.6rem,1.2vh,1rem)",fontWeight:500 }}>{study?.tag}</div>
+        <h2 style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.6rem,3.5vh,2.8rem)",fontWeight:900,lineHeight:1.1,marginBottom:"clamp(1rem,2vh,1.5rem)",color:C.ink }}><GradientText>{study?.title}</GradientText></h2>
+        <p style={{ fontSize:"clamp(14px,1.7vh,18px)",color:C.ink,lineHeight:1.75,marginBottom:"clamp(1rem,1.8vh,1.5rem)",fontWeight:400 }}>{study?.body}</p>
+        <p style={{ fontSize:"clamp(12px,1.4vh,15px)",color:C.mid,lineHeight:1.8,fontWeight:300 }}>{study?.detail}</p>
+
+        <div style={{ marginTop:"clamp(1.5rem,3vh,2.5rem)",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
+          <div style={{ fontSize:"clamp(11px,1.2vh,13px)",color:C.mid }}>
+            <span style={{ fontWeight:600,color:C.ink }}>{activeCase !== null ? activeCase+1 : ""} / {CASE_STUDIES.length}</span>
+            <span style={{ marginLeft:".5rem" }}>· Scroll to continue</span>
+          </div>
+          <button onClick={onClose} style={{ background:"none",border:`1.5px solid ${C.lite}`,cursor:"pointer",fontSize:11,color:C.mid,padding:"6px 16px",borderRadius:20,letterSpacing:".08em" }}>Close ✕</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SLabel({ children, light = false }) {
   return (
     <div style={{ fontSize:11,letterSpacing:".15em",textTransform:"uppercase",marginBottom:".35rem",fontWeight:500,background:light?"none":GH,WebkitBackgroundClip:light?"none":"text",WebkitTextFillColor:light?"rgba(255,255,255,.6)":"transparent",backgroundClip:light?"none":"text",color:light?"rgba(255,255,255,.6)":undefined }}>
@@ -238,10 +328,16 @@ function NavOverlay({ open, onClose, onNavigate }) {
 
 const tagStyle = (color, bg) => ({ fontSize:10,letterSpacing:".1em",textTransform:"uppercase",padding:"3px 10px",borderRadius:20,display:"inline-block",marginBottom:".6rem",fontWeight:500,background:bg,color });
 
+const CASE_PANEL = 5; // 0-based index of the case studies panel
+
 export default function App() {
   const containerRef = useRef(null);
   const [navOpen, setNavOpen] = useState(false);
   const [scrollPct, setScrollPct] = useState(0);
+  const [activeCase, setActiveCase] = useState(null);
+  const activeCaseRef = useRef(null);
+  const openCase = (idx) => { activeCaseRef.current = idx; setActiveCase(idx); };
+  const closeCase = () => { activeCaseRef.current = null; setActiveCase(null); };
 
   useEffect(() => {
     const el = containerRef.current;
@@ -256,6 +352,21 @@ export default function App() {
       const panelW = el.clientWidth;
       const cur = Math.round(el.scrollLeft / panelW);
       const total = Math.round(el.scrollWidth / panelW);
+      const ac = activeCaseRef.current;
+
+      if (cur === CASE_PANEL) {
+        if (dir === 1) {
+          if (ac === null) { openCase(0); return; }
+          if (ac < CASE_STUDIES.length - 1) { openCase(ac + 1); return; }
+          closeCase();
+          el.scrollTo({ left: (cur + 1) * panelW, behavior: "smooth" });
+        } else {
+          if (ac === null) { el.scrollTo({ left: (cur - 1) * panelW, behavior: "smooth" }); return; }
+          if (ac === 0) { closeCase(); return; }
+          openCase(ac - 1);
+        }
+        return;
+      }
       const next = Math.max(0, Math.min(total - 1, cur + dir));
       el.scrollTo({ left: next * panelW, behavior: "smooth" });
     };
@@ -332,6 +443,7 @@ export default function App() {
         @keyframes pulse-right { 0%{transform:scaleX(0);transform-origin:left} 50%{transform:scaleX(1);transform-origin:left} 51%{transform:scaleX(1);transform-origin:right} 100%{transform:scaleX(0);transform-origin:right} }
         @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
         @keyframes glow-border { 0%,100%{box-shadow:0 0 0 0 rgba(42,191,191,0)} 50%{box-shadow:0 0 0 3px rgba(42,191,191,.18)} }
+        @keyframes case-slide-in { 0%{opacity:0;transform:translateX(36px)} 100%{opacity:1;transform:none} }
         ::-webkit-scrollbar { display:none }
         .val-card { transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s }
         .val-card:hover { transform:translateY(-6px) scale(1.02) !important; box-shadow:0 20px 56px rgba(0,0,0,.12) !important }
@@ -359,6 +471,8 @@ export default function App() {
       </button>
 
       <NavOverlay open={navOpen} onClose={() => setNavOpen(false)} onNavigate={scrollToPanel} />
+
+      <CaseOverlay activeCase={activeCase} onClose={closeCase} />
 
       {/* ═══ HORIZONTAL SCROLL CONTAINER ════════════════════════════════════ */}
       <div ref={containerRef} style={{ display:"flex",height:"100vh",overflowX:"scroll",overflowY:"hidden",scrollSnapType:"x mandatory",scrollbarWidth:"none",WebkitOverflowScrolling:"touch" }}>
@@ -535,7 +649,7 @@ export default function App() {
             <Reveal>
               <SLabel>Case studies</SLabel>
               <SH2>Real decisions, real consequences</SH2>
-              <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".5rem",fontWeight:300 }}>Every case reflects the human dimension of data protection. Drag to explore highlights from 2025/26.</p>
+              <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".5rem",fontWeight:300 }}>Every case reflects the human dimension of data protection. Scroll to open each case study in full.</p>
             </Reveal>
           </div>
           <div style={{ flex:1,display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw" }}>
