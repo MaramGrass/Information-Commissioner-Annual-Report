@@ -291,7 +291,33 @@ function HScrollTrack({ children, innerRef }) {
   );
 }
 
-function NavOverlay({ open, onClose, onNavigate }) {
+function PrivacyModal({ open, onClose }) {
+  useEffect(() => {
+    const esc = (e) => e.key === "Escape" && onClose();
+    if (open) document.addEventListener("keydown", esc);
+    return () => document.removeEventListener("keydown", esc);
+  }, [open, onClose]);
+  if (!open) return null;
+  return (
+    <div style={{ position:"fixed",inset:0,zIndex:1100,background:"rgba(13,13,26,.55)",display:"flex",alignItems:"center",justifyContent:"center",padding:"1.5rem",backdropFilter:"blur(4px)" }} onClick={onClose}>
+      <div style={{ background:C.white,borderRadius:20,padding:"clamp(1.75rem,4vw,3rem)",maxWidth:560,width:"100%",position:"relative",boxShadow:"0 32px 80px rgba(0,0,0,.18)" }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:GH,borderRadius:"20px 20px 0 0" }} />
+        <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"1.25rem" }}>
+          <h2 style={{ fontFamily:"Arial,sans-serif",fontSize:"1.2rem",fontWeight:700,color:C.ink }}>Privacy Policy</h2>
+          <button onClick={onClose} style={{ background:"none",border:"none",cursor:"pointer",fontSize:18,color:C.mid,lineHeight:1,padding:"2px 6px",borderRadius:6 }}>✕</button>
+        </div>
+        <div style={{ fontSize:13,color:C.mid,lineHeight:1.8,display:"flex",flexDirection:"column",gap:"1rem" }}>
+          <p>This application does not collect, store, or process any personal information from its users.</p>
+          <p>Our application is hosted on Vercel. While we do not collect analytics, tracking data, or personal information, Vercel may collect certain technical information necessary to provide and secure its hosting services. This may include information such as IP addresses, browser details, device information, and server logs.</p>
+          <p>Any information collected by Vercel is subject to Vercel's own privacy practices and policies. For more information, please review the official Vercel Privacy Policy.</p>
+          <p>If you have any questions about this privacy policy, please contact us at <a href="mailto:ask@inforights.im" style={{ color:C.p,textDecoration:"none",fontWeight:500 }}>ask@inforights.im</a></p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NavOverlay({ open, onClose, onNavigate, onPrivacy }) {
   const sections = [
     { id:"foreword",label:"Commissioner's foreword" },
     { id:"numbers",label:"Year in numbers" },
@@ -315,17 +341,20 @@ function NavOverlay({ open, onClose, onNavigate }) {
       <ul style={{ listStyle:"none",padding:0,paddingLeft:"10vw" }} onClick={(e) => e.stopPropagation()}>
         {sections.map((s, i) => (
           <li key={s.id} style={{ opacity:open?1:0,transform:open?"none":"translateX(-24px)",transition:`opacity 0.4s ${0.1+i*0.05}s, transform 0.4s ${0.1+i*0.05}s` }}>
-            <button onClick={() => handleClick(s.id)} style={{ background:"none",border:"none",cursor:"pointer",fontFamily:"Arial,sans-serif",fontSize:"clamp(1.5rem,2.8vw,2.8rem)",color:"rgba(13,13,26,.2)",textAlign:"left",lineHeight:1.6,display:"flex",alignItems:"center",gap:"1.2rem",padding:0,transition:"color 0.2s" }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = C.ink; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = "rgba(13,13,26,.2)"; }}
+            <button onClick={() => handleClick(s.id)} style={{ background:"none",border:"none",cursor:"pointer",fontFamily:"Arial,sans-serif",fontSize:"clamp(1.5rem,2.8vw,2.8rem)",color:C.ink,textAlign:"left",lineHeight:1.6,display:"flex",alignItems:"center",gap:"1.2rem",padding:0,transition:"opacity 0.2s",opacity:.22,userSelect:"none" }}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.22"; }}
             >
-              <span style={{ fontSize:11,letterSpacing:".15em",background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",opacity:.5 }}>{String(i+1).padStart(2,"0")} —</span>
-              {s.label}
+              <span style={{ fontSize:11,letterSpacing:".15em",background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text" }}>{String(i+1).padStart(2,"0")} —</span>
+              <span>{s.label}</span>
             </button>
           </li>
         ))}
       </ul>
-      <p style={{ position:"absolute",bottom:"2.5rem",left:"10vw",fontSize:11,color:"rgba(13,13,26,.3)",letterSpacing:".1em" }}>ESC or click outside to close</p>
+      <div style={{ position:"absolute",bottom:"2.5rem",left:"10vw",display:"flex",flexDirection:"column",gap:".6rem" }} onClick={(e) => e.stopPropagation()}>
+        <p style={{ fontSize:11,color:"rgba(13,13,26,.3)",letterSpacing:".1em" }}>ESC or click outside to close</p>
+        <button onClick={() => { onClose(); onPrivacy(); }} style={{ background:"none",border:"none",cursor:"pointer",fontSize:11,color:C.mid,textDecoration:"underline",textDecorationStyle:"dotted",padding:0,textAlign:"left",letterSpacing:".05em",userSelect:"none" }}>Privacy Policy</button>
+      </div>
     </div>
   );
 }
@@ -337,6 +366,7 @@ const CASE_PANEL = 5;
 export default function App() {
   const containerRef = useRef(null);
   const [navOpen, setNavOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
   const [scrollPct, setScrollPct] = useState(0);
   const [mob, setMob] = useState(() => window.innerWidth < 768);
   useEffect(() => {
@@ -574,7 +604,8 @@ export default function App() {
         ))}
       </button>
 
-      <NavOverlay open={navOpen} onClose={() => setNavOpen(false)} onNavigate={scrollToPanel} />
+      <NavOverlay open={navOpen} onClose={() => setNavOpen(false)} onNavigate={scrollToPanel} onPrivacy={() => setPrivacyOpen(true)} />
+      <PrivacyModal open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
 
       <CaseOverlay csIdx={csIdx} csClip={csClip} csPhase={csPhase} onClose={() => closeStudy(null)} mob={mob} />
 
