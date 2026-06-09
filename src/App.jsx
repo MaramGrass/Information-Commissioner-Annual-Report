@@ -700,10 +700,10 @@ export default function App() {
                 { num:"£620,547",lbl:"Total pay costs",sub:"Including temporary staff",note:"Reflects the doubling of the team from 5 to 10 staff during the year, supported by Treasury-approved contingency funding of £285,000",tag:"Expenditure" },
               ].map((fc, i) => (
                 <PopCard key={fc.num} delay={i * 0.12} style={{ display:"flex",flexDirection:"column",minHeight:0 }}>
-                <div className="fin-card" style={{ flex:1,borderRadius:18,padding:"clamp(1.5rem,3vh,2.8rem) clamp(1.5rem,2.5vw,2.5rem)",position:"relative",overflow:"hidden",border:"1px solid rgba(0,0,0,.07)",background:C.white,display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
+                <div className="fin-card" style={{ flex:1,borderRadius:18,padding:"clamp(1.5rem,3vh,2.8rem) clamp(1.5rem,2.5vw,2.5rem)",position:"relative",overflow:"hidden",border:"1px solid rgba(0,0,0,.07)",background:C.white,display:"flex",flexDirection:"column",justifyContent:"flex-end" }}>
                   <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>
                   <div style={{ position:"absolute",bottom:"-2rem",right:"1rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(6rem,18vh,14rem)",fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
-                  <div>
+                  <div style={{ marginTop:"auto" }}>
                     <div style={tagStyle(C.mid,"rgba(0,0,0,.04)")}>{fc.tag}</div>
                     <div style={{ fontSize:"clamp(10px,1.3vh,13px)",letterSpacing:".08em",color:C.mid,marginBottom:"clamp(.4rem,1vh,.8rem)",fontWeight:400 }}>{fc.sub}</div>
                     <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.8rem,8vh,6.5rem)",fontWeight:900,lineHeight:1,marginBottom:"clamp(.3rem,.8vh,.6rem)" }}><GradientText>{fc.num}</GradientText></div>
