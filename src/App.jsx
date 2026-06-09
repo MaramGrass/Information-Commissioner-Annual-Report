@@ -140,54 +140,55 @@ const CASE_STUDIES = [
     art:<svg viewBox="0 0 400 400" fill="none" style={{width:"100%",height:"100%"}}><circle cx="200" cy="200" r="100" stroke="rgba(255,255,255,.1)" strokeWidth="2"/>{[0,120,240].map((a,i)=><g key={i} transform={`rotate(${a} 200 200)`}><path d="M200 200 L200 100 Q230 140 260 170 Z" fill="rgba(255,255,255,.12)"/><circle cx="200" cy="100" r="12" fill="rgba(255,255,255,.18)"/></g>)}<circle cx="200" cy="200" r="18" fill="rgba(255,255,255,.15)"/><circle cx="200" cy="200" r="6" fill="rgba(255,255,255,.3)"/>{[0,45,90,135,180,225,270,315].map((a,i)=><circle key={i} cx={200+140*Math.cos(a*Math.PI/180)} cy={200+140*Math.sin(a*Math.PI/180)} r="4" fill="rgba(255,255,255,.1)"/>)}</svg> },
 ];
 
-function CaseOverlay({ activeCase, onClose }) {
-  const study = activeCase !== null ? CASE_STUDIES[activeCase] : null;
+const FULL_CLIP = "inset(0px 0px 0px 0px round 0px)";
+
+function CaseOverlay({ csIdx, csClip, csPhase, onClose }) {
+  const study = csIdx !== null ? CASE_STUDIES[csIdx] : null;
   const isLight = study?.bg === C.white;
+  const visible = csPhase !== "closed";
+  const transition = csPhase === "expanding"
+    ? "clip-path 0.55s cubic-bezier(0.16,1,0.3,1)"
+    : csPhase === "contracting"
+    ? "clip-path 0.42s cubic-bezier(0.55,0,0.45,1)"
+    : "none";
   return (
     <div style={{
       position:"fixed",inset:0,zIndex:500,display:"flex",
-      opacity:activeCase !== null ? 1 : 0,
-      pointerEvents:activeCase !== null ? "all" : "none",
-      transition:"opacity 0.45s cubic-bezier(0.16,1,0.3,1)",
+      clipPath:csClip,transition,
+      pointerEvents:visible?"all":"none",
+      willChange:"clip-path",
     }}>
-      {/* Image / art half */}
-      <div style={{
+      {/* Art half */}
+      <div key={`art-${csIdx}`} style={{
         flex:"0 0 45%",position:"relative",overflow:"hidden",
-        background: study ? (isLight ? `linear-gradient(135deg,${C.lite},${C.off})` : `linear-gradient(135deg,${study.bg},${study.bg}cc)`) : C.p,
+        background:study?(isLight?`linear-gradient(135deg,${C.lite},${C.off})`:`linear-gradient(135deg,${study.bg},${study.bg}cc)`):C.p,
+        animation:visible?"case-art-in 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s both":"none",
       }}>
-        {/* Background dot grid */}
         <div style={{ position:"absolute",inset:0,backgroundImage:"radial-gradient(circle,rgba(255,255,255,.07) 1px,transparent 1px)",backgroundSize:"28px 28px" }}/>
-        {/* Art */}
         <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",padding:"3rem" }}>
           {study && <div style={{ width:"100%",maxHeight:"70%",aspectRatio:"1",color:isLight?C.p:"white" }}>{study.art}</div>}
         </div>
-        {/* Big ghost number */}
         <div style={{ position:"absolute",bottom:"-2rem",left:"1.5rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(8rem,18vw,14rem)",fontWeight:900,lineHeight:1,opacity:.07,color:isLight?C.ink:"white",pointerEvents:"none",userSelect:"none" }}>{study?.num}</div>
-        {/* Tag pill */}
         <div style={{ position:"absolute",top:"2rem",left:"2rem",fontSize:10,letterSpacing:".12em",textTransform:"uppercase",padding:"5px 14px",borderRadius:20,fontWeight:600,background:isLight?"rgba(0,0,0,.06)":"rgba(255,255,255,.15)",color:isLight?C.ink:"white" }}>{study?.tag}</div>
       </div>
-
       {/* Content half */}
-      <div key={activeCase} style={{
+      <div key={`content-${csIdx}`} style={{
         flex:1,background:C.white,padding:"clamp(3rem,6vh,5rem) clamp(3rem,5vw,5rem)",
         display:"flex",flexDirection:"column",justifyContent:"center",overflowY:"auto",
-        animation:activeCase !== null ? "case-slide-in 0.5s cubic-bezier(0.16,1,0.3,1) both" : "none",
+        animation:visible?"case-slide-in 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both":"none",
       }}>
-        {/* Progress dots */}
         <div style={{ display:"flex",gap:".4rem",marginBottom:"clamp(1.5rem,3vh,2.5rem)" }}>
           {CASE_STUDIES.map((_,i) => (
-            <div key={i} style={{ height:3,flex:1,borderRadius:2,background:i === activeCase ? C.p : i < (activeCase??0) ? C.t+"99" : C.lite,transition:"background .35s" }}/>
+            <div key={i} style={{ height:3,flex:1,borderRadius:2,background:i===csIdx?C.p:i<(csIdx??0)?C.t+"88":C.lite,transition:"background .4s" }}/>
           ))}
         </div>
-
         <div style={{ fontSize:"clamp(10px,1.1vh,12px)",letterSpacing:".14em",textTransform:"uppercase",color:C.mid,marginBottom:"clamp(.6rem,1.2vh,1rem)",fontWeight:500 }}>{study?.tag}</div>
         <h2 style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.6rem,3.5vh,2.8rem)",fontWeight:900,lineHeight:1.1,marginBottom:"clamp(1rem,2vh,1.5rem)",color:C.ink }}><GradientText>{study?.title}</GradientText></h2>
         <p style={{ fontSize:"clamp(14px,1.7vh,18px)",color:C.ink,lineHeight:1.75,marginBottom:"clamp(1rem,1.8vh,1.5rem)",fontWeight:400 }}>{study?.body}</p>
         <p style={{ fontSize:"clamp(12px,1.4vh,15px)",color:C.mid,lineHeight:1.8,fontWeight:300 }}>{study?.detail}</p>
-
         <div style={{ marginTop:"clamp(1.5rem,3vh,2.5rem)",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
           <div style={{ fontSize:"clamp(11px,1.2vh,13px)",color:C.mid }}>
-            <span style={{ fontWeight:600,color:C.ink }}>{activeCase !== null ? activeCase+1 : ""} / {CASE_STUDIES.length}</span>
+            <span style={{ fontWeight:600,color:C.ink }}>{csIdx!==null?csIdx+1:""} / {CASE_STUDIES.length}</span>
             <span style={{ marginLeft:".5rem" }}>· Scroll to continue</span>
           </div>
           <button onClick={onClose} style={{ background:"none",border:`1.5px solid ${C.lite}`,cursor:"pointer",fontSize:11,color:C.mid,padding:"6px 16px",borderRadius:20,letterSpacing:".08em" }}>Close ✕</button>
@@ -254,8 +255,9 @@ function BreachBars() {
   );
 }
 
-function HScrollTrack({ children }) {
-  const ref = useRef(null);
+function HScrollTrack({ children, innerRef }) {
+  const localRef = useRef(null);
+  const ref = innerRef ?? localRef;
   const drag = useRef({ down:false,sx:0,sl:0 });
   const scroll = (amt) => ref.current?.scrollBy({ left:amt,behavior:"smooth" });
   const arrowStyle = {
@@ -328,16 +330,81 @@ function NavOverlay({ open, onClose, onNavigate }) {
 
 const tagStyle = (color, bg) => ({ fontSize:10,letterSpacing:".1em",textTransform:"uppercase",padding:"3px 10px",borderRadius:20,display:"inline-block",marginBottom:".6rem",fontWeight:500,background:bg,color });
 
-const CASE_PANEL = 5; // 0-based index of the case studies panel
+const CASE_PANEL = 5;
 
 export default function App() {
   const containerRef = useRef(null);
   const [navOpen, setNavOpen] = useState(false);
   const [scrollPct, setScrollPct] = useState(0);
-  const [activeCase, setActiveCase] = useState(null);
-  const activeCaseRef = useRef(null);
-  const openCase = (idx) => { activeCaseRef.current = idx; setActiveCase(idx); };
-  const closeCase = () => { activeCaseRef.current = null; setActiveCase(null); };
+
+  // Case study clip-path state machine
+  const [csPhase, setCsPhase] = useState("closed");   // "closed"|"expanding"|"open"|"contracting"
+  const [csIdx,   setCsIdx]   = useState(null);
+  const [csClip,  setCsClip]  = useState("inset(50% 50% 50% 50%)");
+  const csPhaseRef = useRef("closed");
+  const csIdxRef   = useRef(null);
+  const cardRefs   = useRef([]);
+  const caseTrackRef = useRef(null);
+
+  const applyPhase = useCallback((phase, idx) => {
+    csPhaseRef.current = phase;
+    if (idx !== undefined) csIdxRef.current = idx;
+    setCsPhase(phase);
+    if (idx !== undefined) setCsIdx(idx);
+  }, []);
+
+  const cardClip = useCallback((idx) => {
+    const el = cardRefs.current[idx];
+    if (!el) return "inset(18% 5% 18% 5% round 20px)";
+    const r = el.getBoundingClientRect();
+    const W = window.innerWidth, H = window.innerHeight;
+    return `inset(${Math.max(0,r.top).toFixed(0)}px ${Math.max(0,W-r.right).toFixed(0)}px ${Math.max(0,H-r.bottom).toFixed(0)}px ${Math.max(0,r.left).toFixed(0)}px round 20px)`;
+  }, []);
+
+  const snapCarousel = useCallback((idx) => {
+    const track = caseTrackRef.current;
+    const card  = cardRefs.current[idx];
+    if (track && card) track.scrollTo({ left: card.offsetLeft - (track.clientWidth - card.offsetWidth) / 2, behavior: "instant" });
+  }, []);
+
+  const openStudy = useCallback((idx) => {
+    snapCarousel(idx);
+    const start = cardClip(idx);
+    applyPhase("expanding", idx);
+    setCsClip(start);
+    // Two rAFs ensure the browser paints the start state before transitioning
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      setCsClip(FULL_CLIP);
+      setTimeout(() => { if (csPhaseRef.current === "expanding") applyPhase("open"); }, 600);
+    }));
+  }, [applyPhase, cardClip, snapCarousel]);
+
+  const closeStudy = useCallback((then) => {
+    const idx = csIdxRef.current;
+    applyPhase("contracting");
+    setCsClip(cardClip(idx));
+    setTimeout(() => {
+      applyPhase("closed", null);
+      setCsClip("inset(50% 50% 50% 50%)");
+      then?.();
+    }, 480);
+  }, [applyPhase, cardClip]);
+
+  const switchStudy = useCallback((nextIdx) => {
+    const curIdx = csIdxRef.current;
+    applyPhase("contracting");
+    setCsClip(cardClip(curIdx));
+    setTimeout(() => {
+      snapCarousel(nextIdx);
+      applyPhase("expanding", nextIdx);
+      const start = cardClip(nextIdx);
+      setCsClip(start);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        setCsClip(FULL_CLIP);
+        setTimeout(() => { if (csPhaseRef.current === "expanding") applyPhase("open"); }, 600);
+      }));
+    }, 460);
+  }, [applyPhase, cardClip, snapCarousel]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -345,34 +412,35 @@ export default function App() {
     let cooldown = false;
     const onWheel = (e) => {
       e.preventDefault();
-      if (cooldown) return;
-      cooldown = true;
-      setTimeout(() => { cooldown = false; }, 750);
       const dir = e.deltaY > 0 ? 1 : -1;
       const panelW = el.clientWidth;
       const cur = Math.round(el.scrollLeft / panelW);
-      const total = Math.round(el.scrollWidth / panelW);
-      const ac = activeCaseRef.current;
+      const phase = csPhaseRef.current;
 
       if (cur === CASE_PANEL) {
+        if (phase === "expanding" || phase === "contracting") return;
         if (dir === 1) {
-          if (ac === null) { openCase(0); return; }
-          if (ac < CASE_STUDIES.length - 1) { openCase(ac + 1); return; }
-          closeCase();
-          el.scrollTo({ left: (cur + 1) * panelW, behavior: "smooth" });
+          if (phase === "closed") { openStudy(0); return; }
+          if (csIdxRef.current < CASE_STUDIES.length - 1) { switchStudy(csIdxRef.current + 1); return; }
+          closeStudy(() => el.scrollTo({ left: (cur + 1) * panelW, behavior: "smooth" }));
         } else {
-          if (ac === null) { el.scrollTo({ left: (cur - 1) * panelW, behavior: "smooth" }); return; }
-          if (ac === 0) { closeCase(); return; }
-          openCase(ac - 1);
+          if (phase === "closed") { el.scrollTo({ left: (cur - 1) * panelW, behavior: "smooth" }); return; }
+          if (csIdxRef.current === 0) { closeStudy(null); return; }
+          switchStudy(csIdxRef.current - 1);
         }
         return;
       }
+
+      if (cooldown) return;
+      cooldown = true;
+      setTimeout(() => { cooldown = false; }, 750);
+      const total = Math.round(el.scrollWidth / panelW);
       const next = Math.max(0, Math.min(total - 1, cur + dir));
       el.scrollTo({ left: next * panelW, behavior: "smooth" });
     };
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
-  }, []);
+  }, [openStudy, closeStudy, switchStudy]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -443,7 +511,8 @@ export default function App() {
         @keyframes pulse-right { 0%{transform:scaleX(0);transform-origin:left} 50%{transform:scaleX(1);transform-origin:left} 51%{transform:scaleX(1);transform-origin:right} 100%{transform:scaleX(0);transform-origin:right} }
         @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
         @keyframes glow-border { 0%,100%{box-shadow:0 0 0 0 rgba(42,191,191,0)} 50%{box-shadow:0 0 0 3px rgba(42,191,191,.18)} }
-        @keyframes case-slide-in { 0%{opacity:0;transform:translateX(36px)} 100%{opacity:1;transform:none} }
+        @keyframes case-slide-in { 0%{opacity:0;transform:translateX(40px)} 100%{opacity:1;transform:none} }
+        @keyframes case-art-in { 0%{opacity:0;transform:scale(1.06)} 100%{opacity:1;transform:scale(1)} }
         ::-webkit-scrollbar { display:none }
         .val-card { transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s }
         .val-card:hover { transform:translateY(-6px) scale(1.02) !important; box-shadow:0 20px 56px rgba(0,0,0,.12) !important }
@@ -472,7 +541,7 @@ export default function App() {
 
       <NavOverlay open={navOpen} onClose={() => setNavOpen(false)} onNavigate={scrollToPanel} />
 
-      <CaseOverlay activeCase={activeCase} onClose={closeCase} />
+      <CaseOverlay csIdx={csIdx} csClip={csClip} csPhase={csPhase} onClose={() => closeStudy(null)} />
 
       {/* ═══ HORIZONTAL SCROLL CONTAINER ════════════════════════════════════ */}
       <div ref={containerRef} style={{ display:"flex",height:"100vh",overflowX:"scroll",overflowY:"hidden",scrollSnapType:"x mandatory",scrollbarWidth:"none",WebkitOverflowScrolling:"touch" }}>
@@ -653,21 +722,19 @@ export default function App() {
             </Reveal>
           </div>
           <div style={{ flex:1,display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw" }}>
-          <HScrollTrack>
-            {[
-              { num:"01",tag:"CCTV / data breach",title:"Recording CCTV footage to a personal device",body:"A senior staff member recorded live security footage on a personal phone and shared it with an unauthorised party — knowingly contravening data protection law. Seniority was treated as an aggravating factor.",bg:C.p,light:false },
-              { num:"02",tag:"FOI — food safety",title:"A proactive pivot: food inspection reports",body:"A public authority applied a blanket exemption to food inspection records without evaluating each document. The ICO ruled reprocessing was required and encouraged a proactive publication scheme.",bg:C.white,light:true },
-              { num:"03",tag:"DPIA consultation",title:"Local processing, local context",body:"A controller relied too heavily on UK precedent without addressing Isle of Man context. Missing risk assessment, no DPO evidence, no stakeholder engagement. The ICO paused consultation and required full resubmission.",bg:C.t,light:false },
-              { num:"04",tag:"International",title:"Stronger together: deepfakes joint statement",body:"The ICO joined 61 regulators worldwide to raise concerns about AI-generated deepfakes. A joint statement with Jersey and Guernsey also provided practical safety advice for parents and carers.",bg:C.b,light:false },
-              { num:"05",tag:"Engagement",title:"Listening to organisations — shaping strategy",body:"Over 300 organisations participated in the Data Protection in Practice survey. Results explored with 100+ professionals, directly informing the 2026/27 strategy.",bg:C.white,light:true },
-              { num:"06",tag:"Brand refresh",title:"A brand new look — shaped by local talent",body:"The ICO's new identity was co-created with final year art students from University College Isle of Man, incorporating the triskelion and Manx tartan colour palette.",bg:C.o,light:false },
-            ].map((c) => (
-              <div key={c.num} className="cc-card" style={{ flex:"0 0 340px",scrollSnapAlign:"start",borderRadius:22,padding:"2.25rem",background:c.bg,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",border:c.light?"1px solid rgba(0,0,0,.07)":"none",transition:"transform .35s, box-shadow .35s" }}>
-                {c.light && <div style={{ height:3,background:GH,borderRadius:2,marginBottom:"1.5rem" }}/>}
-                <div style={{ position:"absolute",top:"1.5rem",right:"2rem",fontFamily:"Arial,sans-serif",fontSize:"5rem",fontWeight:900,opacity:.1,lineHeight:1,color:c.light?C.ink:"white" }}>{c.num}</div>
-                <div style={{ fontSize:10,letterSpacing:".12em",textTransform:"uppercase",marginBottom:".75rem",color:c.light?C.mid:"rgba(255,255,255,.65)",fontWeight:500 }}>{c.tag}</div>
-                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.2rem",color:c.light?C.ink:"white",lineHeight:1.3,marginBottom:".6rem",fontWeight:700 }}>{c.title}</div>
-                <div style={{ fontSize:12,color:c.light?C.mid:"rgba(255,255,255,.65)",lineHeight:1.6 }}>{c.body}</div>
+          <HScrollTrack innerRef={caseTrackRef}>
+            {CASE_STUDIES.map((c, i) => (
+              <div key={c.num} ref={el => cardRefs.current[i] = el} className="cc-card"
+                style={{ flex:"0 0 340px",scrollSnapAlign:"start",borderRadius:22,padding:"2.25rem",background:c.bg,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",border:c.bg===C.white?"1px solid rgba(0,0,0,.07)":"none",transition:"transform .35s, box-shadow .35s",cursor:"pointer",
+                  outline: csIdx===i && csPhase!=="closed" ? `2.5px solid ${C.t}` : "none",
+                }}
+                onClick={() => { if (csPhase==="closed") openStudy(i); }}
+              >
+                {c.bg===C.white && <div style={{ height:3,background:GH,borderRadius:2,marginBottom:"1.5rem" }}/>}
+                <div style={{ position:"absolute",top:"1.5rem",right:"2rem",fontFamily:"Arial,sans-serif",fontSize:"5rem",fontWeight:900,opacity:.1,lineHeight:1,color:c.bg===C.white?C.ink:"white" }}>{c.num}</div>
+                <div style={{ fontSize:10,letterSpacing:".12em",textTransform:"uppercase",marginBottom:".75rem",color:c.bg===C.white?C.mid:"rgba(255,255,255,.65)",fontWeight:500 }}>{c.tag}</div>
+                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.2rem",color:c.bg===C.white?C.ink:"white",lineHeight:1.3,marginBottom:".6rem",fontWeight:700 }}>{c.title}</div>
+                <div style={{ fontSize:12,color:c.bg===C.white?C.mid:"rgba(255,255,255,.65)",lineHeight:1.6 }}>{c.body}</div>
               </div>
             ))}
           </HScrollTrack>
