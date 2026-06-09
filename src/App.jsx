@@ -390,21 +390,8 @@ export default function App() {
     }, 480);
   }, [applyPhase, cardClip]);
 
-  const switchStudy = useCallback((nextIdx) => {
-    const curIdx = csIdxRef.current;
-    applyPhase("contracting");
-    setCsClip(cardClip(curIdx));
-    setTimeout(() => {
-      snapCarousel(nextIdx);
-      applyPhase("expanding", nextIdx);
-      const start = cardClip(nextIdx);
-      setCsClip(start);
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        setCsClip(FULL_CLIP);
-        setTimeout(() => { if (csPhaseRef.current === "expanding") applyPhase("open"); }, 600);
-      }));
-    }, 460);
-  }, [applyPhase, cardClip, snapCarousel]);
+  // Tracks which card the carousel is resting at (so next open knows where to expand from)
+  const csCarouselPos = useRef(0);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -419,14 +406,39 @@ export default function App() {
 
       if (cur === CASE_PANEL) {
         if (phase === "expanding" || phase === "contracting") return;
+
         if (dir === 1) {
-          if (phase === "closed") { openStudy(0); return; }
-          if (csIdxRef.current < CASE_STUDIES.length - 1) { switchStudy(csIdxRef.current + 1); return; }
-          closeStudy(() => el.scrollTo({ left: (cur + 1) * panelW, behavior: "smooth" }));
+          if (phase === "open") {
+            // Close current study, advance carousel to next card position
+            const nextPos = csIdxRef.current + 1;
+            closeStudy(() => {
+              csCarouselPos.current = nextPos;
+              snapCarousel(Math.min(nextPos, CASE_STUDIES.length - 1));
+            });
+            return;
+          }
+          // phase === "closed"
+          if (csCarouselPos.current >= CASE_STUDIES.length) {
+            csCarouselPos.current = 0;
+            snapCarousel(0);
+            el.scrollTo({ left: (cur + 1) * panelW, behavior: "smooth" });
+          } else {
+            openStudy(csCarouselPos.current);
+          }
         } else {
-          if (phase === "closed") { el.scrollTo({ left: (cur - 1) * panelW, behavior: "smooth" }); return; }
-          if (csIdxRef.current === 0) { closeStudy(null); return; }
-          switchStudy(csIdxRef.current - 1);
+          if (phase === "open") {
+            // Close current study, stay at this card
+            closeStudy(null);
+            return;
+          }
+          // phase === "closed"
+          if (csCarouselPos.current === 0) {
+            el.scrollTo({ left: (cur - 1) * panelW, behavior: "smooth" });
+          } else {
+            csCarouselPos.current--;
+            snapCarousel(csCarouselPos.current);
+            openStudy(csCarouselPos.current);
+          }
         }
         return;
       }
@@ -725,7 +737,7 @@ export default function App() {
           <HScrollTrack innerRef={caseTrackRef}>
             {CASE_STUDIES.map((c, i) => (
               <div key={c.num} ref={el => cardRefs.current[i] = el} className="cc-card"
-                style={{ flex:"0 0 340px",scrollSnapAlign:"start",borderRadius:22,padding:"2.25rem",background:c.bg,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",border:c.bg===C.white?"1px solid rgba(0,0,0,.07)":"none",transition:"transform .35s, box-shadow .35s",cursor:"pointer",
+                style={{ flex:"0 0 clamp(300px,42vw,520px)",scrollSnapAlign:"start",borderRadius:22,padding:"2.25rem",background:c.bg,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",border:c.bg===C.white?"1px solid rgba(0,0,0,.07)":"none",transition:"transform .35s, box-shadow .35s",cursor:"pointer",
                   outline: csIdx===i && csPhase!=="closed" ? `2.5px solid ${C.t}` : "none",
                 }}
                 onClick={() => { if (csPhase==="closed") openStudy(i); }}
