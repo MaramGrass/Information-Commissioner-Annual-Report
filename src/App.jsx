@@ -437,11 +437,11 @@ export default function App() {
             ].map((row, ri) => (
               <div key={ri} style={{ flex:1,display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:2,background:C.lite,borderRadius:16,overflow:"hidden" }}>
                 {row.map((s) => (
-                  <div key={s.tag} className="stat-card" style={{ background:C.white,padding:"clamp(1rem,2.5vh,2rem) 1.25rem",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
+                  <div key={s.tag} className="stat-card" style={{ background:C.white,padding:"clamp(.6rem,1.8vh,1.5rem) 1.25rem",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
                     <div className="stat-bar" style={{ position:"absolute",bottom:0,left:0,right:0,height:3,background:GH,transform:"scaleX(0)",transition:"transform .4s" }}/>
                     <div style={tagStyle(s.tc,s.tb)}>{s.tag}</div>
-                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.4rem,5.5vh,5rem)",fontWeight:900,lineHeight:1,margin:"auto 0" }}><GradientText><Counter target={s.v} plus={s.plus}/></GradientText></div>
-                    <div style={{ fontSize:"clamp(10px,1.4vh,13px)",color:C.mid,lineHeight:1.4 }}>{s.l}</div>
+                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.8rem,9vh,7rem)",fontWeight:900,lineHeight:1,margin:"auto 0",padding:"0.2em 0" }}><GradientText><Counter target={s.v} plus={s.plus}/></GradientText></div>
+                    <div style={{ fontSize:"clamp(11px,1.8vh,15px)",color:C.mid,lineHeight:1.4 }}>{s.l}</div>
                   </div>
                 ))}
               </div>
