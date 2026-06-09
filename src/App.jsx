@@ -67,7 +67,7 @@ function ChartCanvas({ config, height = 160 }) {
     chartRef.current = new Chart(ref.current, config);
     return () => { if (chartRef.current) chartRef.current.destroy(); };
   }, []);
-  return <div style={{ position:"relative",height }}><canvas ref={ref} style={{ maxHeight:height }} /></div>;
+  return <div style={{ position:"relative",flex:1,minHeight:height }}><canvas ref={ref} /></div>;
 }
 
 function SLabel({ children, light = false }) {
@@ -85,10 +85,10 @@ function GradBar() {
 }
 function CCard({ title, sub, children, dark = false, style: s = {} }) {
   return (
-    <div style={{ background:dark?"rgba(255,255,255,.12)":C.white,borderRadius:16,padding:"1.1rem 1.3rem",border:`1px solid ${dark?"rgba(255,255,255,.15)":"rgba(0,0,0,.07)"}`,position:"relative",overflow:"hidden",...s }}>
+    <div style={{ background:dark?"rgba(255,255,255,.12)":C.white,borderRadius:16,padding:"1.1rem 1.3rem",border:`1px solid ${dark?"rgba(255,255,255,.15)":"rgba(0,0,0,.07)"}`,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",...s }}>
       <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:GH }} />
-      <div style={{ fontSize:12,fontWeight:600,color:dark?"white":C.ink,marginBottom:".15rem",marginTop:".15rem" }}>{title}</div>
-      {sub && <div style={{ fontSize:10,color:dark?"rgba(255,255,255,.6)":C.mid,marginBottom:".75rem" }}>{sub}</div>}
+      <div style={{ fontSize:12,fontWeight:600,color:dark?"white":C.ink,marginBottom:".15rem",marginTop:".15rem",flexShrink:0 }}>{title}</div>
+      {sub && <div style={{ fontSize:10,color:dark?"rgba(255,255,255,.6)":C.mid,marginBottom:".75rem",flexShrink:0 }}>{sub}</div>}
       {children}
     </div>
   );
@@ -209,7 +209,19 @@ export default function App() {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const onWheel = (e) => { e.preventDefault(); el.scrollLeft += e.deltaY * 1.5; };
+    let cooldown = false;
+    const onWheel = (e) => {
+      e.preventDefault();
+      if (cooldown) return;
+      cooldown = true;
+      setTimeout(() => { cooldown = false; }, 750);
+      const dir = e.deltaY > 0 ? 1 : -1;
+      const panelW = el.clientWidth;
+      const cur = Math.round(el.scrollLeft / panelW);
+      const total = Math.round(el.scrollWidth / panelW);
+      const next = Math.max(0, Math.min(total - 1, cur + dir));
+      el.scrollTo({ left: next * panelW, behavior: "smooth" });
+    };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
   }, []);
@@ -267,7 +279,7 @@ export default function App() {
   const P = (bg, extra = {}) => ({
     minWidth:"100vw", width:"100vw", height:"100vh", flexShrink:0,
     scrollSnapAlign:"start", background:bg, overflow:"hidden",
-    display:"flex", flexDirection:"column", padding:"3.5vh 6vw",
+    display:"flex", flexDirection:"column", padding:"7vh 6vw 4vh",
     position:"relative", boxSizing:"border-box", ...extra,
   });
 
@@ -383,19 +395,28 @@ export default function App() {
             <SH2>How we work</SH2>
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.5rem",fontWeight:300 }}>Everyone can trust that their personal information is respected, protected and used responsibly, supporting a fair, innovative and thriving society and economy.</p>
           </Reveal>
-          <Reveal delay={0.08} style={{ flex:1,display:"flex",flexDirection:"column",justifyContent:"center" }}>
-            <div style={{ display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"1.5rem" }}>
+          <Reveal delay={0.08} style={{ flex:1,display:"flex",flexDirection:"column" }}>
+            <div style={{ display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"1.5rem",flex:1 }}>
               {[
-                { title:"Collaborative",body:"We work openly with others, listening carefully to different views. By sharing ideas and solving problems together, we create solutions that truly help people." },
-                { title:"Confident",body:"We are clear about our role and trusted to make good decisions. We speak up, take action, and are not afraid to use our knowledge with conviction." },
-                { title:"Curious",body:"We seek to understand different viewpoints. We experiment, try new ideas, and make answers as simple and practical as possible for those we serve." },
-                { title:"Committed",body:"We care about our work and the people it affects and try to do the right thing every day. We act responsibly and deliver on what we have promised." },
+                { title:"Collaborative",body:"We work openly with others, listening carefully to different views. By sharing ideas and solving problems together, we create solutions that truly help people.",color:C.p,
+                  svg:<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"100%",height:"100%"}}><circle cx="30" cy="38" r="18" stroke="currentColor" strokeWidth="2.5" opacity=".35"/><circle cx="50" cy="38" r="18" stroke="currentColor" strokeWidth="2.5" opacity=".35"/><circle cx="30" cy="38" r="8" fill="currentColor" opacity=".08"/><circle cx="50" cy="38" r="8" fill="currentColor" opacity=".08"/></svg> },
+                { title:"Confident",body:"We are clear about our role and trusted to make good decisions. We speak up, take action, and are not afraid to use our knowledge with conviction.",color:C.t,
+                  svg:<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"100%",height:"100%"}}><path d="M20 60 L60 20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity=".35"/><path d="M42 20 H60 V38" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity=".35"/><circle cx="40" cy="40" r="24" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 4" opacity=".15"/></svg> },
+                { title:"Curious",body:"We seek to understand different viewpoints. We experiment, try new ideas, and make answers as simple and practical as possible for those we serve.",color:C.s,
+                  svg:<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"100%",height:"100%"}}><circle cx="33" cy="33" r="18" stroke="currentColor" strokeWidth="2.5" opacity=".35"/><path d="M46 46 L62 62" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" opacity=".35"/><circle cx="33" cy="33" r="10" fill="currentColor" opacity=".08"/></svg> },
+                { title:"Committed",body:"We care about our work and the people it affects and try to do the right thing every day. We act responsibly and deliver on what we have promised.",color:C.o,
+                  svg:<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"100%",height:"100%"}}><path d="M40 12 L52 18 L64 14 V52 L40 68 L16 52 V14 L28 18 Z" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" opacity=".25"/><path d="M26 40 L35 50 L54 30" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity=".5"/></svg> },
               ].map((v) => (
-                <div key={v.title} className="val-card" style={{ background:C.white,borderRadius:20,padding:"2rem 1.75rem",border:"1px solid rgba(0,0,0,.07)",position:"relative",overflow:"hidden",transition:"transform .3s, box-shadow .3s" }}>
+                <div key={v.title} className="val-card" style={{ background:C.white,borderRadius:20,padding:"1.75rem",border:"1px solid rgba(0,0,0,.07)",position:"relative",overflow:"hidden",transition:"transform .3s, box-shadow .3s",display:"flex",flexDirection:"column",color:v.color }}>
                   <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>
-                  <div style={{ fontFamily:"Arial,sans-serif",fontSize:"3.5rem",fontWeight:900,position:"absolute",top:".25rem",right:"1rem",opacity:.05,color:C.p }}>C</div>
-                  <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.15rem",fontWeight:700,color:C.ink,marginBottom:".5rem",marginTop:".25rem" }}>{v.title}</div>
-                  <div style={{ fontSize:12,color:C.mid,lineHeight:1.65 }}>{v.body}</div>
+                  {/* Decorative background blob */}
+                  <div style={{ position:"absolute",bottom:-30,right:-30,width:160,height:160,borderRadius:"50%",background:`radial-gradient(circle, ${v.color}14, transparent 70%)`,pointerEvents:"none" }}/>
+                  {/* SVG illustration */}
+                  <div style={{ flex:1,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:"1.25rem",minHeight:0 }}>
+                    <div style={{ width:"55%",aspectRatio:"1",color:v.color }}>{v.svg}</div>
+                  </div>
+                  <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.1rem",fontWeight:700,color:C.ink,marginBottom:".4rem" }}>{v.title}</div>
+                  <div style={{ fontSize:11.5,color:C.mid,lineHeight:1.65 }}>{v.body}</div>
                 </div>
               ))}
             </div>
@@ -435,10 +456,10 @@ export default function App() {
             <SH2>FOI decision reviews 2025/26</SH2>
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.25rem",fontWeight:300 }}>24 applications received. With the new FOI Specialist in post from June 2025, closed reviews nearly doubled to 21, with 11 decision notices published in Q4 alone.</p>
           </Reveal>
-          <div style={{ display:"grid",gridTemplateColumns:"3fr 2fr",gap:"3vw",alignItems:"start",flex:1 }}>
-            <Reveal direction="left" style={{ height:"100%",display:"flex",flexDirection:"column" }}>
+          <div style={{ display:"grid",gridTemplateColumns:"3fr 2fr",gap:"3vw",flex:1,minHeight:0 }}>
+            <Reveal direction="left" style={{ display:"flex",flexDirection:"column" }}>
               <CCard title="New requests vs decision notices published" sub="By quarter across three reporting periods — Q4 2025/26 was a record quarter" style={{ flex:1 }}>
-                <ChartCanvas config={charts.FOI} height={220}/>
+                <ChartCanvas config={charts.FOI} height={80}/>
               </CCard>
             </Reveal>
             <Reveal direction="right" style={{ display:"flex",flexDirection:"column",gap:".75rem",paddingTop:".5rem" }}>
@@ -493,11 +514,11 @@ export default function App() {
             <SH2>Complaints in 2025/26</SH2>
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.25rem",fontWeight:300 }}>53 complaints received — a significant increase on previous years, driven partly by domestic CCTV inclusion and growing public awareness of information rights.</p>
           </Reveal>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:"1.25rem",flex:1 }}>
-            <Reveal direction="left" delay={0.05}><CCard title="Total complaints by year (excl. domestic CCTV)" sub="Formal and informal investigations" style={{ height:"100%" }}><ChartCanvas config={charts.Comp} height={140}/></CCard></Reveal>
-            <Reveal direction="right" delay={0.05}><CCard title="2025/26 complaints by sector" sub="Including domestic CCTV (32% of total)" style={{ height:"100%" }}><ChartCanvas config={charts.Sect} height={140}/></CCard></Reveal>
-            <Reveal direction="left" delay={0.1}><CCard title="Nature of complaints 2025/26" sub="Subject access requests were most common" style={{ height:"100%" }}><ChartCanvas config={charts.Nature} height={140}/></CCard></Reveal>
-            <Reveal direction="right" delay={0.1}><CCard title="Complaint closure speed (stacked)" sub="Significant improvement — oldest open complaint just 6 months vs 11 months prior year" style={{ height:"100%" }}><ChartCanvas config={charts.Speed} height={140}/></CCard></Reveal>
+          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:"1.25rem",flex:1,minHeight:0 }}>
+            <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column" }}><CCard title="Total complaints by year (excl. domestic CCTV)" sub="Formal and informal investigations" style={{ flex:1 }}><ChartCanvas config={charts.Comp} height={80}/></CCard></Reveal>
+            <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column" }}><CCard title="2025/26 complaints by sector" sub="Including domestic CCTV (32% of total)" style={{ flex:1 }}><ChartCanvas config={charts.Sect} height={80}/></CCard></Reveal>
+            <Reveal direction="left" delay={0.1} style={{ display:"flex",flexDirection:"column" }}><CCard title="Nature of complaints 2025/26" sub="Subject access requests were most common" style={{ flex:1 }}><ChartCanvas config={charts.Nature} height={80}/></CCard></Reveal>
+            <Reveal direction="right" delay={0.1} style={{ display:"flex",flexDirection:"column" }}><CCard title="Complaint closure speed (stacked)" sub="Significant improvement — oldest open complaint just 6 months vs 11 months prior year" style={{ flex:1 }}><ChartCanvas config={charts.Speed} height={80}/></CCard></Reveal>
           </div>
         </section>
 
@@ -508,12 +529,12 @@ export default function App() {
             <SH2>200 breaches reported in 2025/26</SH2>
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.25rem",fontWeight:300 }}>An increase from 152 last year, affecting an estimated 31,600 people. The rise partly reflects greater awareness of reporting obligations and a growth in cyber incidents.</p>
           </Reveal>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.5rem",flex:1 }}>
-            <Reveal direction="left" style={{ height:"100%",display:"flex",flexDirection:"column" }}>
-              <CCard title="Breaches reported by year" sub="Four-year view: 264 → 250 → 152 → 200" style={{ flex:1 }}><ChartCanvas config={charts.BrY} height={220}/></CCard>
+          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.5rem",flex:1,minHeight:0 }}>
+            <Reveal direction="left" style={{ display:"flex",flexDirection:"column" }}>
+              <CCard title="Breaches reported by year" sub="Four-year view: 264 → 250 → 152 → 200" style={{ flex:1 }}><ChartCanvas config={charts.BrY} height={80}/></CCard>
             </Reveal>
-            <Reveal direction="right" style={{ height:"100%",display:"flex",flexDirection:"column" }}>
-              <CCard title="2025/26 breaches by sector" sub="Public and private broadly even — 52% / 48%" style={{ flex:1 }}><ChartCanvas config={charts.BrS} height={220}/></CCard>
+            <Reveal direction="right" style={{ display:"flex",flexDirection:"column" }}>
+              <CCard title="2025/26 breaches by sector" sub="Public and private broadly even — 52% / 48%" style={{ flex:1 }}><ChartCanvas config={charts.BrS} height={80}/></CCard>
             </Reveal>
           </div>
         </section>
