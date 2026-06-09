@@ -370,8 +370,8 @@ export default function App() {
       const next = Math.max(0, Math.min(total - 1, cur + dir));
       el.scrollTo({ left: next * panelW, behavior: "smooth" });
     };
-    el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
   }, []);
 
   useEffect(() => {
