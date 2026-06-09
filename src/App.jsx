@@ -97,11 +97,11 @@ function CCard({ title, sub, children, dark = false, style: s = {} }) {
 function BreachBars() {
   const bars = [
     { lbl:"Art. 5(1)(f) — Integrity & confidentiality",w:80,pct:"80%",op:1 },
-    { lbl:"Art. 32 — Security / cyber incidents",w:4,pct:"4%",op:.7 },
-    { lbl:"Art. 24 — Controller responsibilities",w:2,pct:"2%",op:.6 },
-    { lbl:"Art. 5(1)(d) — Accuracy of records",w:3,pct:"3%",op:.6 },
-    { lbl:"Applied LED — Law enforcement",w:1,pct:"1%",op:.5 },
-    { lbl:"Determined not to be a breach",w:7,pct:"7%",op:.45 },
+    { lbl:"Art. 32 — Security / cyber incidents",w:4,pct:"4%",op:.75 },
+    { lbl:"Art. 24 — Controller responsibilities",w:2,pct:"2%",op:.65 },
+    { lbl:"Art. 5(1)(d) — Accuracy of records",w:3,pct:"3%",op:.65 },
+    { lbl:"Applied LED — Law enforcement",w:1,pct:"1%",op:.55 },
+    { lbl:"Determined not to be a breach",w:7,pct:"7%",op:.5 },
   ];
   const ref = useRef(null);
   const [vis, setVis] = useState(false);
@@ -111,14 +111,16 @@ function BreachBars() {
     return () => observer.disconnect();
   }, []);
   return (
-    <div ref={ref} style={{ display:"flex",flexDirection:"column",gap:".85rem" }}>
+    <div ref={ref} style={{ display:"flex",flexDirection:"column",gap:".5rem",flex:1,minHeight:0,justifyContent:"space-between" }}>
       {bars.map((b) => (
-        <div key={b.lbl} style={{ display:"flex",alignItems:"center",gap:".65rem" }}>
-          <div style={{ fontSize:10,color:"rgba(255,255,255,.7)",width:200,flexShrink:0,lineHeight:1.3 }}>{b.lbl}</div>
-          <div style={{ flex:1,height:6,background:"rgba(255,255,255,.12)",borderRadius:3,overflow:"hidden" }}>
-            <div style={{ height:"100%",borderRadius:3,background:`rgba(255,255,255,${b.op})`,width:vis?`${b.w}%`:"0%",transition:"width 1.4s cubic-bezier(.25,1,.5,1)" }} />
+        <div key={b.lbl} style={{ flex:1,display:"flex",flexDirection:"column",justifyContent:"center",gap:".35rem",minHeight:0 }}>
+          <div style={{ display:"flex",alignItems:"baseline",justifyContent:"space-between",gap:"1rem" }}>
+            <div style={{ fontSize:"clamp(10px,1.1vw,13px)",color:"rgba(255,255,255,.7)",lineHeight:1.3,flex:1 }}>{b.lbl}</div>
+            <div style={{ fontSize:"clamp(1.4rem,2.5vw,2.8rem)",fontWeight:900,color:"white",opacity:b.op,lineHeight:1,flexShrink:0 }}>{b.pct}</div>
           </div>
-          <div style={{ fontSize:11,fontWeight:600,color:"white",width:28,textAlign:"right",flexShrink:0,opacity:b.op }}>{b.pct}</div>
+          <div style={{ height:"clamp(8px,1.2vh,14px)",background:"rgba(255,255,255,.12)",borderRadius:4,overflow:"hidden" }}>
+            <div style={{ height:"100%",borderRadius:4,background:`rgba(255,255,255,${b.op})`,width:vis?`${b.w}%`:"0%",transition:"width 1.4s cubic-bezier(.25,1,.5,1)" }} />
+          </div>
         </div>
       ))}
     </div>
@@ -149,13 +151,11 @@ function HScrollTrack({ children }) {
   }, []);
   return (
     <div style={{ position:"relative", flex:1, display:"flex", flexDirection:"column", minHeight:0 }}>
-      <button onClick={() => scroll(-380)} style={{ ...arrowStyle,left:8 }}>←</button>
       <div ref={ref}
         onMouseDown={(e) => { drag.current = { down:true,sx:e.pageX,sl:ref.current.scrollLeft }; ref.current.style.cursor = "grabbing"; ref.current.style.userSelect = "none"; }}
         onMouseUp={() => { drag.current.down = false; ref.current.style.cursor = "grab"; ref.current.style.userSelect = ""; }}
         style={{ display:"flex",gap:"1.25rem",padding:"0.75rem 5vw",overflowX:"auto",scrollSnapType:"x mandatory",scrollPaddingLeft:"5vw",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",cursor:"grab",flex:1,alignItems:"stretch",minHeight:0 }}
       >{children}</div>
-      <button onClick={() => scroll(380)} style={{ ...arrowStyle,right:8 }}>→</button>
     </div>
   );
 }
@@ -462,16 +462,17 @@ export default function App() {
                 <ChartCanvas config={charts.FOI} height={80}/>
               </CCard>
             </Reveal>
-            <Reveal direction="right" style={{ display:"flex",flexDirection:"column",gap:".75rem",paddingTop:".5rem" }}>
+            <Reveal direction="right" style={{ display:"flex",flexDirection:"column",gap:".6rem",flex:1,minHeight:0 }}>
               {[
                 { c:C.p,title:"Backlog peaked at 33",body:"Reached 33 in Q3 2025/26, driven by legacy capacity issues following senior departures in 2023." },
                 { c:C.t,title:"FOI Specialist appointed June 2025",body:"Productivity surged immediately — 12 requests closed in Q4, 11 as published decision notices." },
                 { c:C.b,title:"Quarterly statistics published",body:"From April 2026 the ICO began publishing rolling 12-month FOI statistics in collaboration with OCSIA." },
                 { c:C.o,title:"Practical refusals training",body:"Targeted training for public authorities on practical refusals held December 2025, with further sessions planned." },
               ].map((ins) => (
-                <div key={ins.title} className="ins-item" style={{ padding:"1rem 1.25rem",borderRadius:12,borderLeft:`3px solid ${ins.c}`,background:C.white,boxShadow:"0 2px 12px rgba(0,0,0,.04)",transition:"transform .25s, box-shadow .25s" }}>
-                  <div style={{ fontSize:13,fontWeight:600,color:C.ink,marginBottom:".2rem" }}>{ins.title}</div>
-                  <div style={{ fontSize:11,color:C.mid,lineHeight:1.55 }}>{ins.body}</div>
+                <div key={ins.title} className="ins-item" style={{ flex:1,padding:"1rem 1.25rem",borderRadius:12,borderLeft:`4px solid ${ins.c}`,background:C.white,boxShadow:"0 2px 12px rgba(0,0,0,.04)",transition:"transform .25s, box-shadow .25s",display:"flex",flexDirection:"column",justifyContent:"center",position:"relative",overflow:"hidden" }}>
+                  <div style={{ position:"absolute",right:"1rem",top:"50%",transform:"translateY(-50%)",fontFamily:"Arial,sans-serif",fontSize:"4rem",fontWeight:900,color:ins.c,opacity:.04,lineHeight:1,pointerEvents:"none" }}>→</div>
+                  <div style={{ fontSize:"clamp(13px,1.1vw,15px)",fontWeight:700,color:C.ink,marginBottom:".3rem" }}>{ins.title}</div>
+                  <div style={{ fontSize:"clamp(11px,0.9vw,13px)",color:C.mid,lineHeight:1.6 }}>{ins.body}</div>
                 </div>
               ))}
             </Reveal>
@@ -610,17 +611,24 @@ export default function App() {
           <div style={{ flex:1,display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw" }}>
           <HScrollTrack>
             {[
-              { num:"Priority 01",title:"Collaboration",body:"Build confidence in how people and organisations use personal information. Help children stay safe online. Improve private sector understanding through simple guidance and practical training.",color:C.p },
-              { num:"Priority 02",title:"Responsible innovation",body:"Support responsible adoption of AI and emerging technologies. Work with international partners to anticipate global data trends. Encourage innovation that protects rights.",color:C.t },
-              { num:"Priority 03",title:"Strengthening capabilities",body:"Focus regulatory attention on highest-risk areas. Strengthen risk-based regulation. Collaborate internationally on cross-border cases. Introduce the new fee model. Modernise systems and website.",color:C.b },
-              { num:"Priority 04",title:"Transparency",body:"Demonstrate openness through increased publication of regulatory work and case studies. Develop an FOI performance dashboard with OCSIA. Ensure our work is clear and accessible to all.",color:C.o },
+              { num:"Priority 01",title:"Collaboration",body:"Build confidence in how people and organisations use personal information. Help children stay safe online. Improve private sector understanding through simple guidance and practical training.",color:C.p,
+                svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><circle cx="45" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".25"/><circle cx="75" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".25"/><circle cx="60" cy="44" r="12" fill="currentColor" opacity=".08"/><circle cx="60" cy="76" r="12" fill="currentColor" opacity=".08"/><path d="M33 50 Q60 30 87 50" stroke="currentColor" strokeWidth="2" opacity=".15" fill="none"/><path d="M33 70 Q60 90 87 70" stroke="currentColor" strokeWidth="2" opacity=".15" fill="none"/></svg> },
+              { num:"Priority 02",title:"Responsible innovation",body:"Support responsible adoption of AI and emerging technologies. Work with international partners to anticipate global data trends. Encourage innovation that protects rights.",color:C.t,
+                svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><circle cx="60" cy="60" r="36" stroke="currentColor" strokeWidth="3" opacity=".2"/><circle cx="60" cy="60" r="20" stroke="currentColor" strokeWidth="2" strokeDasharray="5 4" opacity=".2"/><path d="M60 24 L60 40" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity=".3"/><path d="M60 80 L60 96" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity=".3"/><path d="M24 60 L40 60" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity=".3"/><path d="M80 60 L96 60" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity=".3"/><circle cx="60" cy="60" r="8" fill="currentColor" opacity=".15"/></svg> },
+              { num:"Priority 03",title:"Strengthening capabilities",body:"Focus regulatory attention on highest-risk areas. Strengthen risk-based regulation. Collaborate internationally on cross-border cases. Introduce the new fee model. Modernise systems and website.",color:C.b,
+                svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><rect x="28" y="48" width="16" height="44" rx="4" fill="currentColor" opacity=".15"/><rect x="52" y="32" width="16" height="60" rx="4" fill="currentColor" opacity=".2"/><rect x="76" y="20" width="16" height="72" rx="4" fill="currentColor" opacity=".28"/><path d="M28 48 L44 36 L68 44 L92 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity=".35"/><circle cx="92" cy="20" r="4" fill="currentColor" opacity=".4"/></svg> },
+              { num:"Priority 04",title:"Transparency",body:"Demonstrate openness through increased publication of regulatory work and case studies. Develop an FOI performance dashboard with OCSIA. Ensure our work is clear and accessible to all.",color:C.o,
+                svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><circle cx="60" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".22"/><circle cx="60" cy="60" r="10" fill="currentColor" opacity=".15"/><path d="M20 60 Q40 35 60 32 Q80 35 100 60 Q80 85 60 88 Q40 85 20 60Z" stroke="currentColor" strokeWidth="2.5" opacity=".2" fill="none"/><line x1="60" y1="22" x2="60" y2="98" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity=".15"/><line x1="22" y1="60" x2="98" y2="60" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity=".15"/></svg> },
             ].map((pc) => (
-              <div key={pc.num} style={{ flex:"0 0 300px",scrollSnapAlign:"start",borderRadius:18,padding:"2rem",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end" }}>
+              <div key={pc.num} style={{ flex:"0 0 300px",scrollSnapAlign:"start",borderRadius:18,padding:"2rem",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",color:pc.color }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:GH }}/>
-                <div style={{ position:"absolute",top:"1rem",right:"1.25rem",fontFamily:"Arial,sans-serif",fontSize:"5.5rem",fontWeight:900,lineHeight:1,opacity:.05,color:pc.color }}>{pc.num.split(" ")[1]}</div>
-                <div style={{ fontSize:11,letterSpacing:".15em",marginBottom:".6rem",fontWeight:500,background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text" }}>{pc.num}</div>
-                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.3rem",color:C.ink,marginBottom:".6rem",lineHeight:1.2,fontWeight:700 }}>{pc.title}</div>
-                <div style={{ fontSize:12,color:C.mid,lineHeight:1.65 }}>{pc.body}</div>
+                {/* SVG illustration fills the top portion */}
+                <div style={{ flex:1,display:"flex",alignItems:"center",justifyContent:"center",minHeight:0,marginBottom:"1.25rem" }}>
+                  <div style={{ width:"60%",aspectRatio:"1" }}>{pc.svg}</div>
+                </div>
+                <div style={{ fontSize:11,letterSpacing:".15em",marginBottom:".4rem",fontWeight:500,background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text" }}>{pc.num}</div>
+                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1rem,1.3vw,1.3rem)",color:C.ink,marginBottom:".5rem",lineHeight:1.2,fontWeight:700 }}>{pc.title}</div>
+                <div style={{ fontSize:"clamp(11px,0.85vw,13px)",color:C.mid,lineHeight:1.65 }}>{pc.body}</div>
               </div>
             ))}
           </HScrollTrack>
