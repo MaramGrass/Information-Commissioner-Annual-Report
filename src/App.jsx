@@ -336,13 +336,12 @@ function NavOverlay({ open, onClose, onNavigate, onPrivacy }) {
     return () => document.removeEventListener("keydown", esc);
   }, [onClose]);
   return (
-    <div style={{ position:"fixed",inset:0,zIndex:1000,background:C.white,display:"flex",flexDirection:"column",clipPath:open?"circle(150% at calc(100% - 54px) 50px)":"circle(0% at calc(100% - 54px) 50px)",transition:"clip-path 0.65s cubic-bezier(.77,0,.18,1)",pointerEvents:open?"all":"none" }} onClick={onClose}>
+    <div style={{ position:"fixed",inset:0,zIndex:1000,background:C.white,display:"flex",flexDirection:"column",overflowY:"auto",clipPath:open?"circle(150% at calc(100% - 54px) 50px)":"circle(0% at calc(100% - 54px) 50px)",transition:"clip-path 0.65s cubic-bezier(.77,0,.18,1)",pointerEvents:open?"all":"none" }} onClick={onClose}>
       <div style={{ position:"absolute",inset:0,background:GH,opacity:.04,pointerEvents:"none" }} />
-      {/* Nav items — scrollable if screen is too short */}
-      <ul style={{ listStyle:"none",padding:"clamp(4rem,8vh,6rem) 0 1.5rem",paddingLeft:"10vw",flex:1,overflowY:"auto",minHeight:0,position:"relative" }} onClick={(e) => e.stopPropagation()}>
+      <ul style={{ listStyle:"none",padding:"clamp(2.5rem,5vh,5rem) 0 1.5rem",paddingLeft:"10vw",flex:1,position:"relative" }} onClick={(e) => e.stopPropagation()}>
         {sections.map((s, i) => (
           <li key={s.id} style={{ opacity:open?1:0,transform:open?"none":"translateX(-24px)",transition:`opacity 0.4s ${0.1+i*0.05}s, transform 0.4s ${0.1+i*0.05}s` }}>
-            <button onClick={() => handleClick(s.id)} style={{ background:"none",border:"none",cursor:"pointer",fontFamily:"Arial,sans-serif",fontSize:"clamp(1.2rem,2.8vw,2.8rem)",color:C.ink,textAlign:"left",lineHeight:1.6,display:"flex",alignItems:"center",gap:"1.2rem",padding:0,transition:"opacity 0.2s",opacity:.22,userSelect:"none" }}
+            <button onClick={() => handleClick(s.id)} style={{ background:"none",border:"none",cursor:"pointer",fontFamily:"Arial,sans-serif",fontSize:"clamp(.9rem,4.5vh,2.8rem)",color:C.ink,textAlign:"left",lineHeight:1.6,display:"flex",alignItems:"center",gap:"1.2rem",padding:0,transition:"opacity 0.2s",opacity:.22,userSelect:"none" }}
               onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
               onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.22"; }}
             >
@@ -352,10 +351,10 @@ function NavOverlay({ open, onClose, onNavigate, onPrivacy }) {
           </li>
         ))}
       </ul>
-      {/* Footer — always pinned at bottom, never scrolled away */}
-      <div style={{ paddingLeft:"10vw",padding:"1rem 1rem 1.5rem 10vw",borderTop:`1px solid ${C.lite}`,display:"flex",alignItems:"center",gap:"2rem",flexShrink:0,position:"relative",background:C.white }} onClick={(e) => e.stopPropagation()}>
+      {/* Footer — flexShrink:0 keeps it always visible at bottom */}
+      <div style={{ padding:"1rem 1rem 1.5rem 10vw",borderTop:`1px solid ${C.lite}`,display:"flex",alignItems:"center",gap:"2rem",flexShrink:0,position:"relative",background:C.white }} onClick={(e) => e.stopPropagation()}>
         <p style={{ fontSize:11,color:"rgba(13,13,26,.3)",letterSpacing:".1em" }}>ESC or click outside to close</p>
-        <button onClick={() => { onClose(); onPrivacy(); }} style={{ background:"none",border:"none",cursor:"pointer",fontSize:11,color:C.mid,textDecoration:"underline",textDecorationStyle:"dotted",padding:0,letterSpacing:".05em",userSelect:"none",flexShrink:0 }}>Privacy Policy</button>
+        <button onClick={onPrivacy} style={{ background:"none",border:"none",cursor:"pointer",fontSize:11,color:C.mid,textDecoration:"underline",textDecorationStyle:"dotted",padding:0,letterSpacing:".05em",userSelect:"none",flexShrink:0 }}>Privacy Policy</button>
       </div>
     </div>
   );
