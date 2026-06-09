@@ -452,7 +452,7 @@ export default function App() {
     };
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
-  }, [openStudy, closeStudy, switchStudy]);
+  }, [openStudy, closeStudy, snapCarousel]);
 
   useEffect(() => {
     const el = containerRef.current;
