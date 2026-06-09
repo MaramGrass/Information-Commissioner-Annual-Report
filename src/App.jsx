@@ -148,12 +148,12 @@ function HScrollTrack({ children }) {
     return () => { document.removeEventListener("mousemove", onMove); document.removeEventListener("mouseup", onUp); };
   }, []);
   return (
-    <div style={{ position:"relative" }}>
+    <div style={{ position:"relative", flex:1, display:"flex", flexDirection:"column", minHeight:0 }}>
       <button onClick={() => scroll(-380)} style={{ ...arrowStyle,left:8 }}>←</button>
       <div ref={ref}
         onMouseDown={(e) => { drag.current = { down:true,sx:e.pageX,sl:ref.current.scrollLeft }; ref.current.style.cursor = "grabbing"; ref.current.style.userSelect = "none"; }}
         onMouseUp={() => { drag.current.down = false; ref.current.style.cursor = "grab"; ref.current.style.userSelect = ""; }}
-        style={{ display:"flex",gap:"1.25rem",padding:"0.5rem 5vw 1rem",overflowX:"auto",scrollSnapType:"x mandatory",scrollPaddingLeft:"5vw",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",cursor:"grab" }}
+        style={{ display:"flex",gap:"1.25rem",padding:"0.75rem 5vw",overflowX:"auto",scrollSnapType:"x mandatory",scrollPaddingLeft:"5vw",WebkitOverflowScrolling:"touch",scrollbarWidth:"none",cursor:"grab",flex:1,alignItems:"stretch",minHeight:0 }}
       >{children}</div>
       <button onClick={() => scroll(380)} style={{ ...arrowStyle,right:8 }}>→</button>
     </div>
@@ -430,12 +430,12 @@ export default function App() {
             <SLabel>The year in numbers</SLabel>
             <SH2>2025/26 at a glance</SH2>
           </Reveal>
-          <Reveal delay={0.06} style={{ flex:1,display:"flex",flexDirection:"column",justifyContent:"center",gap:2 }}>
+          <Reveal delay={0.06} style={{ flex:1,display:"flex",flexDirection:"column",gap:"0.5rem",minHeight:0 }}>
             {[
               [{ tag:"People affected",tc:C.t,tb:"rgba(42,191,191,.1)",v:31600,l:"Estimated impacted by personal data breaches" },{ tag:"Breaches reported",tc:C.p,tb:"rgba(123,79,191,.1)",v:200,l:"Personal data breaches — up from 152 in 2024/25" },{ tag:"Total complaints",tc:C.b,tb:"rgba(30,127,214,.1)",v:53,l:"Including domestic CCTV — up from 25 last year" },{ tag:"FOI reviews",tc:C.t,tb:"rgba(42,191,191,.1)",v:24,l:"Applications for a decision received" },{ tag:"Staff",tc:C.o,tb:"rgba(138,139,58,.1)",v:10,l:"Members of staff — doubled from 5" }],
               [{ tag:"Fee consultation",tc:C.p,tb:"rgba(123,79,191,.1)",v:81,l:"Responses to our registration fees consultation" },{ tag:"Survey",tc:C.t,tb:"rgba(42,191,191,.1)",v:300,plus:true,l:"Organisations in our island-wide DP survey" },{ tag:"Events",tc:C.b,tb:"rgba(30,127,214,.1)",v:20,plus:true,l:"Domestic events attended or spoken at" },{ tag:"Decisions",tc:C.o,tb:"rgba(138,139,58,.1)",v:21,l:"FOI requests closed — nearly double prior year" },{ tag:"Regulatory actions",tc:C.p,tb:"rgba(123,79,191,.1)",v:5,l:"Enforcement actions including 4 reprimands" }],
             ].map((row, ri) => (
-              <div key={ri} style={{ display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:2,background:C.lite,borderRadius:16,overflow:"hidden" }}>
+              <div key={ri} style={{ flex:1,display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:2,background:C.lite,borderRadius:16,overflow:"hidden" }}>
                 {row.map((s) => (
                   <div key={s.tag} className="stat-card" style={{ background:C.white,padding:"1.5rem 1.25rem",position:"relative",overflow:"hidden" }}>
                     <div className="stat-bar" style={{ position:"absolute",bottom:0,left:0,right:0,height:3,background:GH,transform:"scaleX(0)",transition:"transform .4s" }}/>
@@ -479,14 +479,15 @@ export default function App() {
         </section>
 
         {/* ── PANEL 6: CASE STUDIES ────────────────────────────────────────── */}
-        <section id="casestudies" style={{ ...P(C.off), padding:"3.5vh 0" }}>
-          <div style={{ padding:"0 6vw",marginBottom:"1.5rem" }}>
+        <section id="casestudies" style={{ ...P(C.off) }}>
+          <div style={{ marginBottom:"1rem" }}>
             <Reveal>
               <SLabel>Case studies</SLabel>
               <SH2>Real decisions, real consequences</SH2>
               <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".5rem",fontWeight:300 }}>Every case reflects the human dimension of data protection. Drag to explore highlights from 2025/26.</p>
             </Reveal>
           </div>
+          <div style={{ flex:1,display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw" }}>
           <HScrollTrack>
             {[
               { num:"01",tag:"CCTV / data breach",title:"Recording CCTV footage to a personal device",body:"A senior staff member recorded live security footage on a personal phone and shared it with an unauthorised party — knowingly contravening data protection law. Seniority was treated as an aggravating factor.",bg:C.p,light:false },
@@ -496,7 +497,7 @@ export default function App() {
               { num:"05",tag:"Engagement",title:"Listening to organisations — shaping strategy",body:"Over 300 organisations participated in the Data Protection in Practice survey. Results explored with 100+ professionals, directly informing the 2026/27 strategy.",bg:C.white,light:true },
               { num:"06",tag:"Brand refresh",title:"A brand new look — shaped by local talent",body:"The ICO's new identity was co-created with final year art students from University College Isle of Man, incorporating the triskelion and Manx tartan colour palette.",bg:C.o,light:false },
             ].map((c) => (
-              <div key={c.num} className="cc-card" style={{ flex:"0 0 360px",scrollSnapAlign:"start",borderRadius:22,padding:"2.25rem",background:c.bg,position:"relative",overflow:"hidden",minHeight:280,display:"flex",flexDirection:"column",justifyContent:"flex-end",border:c.light?"1px solid rgba(0,0,0,.07)":"none",transition:"transform .35s, box-shadow .35s" }}>
+              <div key={c.num} className="cc-card" style={{ flex:"0 0 340px",scrollSnapAlign:"start",borderRadius:22,padding:"2.25rem",background:c.bg,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",border:c.light?"1px solid rgba(0,0,0,.07)":"none",transition:"transform .35s, box-shadow .35s" }}>
                 {c.light && <div style={{ height:3,background:GH,borderRadius:2,marginBottom:"1.5rem" }}/>}
                 <div style={{ position:"absolute",top:"1.5rem",right:"2rem",fontFamily:"Arial,sans-serif",fontSize:"5rem",fontWeight:900,opacity:.1,lineHeight:1,color:c.light?C.ink:"white" }}>{c.num}</div>
                 <div style={{ fontSize:10,letterSpacing:".12em",textTransform:"uppercase",marginBottom:".75rem",color:c.light?C.mid:"rgba(255,255,255,.65)",fontWeight:500 }}>{c.tag}</div>
@@ -505,6 +506,7 @@ export default function App() {
               </div>
             ))}
           </HScrollTrack>
+          </div>
         </section>
 
         {/* ── PANEL 7: COMPLAINTS ──────────────────────────────────────────── */}
@@ -547,77 +549,82 @@ export default function App() {
             <SH2 light>GDPR articles infringed 2025/26</SH2>
             <p style={{ fontSize:".85rem",color:"rgba(255,255,255,.65)",lineHeight:1.7,maxWidth:550,marginBottom:"1.25rem",fontWeight:300 }}>80% of breaches involved Article 5(1)(f) — the integrity and confidentiality principle. Improved security practices would prevent the majority of incidents.</p>
           </Reveal>
-          <div style={{ display:"grid",gridTemplateColumns:"1.2fr 1fr",gap:"3vw",flex:1,alignItems:"center" }}>
-            <Reveal direction="left" delay={0.06}>
+          <div style={{ display:"grid",gridTemplateColumns:"1.2fr 1fr",gap:"3vw",flex:1,minHeight:0 }}>
+            <Reveal direction="left" delay={0.06} style={{ display:"flex",alignItems:"center" }}>
               <BreachBars/>
             </Reveal>
-            <div style={{ display:"flex",flexDirection:"column",gap:"1rem",height:"100%",justifyContent:"center" }}>
-              <Reveal direction="right" delay={0.08}>
-                <CCard dark title="Special category data in breaches" sub="% of total breaches involving special category PD"><ChartCanvas config={charts.Spec} height={150}/></CCard>
+            <div style={{ display:"flex",flexDirection:"column",gap:"1rem",minHeight:0 }}>
+              <Reveal direction="right" delay={0.08} style={{ flex:1,display:"flex",flexDirection:"column" }}>
+                <CCard dark title="Special category data in breaches" sub="% of total breaches involving special category PD" style={{ flex:1 }}><ChartCanvas config={charts.Spec} height={60}/></CCard>
               </Reveal>
-              <Reveal direction="right" delay={0.14}>
-                <CCard dark title="Quarterly breach volumes 2025/26" sub="Q1: 62 · Q2: 52 · Q3: 39 · Q4: 47"><ChartCanvas config={charts.BrQ} height={150}/></CCard>
+              <Reveal direction="right" delay={0.14} style={{ flex:1,display:"flex",flexDirection:"column" }}>
+                <CCard dark title="Quarterly breach volumes 2025/26" sub="Q1: 62 · Q2: 52 · Q3: 39 · Q4: 47" style={{ flex:1 }}><ChartCanvas config={charts.BrQ} height={60}/></CCard>
               </Reveal>
             </div>
           </div>
         </section>
 
         {/* ── PANEL 10: REGULATORY ─────────────────────────────────────────── */}
-        <section id="regulatory" style={{ ...P(C.paper), padding:"3.5vh 0" }}>
-          <div style={{ padding:"0 6vw",marginBottom:"1rem" }}>
-            <Reveal>
-              <SLabel>Regulatory action</SLabel>
-              <SH2>Enforcement in 2025/26</SH2>
-              <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".5rem",fontWeight:300 }}>5 regulatory actions — a reduction from 14, driven by focus on complex investigations and increased informal resolution.</p>
-            </Reveal>
-          </div>
-          <HScrollTrack>
-            {[
-              { tag:"Warnings",tc:C.t,tb:"rgba(42,191,191,.1)",num:"1",l:"1 warning issued to a public sector organisation in 2025/26" },
-              { tag:"Reprimands",tc:C.p,tb:"rgba(123,79,191,.1)",num:"4",l:"Payroll Partners · Manx Care · QEII High School · Shell Shipping Ltd" },
-              { tag:"Information notices",tc:C.b,tb:"rgba(30,127,214,.1)",num:"0",l:"No information notices issued — focus on complex investigations" },
-              { tag:"Enforcement notices",tc:C.o,tb:"rgba(138,139,58,.1)",num:"0",l:"Earlier informal engagement resolved more cases without formal action" },
-              { tag:"Maximum penalty",tc:C.t,tb:"rgba(42,191,191,.1)",num:"£1m",l:"Maximum monetary penalty available for serious infringements" },
-              { tag:"Tribunal costs",tc:C.p,tb:"rgba(123,79,191,.1)",num:"£97k",l:"Legal costs for ongoing Data Protection Tribunal — £184k reserve retained" },
-            ].map((sc) => (
-              <div key={sc.tag} style={{ flex:"0 0 260px",scrollSnapAlign:"start",background:C.white,borderRadius:18,padding:"1.75rem",border:"1px solid rgba(0,0,0,.07)",position:"relative",overflow:"hidden" }}>
-                <div style={{ position:"absolute",bottom:0,left:0,right:0,height:3,background:GH,transform:"scaleX(0)",transition:"transform .4s" }}/>
-                <div style={tagStyle(sc.tc,sc.tb)}>{sc.tag}</div>
-                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"3rem",fontWeight:900,lineHeight:1,marginBottom:".4rem" }}><GradientText>{sc.num}</GradientText></div>
-                <div style={{ fontSize:12,color:C.mid,lineHeight:1.5 }}>{sc.l}</div>
-              </div>
-            ))}
-          </HScrollTrack>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.25rem",padding:"1rem 6vw 0" }}>
-            <Reveal direction="left" delay={0.05}><CCard title="Regulatory actions by year" sub="2023/24: 31 · 2024/25: 14 · 2025/26: 5"><ChartCanvas config={charts.Reg} height={140}/></CCard></Reveal>
-            <Reveal direction="right" delay={0.05}><CCard title="DPIAs submitted for consultation" sub="First private sector submission received in 2025/26"><ChartCanvas config={charts.Dpia} height={140}/></CCard></Reveal>
+        <section id="regulatory" style={{ ...P(C.paper) }}>
+          <Reveal>
+            <SLabel>Regulatory action</SLabel>
+            <SH2>Enforcement in 2025/26</SH2>
+            <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".75rem",fontWeight:300 }}>5 regulatory actions — a reduction from 14, driven by focus on complex investigations and increased informal resolution.</p>
+          </Reveal>
+          {/* HScrollTrack takes 55% of remaining, charts take 45% */}
+          <div style={{ flex:1,display:"flex",flexDirection:"column",gap:"1rem",minHeight:0 }}>
+            <div style={{ flex:"0 0 52%",display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw",padding:"0 5vw" }}>
+              <HScrollTrack>
+                {[
+                  { tag:"Warnings",tc:C.t,tb:"rgba(42,191,191,.1)",num:"1",l:"1 warning issued to a public sector organisation in 2025/26" },
+                  { tag:"Reprimands",tc:C.p,tb:"rgba(123,79,191,.1)",num:"4",l:"Payroll Partners · Manx Care · QEII High School · Shell Shipping Ltd" },
+                  { tag:"Information notices",tc:C.b,tb:"rgba(30,127,214,.1)",num:"0",l:"No information notices issued — focus on complex investigations" },
+                  { tag:"Enforcement notices",tc:C.o,tb:"rgba(138,139,58,.1)",num:"0",l:"Earlier informal engagement resolved more cases without formal action" },
+                  { tag:"Maximum penalty",tc:C.t,tb:"rgba(42,191,191,.1)",num:"£1m",l:"Maximum monetary penalty available for serious infringements" },
+                  { tag:"Tribunal costs",tc:C.p,tb:"rgba(123,79,191,.1)",num:"£97k",l:"Legal costs for ongoing Data Protection Tribunal — £184k reserve retained" },
+                ].map((sc) => (
+                  <div key={sc.tag} style={{ flex:"0 0 240px",scrollSnapAlign:"start",background:C.white,borderRadius:18,padding:"1.5rem",border:"1px solid rgba(0,0,0,.07)",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end" }}>
+                    <div style={{ position:"absolute",top:"-.5rem",right:".75rem",fontFamily:"Arial,sans-serif",fontSize:"5rem",fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none" }}>{sc.num}</div>
+                    <div style={{ position:"absolute",bottom:0,left:0,right:0,height:3,background:GH,transform:"scaleX(0)",transition:"transform .4s" }}/>
+                    <div style={tagStyle(sc.tc,sc.tb)}>{sc.tag}</div>
+                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"2.8rem",fontWeight:900,lineHeight:1,marginBottom:".35rem" }}><GradientText>{sc.num}</GradientText></div>
+                    <div style={{ fontSize:12,color:C.mid,lineHeight:1.5 }}>{sc.l}</div>
+                  </div>
+                ))}
+              </HScrollTrack>
+            </div>
+            <div style={{ flex:1,display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.25rem",minHeight:0 }}>
+              <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column" }}><CCard title="Regulatory actions by year" sub="2023/24: 31 · 2024/25: 14 · 2025/26: 5" style={{ flex:1 }}><ChartCanvas config={charts.Reg} height={60}/></CCard></Reveal>
+              <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column" }}><CCard title="DPIAs submitted for consultation" sub="First private sector submission received in 2025/26" style={{ flex:1 }}><ChartCanvas config={charts.Dpia} height={60}/></CCard></Reveal>
+            </div>
           </div>
         </section>
 
         {/* ── PANEL 11: PRIORITIES ─────────────────────────────────────────── */}
-        <section id="priorities" style={{ ...P(C.off), padding:"3.5vh 0" }}>
-          <div style={{ padding:"0 6vw",marginBottom:"1.5rem" }}>
-            <Reveal>
-              <SLabel>Looking ahead</SLabel>
-              <SH2>Strategy 2026/27: Compliance through collaboration</SH2>
-              <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".5rem",fontWeight:300 }}>Our strategic direction for the year ahead, shaped by listening to those we regulate and the communities we serve.</p>
-            </Reveal>
-          </div>
+        <section id="priorities" style={{ ...P(C.off) }}>
+          <Reveal>
+            <SLabel>Looking ahead</SLabel>
+            <SH2>Strategy 2026/27: Compliance through collaboration</SH2>
+            <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".75rem",fontWeight:300 }}>Our strategic direction for the year ahead, shaped by listening to those we regulate and the communities we serve.</p>
+          </Reveal>
+          <div style={{ flex:1,display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw" }}>
           <HScrollTrack>
             {[
-              { num:"Priority 01",title:"Collaboration",body:"Build confidence in how people and organisations use personal information. Help children stay safe online. Improve private sector understanding through simple guidance and practical training." },
-              { num:"Priority 02",title:"Responsible innovation",body:"Support responsible adoption of AI and emerging technologies. Work with international partners to anticipate global data trends. Encourage innovation that protects rights." },
-              { num:"Priority 03",title:"Strengthening capabilities",body:"Focus regulatory attention on highest-risk areas. Strengthen risk-based regulation. Collaborate internationally on cross-border cases. Introduce the new fee model. Modernise systems and website." },
-              { num:"Priority 04",title:"Transparency",body:"Demonstrate openness through increased publication of regulatory work and case studies. Develop an FOI performance dashboard with OCSIA. Ensure our work is clear and accessible to all." },
+              { num:"Priority 01",title:"Collaboration",body:"Build confidence in how people and organisations use personal information. Help children stay safe online. Improve private sector understanding through simple guidance and practical training.",color:C.p },
+              { num:"Priority 02",title:"Responsible innovation",body:"Support responsible adoption of AI and emerging technologies. Work with international partners to anticipate global data trends. Encourage innovation that protects rights.",color:C.t },
+              { num:"Priority 03",title:"Strengthening capabilities",body:"Focus regulatory attention on highest-risk areas. Strengthen risk-based regulation. Collaborate internationally on cross-border cases. Introduce the new fee model. Modernise systems and website.",color:C.b },
+              { num:"Priority 04",title:"Transparency",body:"Demonstrate openness through increased publication of regulatory work and case studies. Develop an FOI performance dashboard with OCSIA. Ensure our work is clear and accessible to all.",color:C.o },
             ].map((pc) => (
-              <div key={pc.num} style={{ flex:"0 0 300px",scrollSnapAlign:"start",borderRadius:18,padding:"2rem",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden" }}>
+              <div key={pc.num} style={{ flex:"0 0 300px",scrollSnapAlign:"start",borderRadius:18,padding:"2rem",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end" }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:GH }}/>
-                <div style={{ fontSize:11,letterSpacing:".15em",marginBottom:".75rem",fontWeight:500,background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text" }}>{pc.num}</div>
-                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.2rem",color:C.ink,marginBottom:".6rem",lineHeight:1.25,fontWeight:700 }}>{pc.title}</div>
+                <div style={{ position:"absolute",top:"1rem",right:"1.25rem",fontFamily:"Arial,sans-serif",fontSize:"5.5rem",fontWeight:900,lineHeight:1,opacity:.05,color:pc.color }}>{pc.num.split(" ")[1]}</div>
+                <div style={{ fontSize:11,letterSpacing:".15em",marginBottom:".6rem",fontWeight:500,background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text" }}>{pc.num}</div>
+                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.3rem",color:C.ink,marginBottom:".6rem",lineHeight:1.2,fontWeight:700 }}>{pc.title}</div>
                 <div style={{ fontSize:12,color:C.mid,lineHeight:1.65 }}>{pc.body}</div>
               </div>
             ))}
           </HScrollTrack>
+          </div>
         </section>
 
         {/* ── PANEL 12: FINANCE + FOOTER ───────────────────────────────────── */}
@@ -627,20 +634,22 @@ export default function App() {
             <SH2>Income and expenditure</SH2>
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.5rem",fontWeight:300 }}>Income outperformed target by £11,091. Pay costs increased significantly, reflecting the doubling of staff — fully supported by Treasury-approved contingency funding of £285,000.</p>
           </Reveal>
-          <Reveal delay={0.08} style={{ flex:1,display:"flex",flexDirection:"column",justifyContent:"center" }}>
-            <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.5rem",marginBottom:"3rem" }}>
+          <Reveal delay={0.08} style={{ flex:1,display:"flex",flexDirection:"column",gap:"1.25rem",minHeight:0 }}>
+            <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.5rem",flex:1,minHeight:0 }}>
               {[
                 { num:"£162,927",lbl:"Fee income (target £151,836)",note:"↑ £11,091 above target",accent:false },
                 { num:"£620,547",lbl:"Total pay costs including temporary staff",note:"Reflects doubling of team size during year",accent:false },
                 { num:"£125,590",lbl:"Information Commissioner's basic salary 2025/26",note:"All bandings published in full report",accent:true },
               ].map((fc) => (
-                <div key={fc.num} style={{ borderRadius:18,padding:"2rem",position:"relative",overflow:"hidden",border:fc.accent?"none":"1px solid rgba(0,0,0,.07)",background:fc.accent?G1:C.white }}>
+                <div key={fc.num} style={{ borderRadius:18,padding:"2.5rem 2rem",position:"relative",overflow:"hidden",border:fc.accent?"none":"1px solid rgba(0,0,0,.07)",background:fc.accent?G1:C.white,display:"flex",flexDirection:"column",justifyContent:"flex-end" }}>
                   {!fc.accent && <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>}
-                  <div style={{ fontFamily:"Arial,sans-serif",fontSize:"2.2rem",fontWeight:900,marginBottom:".25rem",marginTop:".25rem" }}>
+                  {/* decorative large number in background */}
+                  <div style={{ position:"absolute",top:"-.5rem",right:"1rem",fontFamily:"Arial,sans-serif",fontSize:"8rem",fontWeight:900,lineHeight:1,opacity:.04,color:fc.accent?"white":C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
+                  <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.8rem,3vw,3rem)",fontWeight:900,marginBottom:".5rem",lineHeight:1 }}>
                     {fc.accent ? <span style={{ color:"white" }}>{fc.num}</span> : <GradientText>{fc.num}</GradientText>}
                   </div>
-                  <div style={{ fontSize:12,color:fc.accent?"rgba(255,255,255,.65)":C.mid }}>{fc.lbl}</div>
-                  <div style={{ fontSize:11,color:fc.accent?"rgba(255,255,255,.6)":C.t,marginTop:".5rem",fontWeight:500 }}>{fc.note}</div>
+                  <div style={{ fontSize:13,color:fc.accent?"rgba(255,255,255,.75)":C.mid,marginBottom:".35rem" }}>{fc.lbl}</div>
+                  <div style={{ fontSize:12,color:fc.accent?"rgba(255,255,255,.6)":C.t,fontWeight:500 }}>{fc.note}</div>
                 </div>
               ))}
             </div>
