@@ -42,13 +42,40 @@ function Reveal({ children, direction = "up", delay = 0, style = {} }) {
   const ref = useRef(null);
   const [vis, setVis] = useState(false);
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setVis(true); }, { threshold: 0.08 });
+    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setVis(true); }, { threshold: 0.06 });
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
-  const transforms = { up:"translateY(36px) scale(0.95)",left:"translateX(-36px) scale(0.96)",right:"translateX(36px) scale(0.96)" };
+  const transforms = { up:"translateY(44px) scale(0.92)", left:"translateX(-44px) scale(0.93)", right:"translateX(44px) scale(0.93)" };
   return (
-    <div ref={ref} style={{ opacity:vis?1:0,transform:vis?"none":transforms[direction],transition:`opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}s`,...style }}>
+    <div ref={ref} style={{
+      opacity:vis?1:0,
+      transform:vis?"none":transforms[direction],
+      filter:vis?"blur(0px)":"blur(8px)",
+      transition:`opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s, filter 0.8s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      ...style
+    }}>
+      {children}
+    </div>
+  );
+}
+
+function PopCard({ children, delay = 0, style = {} }) {
+  const ref = useRef(null);
+  const [vis, setVis] = useState(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.08 });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+  return (
+    <div ref={ref} style={{
+      opacity:vis?1:0,
+      transform:vis?"scale(1) translateY(0)":"scale(0.86) translateY(28px)",
+      filter:vis?"blur(0px)":"blur(6px)",
+      transition:`opacity 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s, filter 0.6s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+      ...style
+    }}>
       {children}
     </div>
   );
@@ -57,15 +84,25 @@ function Reveal({ children, direction = "up", delay = 0, style = {} }) {
 function ChartCanvas({ config, height = 160 }) {
   const ref = useRef(null);
   const chartRef = useRef(null);
+  const created = useRef(false);
   useEffect(() => {
-    if (!ref.current) return;
-    if (chartRef.current) chartRef.current.destroy();
-    Chart.defaults.font.family = "Arial, sans-serif";
-    Chart.defaults.font.size = 11;
-    Chart.defaults.color = C.mid;
-    Chart.defaults.plugins.legend.display = false;
-    chartRef.current = new Chart(ref.current, config);
-    return () => { if (chartRef.current) chartRef.current.destroy(); };
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !created.current) {
+        created.current = true;
+        Chart.defaults.font.family = "Arial, sans-serif";
+        Chart.defaults.font.size = 11;
+        Chart.defaults.color = C.mid;
+        Chart.defaults.plugins.legend.display = false;
+        Chart.defaults.animation = {
+          duration: 1600,
+          easing: "easeOutQuart",
+          delay: (ctx) => ctx.type === "data" ? ctx.dataIndex * 90 : 0,
+        };
+        chartRef.current = new Chart(ref.current, config);
+      }
+    }, { threshold: 0.1 });
+    if (ref.current) observer.observe(ref.current);
+    return () => { observer.disconnect(); if (chartRef.current) chartRef.current.destroy(); };
   }, []);
   return <div style={{ position:"relative",flex:1,minHeight:height }}><canvas ref={ref} /></div>;
 }
@@ -293,18 +330,22 @@ export default function App() {
         @keyframes spin-slow { to{transform:rotate(360deg)} }
         @keyframes marquee { to{transform:translateX(-50%)} }
         @keyframes pulse-right { 0%{transform:scaleX(0);transform-origin:left} 50%{transform:scaleX(1);transform-origin:left} 51%{transform:scaleX(1);transform-origin:right} 100%{transform:scaleX(0);transform-origin:right} }
-        @keyframes pop-in { 0%{opacity:0;transform:scale(.88) translateY(22px)} 60%{opacity:1} 100%{opacity:1;transform:scale(1) translateY(0)} }
-        @keyframes slide-up { 0%{opacity:0;transform:translateY(18px)} 100%{opacity:1;transform:translateY(0)} }
+        @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+        @keyframes glow-border { 0%,100%{box-shadow:0 0 0 0 rgba(42,191,191,0)} 50%{box-shadow:0 0 0 3px rgba(42,191,191,.18)} }
         ::-webkit-scrollbar { display:none }
-        .val-card:hover { transform:translateY(-5px) !important; box-shadow:0 20px 56px rgba(0,0,0,.11) !important }
-        .cc-card:hover { transform:translateY(-6px) !important; box-shadow:0 24px 60px rgba(0,0,0,.13) !important }
-        .ins-item:hover { transform:translateX(5px) !important; box-shadow:0 4px 24px rgba(0,0,0,.1) !important }
+        .val-card { transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s }
+        .val-card:hover { transform:translateY(-6px) scale(1.02) !important; box-shadow:0 20px 56px rgba(0,0,0,.12) !important }
+        .cc-card { transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s }
+        .cc-card:hover { transform:translateY(-7px) scale(1.015) !important; box-shadow:0 24px 60px rgba(0,0,0,.14) !important }
+        .ins-item { transition:transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s }
+        .ins-item:hover { transform:translateX(6px) !important; box-shadow:0 4px 24px rgba(0,0,0,.1) !important }
+        .stat-card { transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s }
+        .stat-card:hover { transform:translateY(-5px) scale(1.02) !important; box-shadow:0 18px 44px rgba(0,0,0,.1) !important }
         .stat-card:hover .stat-bar { transform:scaleX(1) !important }
-        .stat-card:hover { transform:translateY(-4px) !important; box-shadow:0 16px 44px rgba(0,0,0,.09) !important; transition:transform .25s, box-shadow .25s !important }
-        .pri-card { transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s !important }
-        .pri-card:hover { transform:translateY(-6px) scale(1.015) !important; box-shadow:0 24px 60px rgba(0,0,0,.12) !important }
-        .fin-card { transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s !important }
-        .fin-card:hover { transform:translateY(-5px) !important; box-shadow:0 20px 56px rgba(0,0,0,.1) !important }
+        .pri-card { transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s }
+        .pri-card:hover { transform:translateY(-7px) scale(1.02) !important; box-shadow:0 24px 60px rgba(0,0,0,.13) !important }
+        .fin-card { transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s }
+        .fin-card:hover { transform:translateY(-6px) scale(1.01) !important; box-shadow:0 20px 56px rgba(0,0,0,.1) !important }
       `}</style>
 
       {/* Progress */}
@@ -443,13 +484,15 @@ export default function App() {
               [{ tag:"Fee consultation",tc:C.p,tb:"rgba(123,79,191,.1)",v:81,l:"Responses to our registration fees consultation" },{ tag:"Survey",tc:C.t,tb:"rgba(42,191,191,.1)",v:300,plus:true,l:"Organisations in our island-wide DP survey" },{ tag:"Events",tc:C.b,tb:"rgba(30,127,214,.1)",v:20,plus:true,l:"Domestic events attended or spoken at" },{ tag:"Decisions",tc:C.o,tb:"rgba(138,139,58,.1)",v:21,l:"FOI requests closed — nearly double prior year" },{ tag:"Regulatory actions",tc:C.p,tb:"rgba(123,79,191,.1)",v:5,l:"Enforcement actions including 4 reprimands" }],
             ].map((row, ri) => (
               <div key={ri} style={{ flex:1,display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:2,background:C.lite,borderRadius:16,overflow:"hidden" }}>
-                {row.map((s) => (
-                  <div key={s.tag} className="stat-card" style={{ background:C.white,padding:"clamp(.6rem,1.8vh,1.5rem) 1.25rem",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
+                {row.map((s, si) => (
+                  <PopCard key={s.tag} delay={ri * 0.15 + si * 0.07} style={{ display:"flex",flexDirection:"column" }}>
+                  <div className="stat-card" style={{ flex:1,background:C.white,padding:"clamp(.6rem,1.8vh,1.5rem) 1.25rem",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
                     <div className="stat-bar" style={{ position:"absolute",bottom:0,left:0,right:0,height:3,background:GH,transform:"scaleX(0)",transition:"transform .4s" }}/>
                     <div style={tagStyle(s.tc,s.tb)}>{s.tag}</div>
                     <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.8rem,9vh,7rem)",fontWeight:900,lineHeight:1,margin:"auto 0",padding:"0.2em 0" }}><GradientText><Counter target={s.v} plus={s.plus}/></GradientText></div>
                     <div style={{ fontSize:"clamp(11px,1.8vh,15px)",color:C.mid,lineHeight:1.4 }}>{s.l}</div>
                   </div>
+                  </PopCard>
                 ))}
               </div>
             ))}
@@ -626,7 +669,8 @@ export default function App() {
               { num:"Priority 04",title:"Transparency",body:"Demonstrate openness through increased publication of regulatory work and case studies. Develop an FOI performance dashboard with OCSIA. Ensure our work is clear and accessible to all.",color:C.o,
                 svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><circle cx="60" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".22"/><circle cx="60" cy="60" r="10" fill="currentColor" opacity=".15"/><path d="M20 60 Q40 35 60 32 Q80 35 100 60 Q80 85 60 88 Q40 85 20 60Z" stroke="currentColor" strokeWidth="2.5" opacity=".2" fill="none"/><line x1="60" y1="22" x2="60" y2="98" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity=".15"/><line x1="22" y1="60" x2="98" y2="60" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity=".15"/></svg> },
             ].map((pc, i) => (
-              <div key={pc.num} className="pri-card" style={{ flex:"0 0 clamp(280px,30vw,420px)",scrollSnapAlign:"start",borderRadius:18,padding:"clamp(1.5rem,3vh,2.5rem) clamp(1.5rem,2vw,2.2rem)",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",color:pc.color }}>
+              <PopCard key={pc.num} delay={i * 0.1} style={{ flex:"0 0 clamp(280px,30vw,420px)",scrollSnapAlign:"start",display:"flex",flexDirection:"column" }}>
+              <div className="pri-card" style={{ flex:1,borderRadius:18,padding:"clamp(1.5rem,3vh,2.5rem) clamp(1.5rem,2vw,2.2rem)",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",color:pc.color }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:GH }}/>
                 <div style={{ position:"absolute",bottom:"-1.5rem",right:"-1rem",width:"clamp(80px,18vh,140px)",aspectRatio:"1",opacity:.06,color:pc.color }}>{pc.svg}</div>
                 <div style={{ flex:1,display:"flex",alignItems:"center",justifyContent:"center",minHeight:0,marginBottom:"clamp(.75rem,1.5vh,1.25rem)" }}>
@@ -636,6 +680,7 @@ export default function App() {
                 <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.1rem,2.2vh,1.6rem)",color:C.ink,marginBottom:"clamp(.35rem,.8vh,.65rem)",lineHeight:1.15,fontWeight:800 }}>{pc.title}</div>
                 <div style={{ fontSize:"clamp(12px,1.5vh,14px)",color:C.mid,lineHeight:1.7 }}>{pc.body}</div>
               </div>
+              </PopCard>
             ))}
           </HScrollTrack>
           </div>
@@ -654,7 +699,8 @@ export default function App() {
                 { num:"£162,927",lbl:"Fee income",sub:"Target was £151,836",note:"↑ £11,091 above target — strongest fee year to date",tag:"Income" },
                 { num:"£620,547",lbl:"Total pay costs",sub:"Including temporary staff",note:"Reflects the doubling of the team from 5 to 10 staff during the year, supported by Treasury-approved contingency funding of £285,000",tag:"Expenditure" },
               ].map((fc, i) => (
-                <div key={fc.num} className="fin-card" style={{ borderRadius:18,padding:"clamp(1.5rem,3vh,2.8rem) clamp(1.5rem,2.5vw,2.5rem)",position:"relative",overflow:"hidden",border:"1px solid rgba(0,0,0,.07)",background:C.white,display:"flex",flexDirection:"column",justifyContent:"space-between",animation:`pop-in 0.65s cubic-bezier(0.16,1,0.3,1) ${0.1+i*0.15}s both` }}>
+                <PopCard key={fc.num} delay={i * 0.12} style={{ display:"flex",flexDirection:"column",minHeight:0 }}>
+                <div className="fin-card" style={{ flex:1,borderRadius:18,padding:"clamp(1.5rem,3vh,2.8rem) clamp(1.5rem,2.5vw,2.5rem)",position:"relative",overflow:"hidden",border:"1px solid rgba(0,0,0,.07)",background:C.white,display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
                   <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>
                   <div style={{ position:"absolute",bottom:"-2rem",right:"1rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(6rem,18vh,14rem)",fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
                   <div>
@@ -665,6 +711,7 @@ export default function App() {
                   </div>
                   <div style={{ fontSize:"clamp(12px,1.6vh,15px)",color:C.mid,lineHeight:1.75,fontWeight:300,maxWidth:"85%",paddingTop:"clamp(.5rem,1.2vh,1rem)",borderTop:"1px solid rgba(0,0,0,.06)" }}>{fc.note}</div>
                 </div>
+                </PopCard>
               ))}
             </div>
             <div style={{ background:C.ink,borderRadius:16,padding:"1.75rem 2rem",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"1rem" }}>
