@@ -609,11 +609,13 @@ export default function App() {
 
         {/* ── PANEL 11: PRIORITIES ─────────────────────────────────────────── */}
         <section id="priorities" style={{ ...P(C.off) }}>
-          <Reveal style={{ flexShrink:0 }}>
+          <Reveal>
             <SLabel>Looking ahead</SLabel>
             <SH2>Strategy 2026/27: Compliance through collaboration</SH2>
+            <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".75rem",fontWeight:300 }}>Our strategic direction for the year ahead, shaped by listening to those we regulate and the communities we serve.</p>
           </Reveal>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:"1rem",flex:1,minHeight:0 }}>
+          <div style={{ flex:1,display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw" }}>
+          <HScrollTrack>
             {[
               { num:"Priority 01",title:"Collaboration",body:"Build confidence in how people and organisations use personal information. Help children stay safe online. Improve private sector understanding through simple guidance and practical training.",color:C.p,
                 svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><circle cx="45" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".25"/><circle cx="75" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".25"/><circle cx="60" cy="44" r="12" fill="currentColor" opacity=".08"/><circle cx="60" cy="76" r="12" fill="currentColor" opacity=".08"/><path d="M33 50 Q60 30 87 50" stroke="currentColor" strokeWidth="2" opacity=".15" fill="none"/><path d="M33 70 Q60 90 87 70" stroke="currentColor" strokeWidth="2" opacity=".15" fill="none"/></svg> },
@@ -624,25 +626,27 @@ export default function App() {
               { num:"Priority 04",title:"Transparency",body:"Demonstrate openness through increased publication of regulatory work and case studies. Develop an FOI performance dashboard with OCSIA. Ensure our work is clear and accessible to all.",color:C.o,
                 svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><circle cx="60" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".22"/><circle cx="60" cy="60" r="10" fill="currentColor" opacity=".15"/><path d="M20 60 Q40 35 60 32 Q80 35 100 60 Q80 85 60 88 Q40 85 20 60Z" stroke="currentColor" strokeWidth="2.5" opacity=".2" fill="none"/><line x1="60" y1="22" x2="60" y2="98" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity=".15"/><line x1="22" y1="60" x2="98" y2="60" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity=".15"/></svg> },
             ].map((pc, i) => (
-              <div key={pc.num} className="pri-card" style={{ borderRadius:18,padding:"clamp(1.2rem,2.5vh,2rem) clamp(1.2rem,2vw,2rem)",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",color:pc.color,animation:`pop-in 0.65s cubic-bezier(0.16,1,0.3,1) ${0.1+i*0.1}s both` }}>
+              <div key={pc.num} className="pri-card" style={{ flex:"0 0 clamp(280px,30vw,420px)",scrollSnapAlign:"start",borderRadius:18,padding:"clamp(1.5rem,3vh,2.5rem) clamp(1.5rem,2vw,2.2rem)",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",color:pc.color }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:GH }}/>
                 <div style={{ position:"absolute",bottom:"-1.5rem",right:"-1rem",width:"clamp(80px,18vh,140px)",aspectRatio:"1",opacity:.06,color:pc.color }}>{pc.svg}</div>
-                <div style={{ fontSize:"clamp(9px,1vh,11px)",letterSpacing:".15em",marginBottom:".5rem",fontWeight:500,background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text" }}>{pc.num}</div>
-                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.2rem,2.8vh,2rem)",color:C.ink,marginBottom:"clamp(.4rem,1vh,.8rem)",lineHeight:1.15,fontWeight:800 }}>{pc.title}</div>
-                <div style={{ fontSize:"clamp(12px,1.6vh,15px)",color:C.mid,lineHeight:1.7,flex:1 }}>{pc.body}</div>
-                <div style={{ marginTop:"auto",paddingTop:"1rem",display:"flex",alignItems:"center",gap:".5rem" }}>
-                  <div style={{ height:2,flex:1,background:GH,borderRadius:2,opacity:.4 }}/>
+                <div style={{ flex:1,display:"flex",alignItems:"center",justifyContent:"center",minHeight:0,marginBottom:"clamp(.75rem,1.5vh,1.25rem)" }}>
+                  <div style={{ width:"55%",aspectRatio:"1" }}>{pc.svg}</div>
                 </div>
+                <div style={{ fontSize:"clamp(9px,1.1vh,11px)",letterSpacing:".15em",marginBottom:".5rem",fontWeight:500,background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text" }}>{pc.num}</div>
+                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.1rem,2.2vh,1.6rem)",color:C.ink,marginBottom:"clamp(.35rem,.8vh,.65rem)",lineHeight:1.15,fontWeight:800 }}>{pc.title}</div>
+                <div style={{ fontSize:"clamp(12px,1.5vh,14px)",color:C.mid,lineHeight:1.7 }}>{pc.body}</div>
               </div>
             ))}
+          </HScrollTrack>
           </div>
         </section>
 
         {/* ── PANEL 12: FINANCE + FOOTER ───────────────────────────────────── */}
         <section id="finance" style={{ ...P(C.white) }}>
-          <Reveal style={{ flexShrink:0 }}>
+          <Reveal>
             <SLabel>Finance 2025/26</SLabel>
             <SH2>Income and expenditure</SH2>
+            <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.5rem",fontWeight:300 }}>Income outperformed target by £11,091. Pay costs increased significantly, reflecting the doubling of staff — fully supported by Treasury-approved contingency funding of £285,000.</p>
           </Reveal>
           <div style={{ display:"flex",flexDirection:"column",gap:"1.25rem",flex:1,minHeight:0 }}>
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.5rem",flex:1,minHeight:0 }}>
