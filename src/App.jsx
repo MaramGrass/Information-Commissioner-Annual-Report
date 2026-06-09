@@ -951,32 +951,65 @@ export default function App() {
             <SH2>Income and expenditure</SH2>
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.5rem",fontWeight:300 }}>Income outperformed target by £11,091. Pay costs increased significantly, reflecting the doubling of staff — fully supported by Treasury-approved contingency funding of £285,000.</p>
           </Reveal>
-          <div style={{ display:"flex",flexDirection:"column",gap:"1.25rem",flex:1,minHeight:0 }}>
-            <div style={{ display:"grid",gridTemplateColumns:m("1fr","1fr 1fr"),gap:"1.5rem",flex:m("none",1),minHeight:0 }}>
-              {[
-                { num:"£162,927",lbl:"Fee income",sub:"Target was £151,836",note:"↑ £11,091 above target — strongest fee year to date",tag:"Income" },
-                { num:"£620,547",lbl:"Total pay costs",sub:"Including temporary staff",note:"Reflects the doubling of the team from 5 to 10 staff during the year, supported by Treasury-approved contingency funding of £285,000",tag:"Expenditure" },
-              ].map((fc, i) => (
-                <PopCard key={fc.num} delay={i * 0.12} style={{ display:"flex",flexDirection:"column",minHeight:0 }}>
-                <div className="fin-card" style={{ flex:1,borderRadius:18,padding:"clamp(1.5rem,3vh,2.8rem) clamp(1.5rem,2.5vw,2.5rem)",position:"relative",overflow:"hidden",border:"1px solid rgba(0,0,0,.07)",background:C.white,display:"flex",flexDirection:"column",justifyContent:"flex-end" }}>
-                  <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>
-                  <div style={{ position:"absolute",bottom:"-2rem",right:"1rem",fontFamily:"Arial,sans-serif",fontSize:m("clamp(4rem,18vw,6rem)","clamp(6rem,18vh,14rem)"),fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
-                  <div style={{ marginTop:"auto" }}>
-                    <div style={tagStyle(C.mid,"rgba(0,0,0,.04)")}>{fc.tag}</div>
-                    <div style={{ fontSize:"clamp(10px,1.3vh,13px)",letterSpacing:".08em",color:C.mid,marginBottom:"clamp(.4rem,1vh,.8rem)",fontWeight:400 }}>{fc.sub}</div>
-                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:m("clamp(2.2rem,8vw,3rem)","clamp(2.8rem,8vh,6.5rem)"),fontWeight:900,lineHeight:1,marginBottom:"clamp(.3rem,.8vh,.6rem)" }}><GradientText>{fc.num}</GradientText></div>
-                    <div style={{ fontSize:"clamp(15px,2.2vh,22px)",color:C.ink,fontWeight:700 }}>{fc.lbl}</div>
+          <div style={{ display:"flex",flexDirection:"column",gap:"1.25rem",flex:m("none",1),minHeight:0 }}>
+            {/* Main content: table left, cards right */}
+            <div style={{ display:"grid",gridTemplateColumns:m("1fr","1.1fr 1fr"),gap:"1.5rem",flex:m("none",1),minHeight:0,alignItems:"start" }}>
+
+              {/* ── Finance table ── */}
+              <Reveal direction="left" style={{ display:"flex",flexDirection:"column" }}>
+                <div style={{ borderRadius:16,overflow:"hidden",border:"1px solid rgba(0,0,0,.08)",boxShadow:"0 4px 24px rgba(0,0,0,.05)" }}>
+                  {/* Header row */}
+                  <div style={{ display:"grid",gridTemplateColumns:"1.5fr 1fr 1fr" }}>
+                    <div style={{ background:C.ink,padding:"clamp(.9rem,1.8vh,1.25rem) clamp(1rem,1.5vw,1.5rem)" }}/>
+                    <div style={{ background:C.p,padding:"clamp(.9rem,1.8vh,1.25rem) .75rem",textAlign:"center" }}>
+                      <span style={{ color:"white",fontWeight:700,fontSize:"clamp(12px,1.2vw,14px)",letterSpacing:".02em" }}>Target (£)</span>
+                    </div>
+                    <div style={{ background:`linear-gradient(90deg,${C.p},${C.b})`,padding:"clamp(.9rem,1.8vh,1.25rem) .75rem",textAlign:"center" }}>
+                      <span style={{ color:"white",fontWeight:700,fontSize:"clamp(12px,1.2vw,14px)",letterSpacing:".02em" }}>Actual (£)</span>
+                    </div>
                   </div>
-                  <div style={{ fontSize:"clamp(12px,1.6vh,15px)",color:C.mid,lineHeight:1.75,fontWeight:300,maxWidth:"85%",paddingTop:"clamp(.5rem,1.2vh,1rem)",borderTop:"1px solid rgba(0,0,0,.06)" }}>{fc.note}</div>
+                  {/* Data rows */}
+                  {[
+                    { label:"Income",        target:"−151,800", actual:"−162,927", hi:false },
+                    { label:"Pay",           target:"603,500",  actual:"603,400",  hi:false },
+                    { label:"Non-Pay",       target:"151,800",  actual:"151,788",  hi:false },
+                    { label:"General revenue required", target:"603,500", actual:"592,188", hi:true },
+                  ].map((row) => (
+                    <div key={row.label} style={{ display:"grid",gridTemplateColumns:"1.5fr 1fr 1fr",borderTop:"1px solid rgba(0,0,0,.07)",background:row.hi?`linear-gradient(90deg,${C.p}14,${C.b}10)`:C.white }}>
+                      <div style={{ padding:"clamp(.75rem,1.5vh,1rem) clamp(1rem,1.5vw,1.5rem)",fontSize:"clamp(12px,1.1vw,14px)",color:C.ink,fontWeight:row.hi?600:400,lineHeight:1.35 }}>{row.label}</div>
+                      <div style={{ padding:"clamp(.75rem,1.5vh,1rem) .75rem",textAlign:"center",fontSize:"clamp(12px,1.1vw,14px)",color:row.hi?C.mid:C.mid,fontFamily:"Arial,sans-serif",fontWeight:row.hi?500:400 }}>{row.target}</div>
+                      <div style={{ padding:"clamp(.75rem,1.5vh,1rem) .75rem",textAlign:"center",fontSize:"clamp(12px,1.1vw,14px)",color:row.hi?C.p:C.mid,fontFamily:"Arial,sans-serif",fontWeight:row.hi?700:400 }}>{row.actual}</div>
+                    </div>
+                  ))}
                 </div>
-                </PopCard>
-              ))}
+              </Reveal>
+
+              {/* ── Finance cards stacked ── */}
+              <div style={{ display:"flex",flexDirection:"column",gap:"1rem" }}>
+                {[
+                  { num:"£162,927",lbl:"Fee income",sub:"Target was £151,836",note:"↑ £11,091 above target — strongest fee year to date",tag:"Income" },
+                  { num:"£620,547",lbl:"Total pay costs",sub:"Including temporary staff",note:"Reflects the doubling of the team from 5 to 10 staff, supported by Treasury-approved contingency funding of £285,000",tag:"Expenditure" },
+                ].map((fc, i) => (
+                  <PopCard key={fc.num} delay={i * 0.12} style={{ display:"flex",flexDirection:"column" }}>
+                  <div className="fin-card" style={{ borderRadius:18,padding:"clamp(1.25rem,2.5vh,2rem) clamp(1.25rem,2vw,2rem)",position:"relative",overflow:"hidden",border:"1px solid rgba(0,0,0,.07)",background:C.white,display:"flex",flexDirection:"column" }}>
+                    <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>
+                    <div style={{ position:"absolute",bottom:"-1rem",right:".75rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(4rem,10vw,7rem)",fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
+                    <div style={tagStyle(C.mid,"rgba(0,0,0,.04)")}>{fc.tag}</div>
+                    <div style={{ fontSize:"clamp(10px,1.1vh,12px)",letterSpacing:".08em",color:C.mid,marginBottom:".5rem",fontWeight:400 }}>{fc.sub}</div>
+                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2rem,4.5vw,3.2rem)",fontWeight:900,lineHeight:1,marginBottom:".3rem" }}><GradientText>{fc.num}</GradientText></div>
+                    <div style={{ fontSize:"clamp(13px,1.4vw,16px)",color:C.ink,fontWeight:700,marginBottom:".75rem" }}>{fc.lbl}</div>
+                    <div style={{ fontSize:"clamp(11px,1.1vw,13px)",color:C.mid,lineHeight:1.7,fontWeight:300,paddingTop:".75rem",borderTop:"1px solid rgba(0,0,0,.06)" }}>{fc.note}</div>
+                  </div>
+                  </PopCard>
+                ))}
+              </div>
             </div>
+
+            {/* Footer bar */}
             <div style={{ background:C.ink,borderRadius:16,padding:"1.75rem 2rem",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"1rem" }}>
               <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.1rem",fontWeight:700,color:"white" }}>ICO Isle of Man</div>
               <div style={{ display:"flex",gap:"1.5rem" }}>
                 <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ fontSize:11,color:"white",textDecoration:"none" }}>inforights.im</a>
-                <a href="https://www.inforights.im" target="_blank" rel="noopener noreferrer" style={{ fontSize:11,color:"white",textDecoration:"none" }}>Privacy Policy</a>
                 <button onClick={() => scrollToPanel("top")} style={{ background:"none",border:"none",cursor:"pointer",fontSize:11,color:"white" }}>Back to start ←</button>
               </div>
               <span style={{ fontSize:11,color:"rgba(255,255,255,.6)" }}>© 2026 Information Commissioner's Office · Isle of Man · Annual Report 2025/26</span>
