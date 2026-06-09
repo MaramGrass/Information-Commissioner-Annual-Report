@@ -362,6 +362,7 @@ function NavOverlay({ open, onClose, onNavigate, onPrivacy }) {
 const tagStyle = (color, bg) => ({ fontSize:10,letterSpacing:".1em",textTransform:"uppercase",padding:"3px 10px",borderRadius:20,display:"inline-block",marginBottom:".6rem",fontWeight:500,background:bg,color });
 
 const CASE_PANEL = 5;
+const REG_PANEL  = 9;
 const PRIO_PANEL = 10;
 
 export default function App() {
@@ -386,6 +387,7 @@ export default function App() {
   const cardRefs   = useRef([]);
   const caseTrackRef = useRef(null);
   const prioTrackRef = useRef(null);
+  const regTrackRef  = useRef(null);
 
   const applyPhase = useCallback((phase, idx) => {
     csPhaseRef.current = phase;
@@ -485,8 +487,8 @@ export default function App() {
         return;
       }
 
-      if (cur === PRIO_PANEL) {
-        const track = prioTrackRef.current;
+      if (cur === REG_PANEL || cur === PRIO_PANEL) {
+        const track = (cur === REG_PANEL ? regTrackRef : prioTrackRef).current;
         if (track) {
           const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 20;
           const atStart = track.scrollLeft <= 20;
@@ -900,7 +902,7 @@ export default function App() {
           {/* HScrollTrack takes 55% of remaining, charts take 45% */}
           <div style={{ flex:1,display:"flex",flexDirection:"column",gap:"1rem",minHeight:0 }}>
             <div style={{ flex:"0 0 52%",display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw",padding:"0 5vw" }}>
-              <HScrollTrack>
+              <HScrollTrack innerRef={regTrackRef}>
                 {[
                   { tag:"Warnings",tc:C.t,tb:"rgba(42,191,191,.1)",num:"1",l:"1 warning issued to a public sector organisation in 2025/26" },
                   { tag:"Reprimands",tc:C.p,tb:"rgba(123,79,191,.1)",num:"4",l:"Payroll Partners · Manx Care · QEII High School · Shell Shipping Ltd" },
