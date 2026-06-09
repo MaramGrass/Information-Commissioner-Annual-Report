@@ -46,9 +46,9 @@ function Reveal({ children, direction = "up", delay = 0, style = {} }) {
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
-  const transforms = { up:"translateY(24px)",left:"translateX(-24px)",right:"translateX(24px)" };
+  const transforms = { up:"translateY(36px) scale(0.95)",left:"translateX(-36px) scale(0.96)",right:"translateX(36px) scale(0.96)" };
   return (
-    <div ref={ref} style={{ opacity:vis?1:0,transform:vis?"none":transforms[direction],transition:`opacity 0.65s ease ${delay}s, transform 0.65s ease ${delay}s`,...style }}>
+    <div ref={ref} style={{ opacity:vis?1:0,transform:vis?"none":transforms[direction],transition:`opacity 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 0.75s cubic-bezier(0.16,1,0.3,1) ${delay}s`,...style }}>
       {children}
     </div>
   );
@@ -293,11 +293,18 @@ export default function App() {
         @keyframes spin-slow { to{transform:rotate(360deg)} }
         @keyframes marquee { to{transform:translateX(-50%)} }
         @keyframes pulse-right { 0%{transform:scaleX(0);transform-origin:left} 50%{transform:scaleX(1);transform-origin:left} 51%{transform:scaleX(1);transform-origin:right} 100%{transform:scaleX(0);transform-origin:right} }
+        @keyframes pop-in { 0%{opacity:0;transform:scale(.88) translateY(22px)} 60%{opacity:1} 100%{opacity:1;transform:scale(1) translateY(0)} }
+        @keyframes slide-up { 0%{opacity:0;transform:translateY(18px)} 100%{opacity:1;transform:translateY(0)} }
         ::-webkit-scrollbar { display:none }
-        .val-card:hover { transform:translateY(-4px) !important; box-shadow:0 16px 48px rgba(0,0,0,.09) !important }
-        .cc-card:hover { transform:translateY(-5px) !important; box-shadow:0 20px 52px rgba(0,0,0,.12) !important }
-        .ins-item:hover { transform:translateX(4px) !important; box-shadow:0 4px 20px rgba(0,0,0,.08) !important }
+        .val-card:hover { transform:translateY(-5px) !important; box-shadow:0 20px 56px rgba(0,0,0,.11) !important }
+        .cc-card:hover { transform:translateY(-6px) !important; box-shadow:0 24px 60px rgba(0,0,0,.13) !important }
+        .ins-item:hover { transform:translateX(5px) !important; box-shadow:0 4px 24px rgba(0,0,0,.1) !important }
         .stat-card:hover .stat-bar { transform:scaleX(1) !important }
+        .stat-card:hover { transform:translateY(-4px) !important; box-shadow:0 16px 44px rgba(0,0,0,.09) !important; transition:transform .25s, box-shadow .25s !important }
+        .pri-card { transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s !important }
+        .pri-card:hover { transform:translateY(-6px) scale(1.015) !important; box-shadow:0 24px 60px rgba(0,0,0,.12) !important }
+        .fin-card { transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s !important }
+        .fin-card:hover { transform:translateY(-5px) !important; box-shadow:0 20px 56px rgba(0,0,0,.1) !important }
       `}</style>
 
       {/* Progress */}
@@ -602,13 +609,11 @@ export default function App() {
 
         {/* ── PANEL 11: PRIORITIES ─────────────────────────────────────────── */}
         <section id="priorities" style={{ ...P(C.off) }}>
-          <Reveal>
+          <Reveal style={{ flexShrink:0 }}>
             <SLabel>Looking ahead</SLabel>
             <SH2>Strategy 2026/27: Compliance through collaboration</SH2>
-            <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".75rem",fontWeight:300 }}>Our strategic direction for the year ahead, shaped by listening to those we regulate and the communities we serve.</p>
           </Reveal>
-          <div style={{ flex:1,display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw" }}>
-          <HScrollTrack>
+          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:"1rem",flex:1,minHeight:0 }}>
             {[
               { num:"Priority 01",title:"Collaboration",body:"Build confidence in how people and organisations use personal information. Help children stay safe online. Improve private sector understanding through simple guidance and practical training.",color:C.p,
                 svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><circle cx="45" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".25"/><circle cx="75" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".25"/><circle cx="60" cy="44" r="12" fill="currentColor" opacity=".08"/><circle cx="60" cy="76" r="12" fill="currentColor" opacity=".08"/><path d="M33 50 Q60 30 87 50" stroke="currentColor" strokeWidth="2" opacity=".15" fill="none"/><path d="M33 70 Q60 90 87 70" stroke="currentColor" strokeWidth="2" opacity=".15" fill="none"/></svg> },
@@ -618,44 +623,43 @@ export default function App() {
                 svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><rect x="28" y="48" width="16" height="44" rx="4" fill="currentColor" opacity=".15"/><rect x="52" y="32" width="16" height="60" rx="4" fill="currentColor" opacity=".2"/><rect x="76" y="20" width="16" height="72" rx="4" fill="currentColor" opacity=".28"/><path d="M28 48 L44 36 L68 44 L92 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity=".35"/><circle cx="92" cy="20" r="4" fill="currentColor" opacity=".4"/></svg> },
               { num:"Priority 04",title:"Transparency",body:"Demonstrate openness through increased publication of regulatory work and case studies. Develop an FOI performance dashboard with OCSIA. Ensure our work is clear and accessible to all.",color:C.o,
                 svg:<svg viewBox="0 0 120 120" fill="none" style={{width:"100%",height:"100%"}}><circle cx="60" cy="60" r="28" stroke="currentColor" strokeWidth="3" opacity=".22"/><circle cx="60" cy="60" r="10" fill="currentColor" opacity=".15"/><path d="M20 60 Q40 35 60 32 Q80 35 100 60 Q80 85 60 88 Q40 85 20 60Z" stroke="currentColor" strokeWidth="2.5" opacity=".2" fill="none"/><line x1="60" y1="22" x2="60" y2="98" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity=".15"/><line x1="22" y1="60" x2="98" y2="60" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity=".15"/></svg> },
-            ].map((pc) => (
-              <div key={pc.num} style={{ flex:"0 0 300px",scrollSnapAlign:"start",borderRadius:18,padding:"2rem",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",color:pc.color }}>
+            ].map((pc, i) => (
+              <div key={pc.num} className="pri-card" style={{ borderRadius:18,padding:"clamp(1.2rem,2.5vh,2rem) clamp(1.2rem,2vw,2rem)",border:`1.5px solid ${C.lite}`,background:C.white,position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",color:pc.color,animation:`pop-in 0.65s cubic-bezier(0.16,1,0.3,1) ${0.1+i*0.1}s both` }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:GH }}/>
-                {/* SVG illustration fills the top portion */}
-                <div style={{ flex:1,display:"flex",alignItems:"center",justifyContent:"center",minHeight:0,marginBottom:"1.25rem" }}>
-                  <div style={{ width:"60%",aspectRatio:"1" }}>{pc.svg}</div>
+                <div style={{ position:"absolute",bottom:"-1.5rem",right:"-1rem",width:"clamp(80px,18vh,140px)",aspectRatio:"1",opacity:.06,color:pc.color }}>{pc.svg}</div>
+                <div style={{ fontSize:"clamp(9px,1vh,11px)",letterSpacing:".15em",marginBottom:".5rem",fontWeight:500,background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text" }}>{pc.num}</div>
+                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.2rem,2.8vh,2rem)",color:C.ink,marginBottom:"clamp(.4rem,1vh,.8rem)",lineHeight:1.15,fontWeight:800 }}>{pc.title}</div>
+                <div style={{ fontSize:"clamp(12px,1.6vh,15px)",color:C.mid,lineHeight:1.7,flex:1 }}>{pc.body}</div>
+                <div style={{ marginTop:"auto",paddingTop:"1rem",display:"flex",alignItems:"center",gap:".5rem" }}>
+                  <div style={{ height:2,flex:1,background:GH,borderRadius:2,opacity:.4 }}/>
                 </div>
-                <div style={{ fontSize:11,letterSpacing:".15em",marginBottom:".4rem",fontWeight:500,background:GH,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text" }}>{pc.num}</div>
-                <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1rem,1.3vw,1.3rem)",color:C.ink,marginBottom:".5rem",lineHeight:1.2,fontWeight:700 }}>{pc.title}</div>
-                <div style={{ fontSize:"clamp(11px,0.85vw,13px)",color:C.mid,lineHeight:1.65 }}>{pc.body}</div>
               </div>
             ))}
-          </HScrollTrack>
           </div>
         </section>
 
         {/* ── PANEL 12: FINANCE + FOOTER ───────────────────────────────────── */}
         <section id="finance" style={{ ...P(C.white) }}>
-          <Reveal>
+          <Reveal style={{ flexShrink:0 }}>
             <SLabel>Finance 2025/26</SLabel>
             <SH2>Income and expenditure</SH2>
-            <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.5rem",fontWeight:300 }}>Income outperformed target by £11,091. Pay costs increased significantly, reflecting the doubling of staff — fully supported by Treasury-approved contingency funding of £285,000.</p>
           </Reveal>
-          <Reveal delay={0.08} style={{ flex:1,display:"flex",flexDirection:"column",gap:"1.25rem",minHeight:0 }}>
+          <div style={{ display:"flex",flexDirection:"column",gap:"1.25rem",flex:1,minHeight:0 }}>
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.5rem",flex:1,minHeight:0 }}>
               {[
-                { num:"£162,927",lbl:"Fee income",sub:"Target was £151,836",note:"↑ £11,091 above target — strongest fee year to date" },
-                { num:"£620,547",lbl:"Total pay costs",sub:"Including temporary staff",note:"Reflects the doubling of the team from 5 to 10 staff during the year, supported by Treasury-approved contingency funding of £285,000" },
-              ].map((fc) => (
-                <div key={fc.num} style={{ borderRadius:18,padding:"2.5rem 2rem",position:"relative",overflow:"hidden",border:"1px solid rgba(0,0,0,.07)",background:C.white,display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
+                { num:"£162,927",lbl:"Fee income",sub:"Target was £151,836",note:"↑ £11,091 above target — strongest fee year to date",tag:"Income" },
+                { num:"£620,547",lbl:"Total pay costs",sub:"Including temporary staff",note:"Reflects the doubling of the team from 5 to 10 staff during the year, supported by Treasury-approved contingency funding of £285,000",tag:"Expenditure" },
+              ].map((fc, i) => (
+                <div key={fc.num} className="fin-card" style={{ borderRadius:18,padding:"clamp(1.5rem,3vh,2.8rem) clamp(1.5rem,2.5vw,2.5rem)",position:"relative",overflow:"hidden",border:"1px solid rgba(0,0,0,.07)",background:C.white,display:"flex",flexDirection:"column",justifyContent:"space-between",animation:`pop-in 0.65s cubic-bezier(0.16,1,0.3,1) ${0.1+i*0.15}s both` }}>
                   <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>
-                  <div style={{ position:"absolute",bottom:"-1rem",right:"1rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(5rem,12vh,11rem)",fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
+                  <div style={{ position:"absolute",bottom:"-2rem",right:"1rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(6rem,18vh,14rem)",fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
                   <div>
-                    <div style={{ fontSize:"clamp(10px,1.2vh,12px)",letterSpacing:".1em",textTransform:"uppercase",color:C.mid,marginBottom:".5rem",fontWeight:500 }}>{fc.sub}</div>
-                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.2rem,5vh,4.5rem)",fontWeight:900,lineHeight:1,marginBottom:".5rem" }}><GradientText>{fc.num}</GradientText></div>
-                    <div style={{ fontSize:"clamp(14px,1.8vh,18px)",color:C.ink,fontWeight:600 }}>{fc.lbl}</div>
+                    <div style={tagStyle(C.mid,"rgba(0,0,0,.04)")}>{fc.tag}</div>
+                    <div style={{ fontSize:"clamp(10px,1.3vh,13px)",letterSpacing:".08em",color:C.mid,marginBottom:"clamp(.4rem,1vh,.8rem)",fontWeight:400 }}>{fc.sub}</div>
+                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.8rem,8vh,6.5rem)",fontWeight:900,lineHeight:1,marginBottom:"clamp(.3rem,.8vh,.6rem)" }}><GradientText>{fc.num}</GradientText></div>
+                    <div style={{ fontSize:"clamp(15px,2.2vh,22px)",color:C.ink,fontWeight:700 }}>{fc.lbl}</div>
                   </div>
-                  <div style={{ fontSize:"clamp(11px,1.4vh,14px)",color:C.mid,lineHeight:1.7,fontWeight:300,maxWidth:"80%" }}>{fc.note}</div>
+                  <div style={{ fontSize:"clamp(12px,1.6vh,15px)",color:C.mid,lineHeight:1.75,fontWeight:300,maxWidth:"85%",paddingTop:"clamp(.5rem,1.2vh,1rem)",borderTop:"1px solid rgba(0,0,0,.06)" }}>{fc.note}</div>
                 </div>
               ))}
             </div>
@@ -668,7 +672,7 @@ export default function App() {
               </div>
               <span style={{ fontSize:11,color:"rgba(255,255,255,.6)" }}>© 2026 Information Commissioner's Office · Isle of Man · Annual Report 2025/26</span>
             </div>
-          </Reveal>
+          </div>
         </section>
 
       </div>
