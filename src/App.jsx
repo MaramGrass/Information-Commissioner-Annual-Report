@@ -437,11 +437,11 @@ export default function App() {
             ].map((row, ri) => (
               <div key={ri} style={{ flex:1,display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:2,background:C.lite,borderRadius:16,overflow:"hidden" }}>
                 {row.map((s) => (
-                  <div key={s.tag} className="stat-card" style={{ background:C.white,padding:"1.5rem 1.25rem",position:"relative",overflow:"hidden" }}>
+                  <div key={s.tag} className="stat-card" style={{ background:C.white,padding:"clamp(1rem,2.5vh,2rem) 1.25rem",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
                     <div className="stat-bar" style={{ position:"absolute",bottom:0,left:0,right:0,height:3,background:GH,transform:"scaleX(0)",transition:"transform .4s" }}/>
                     <div style={tagStyle(s.tc,s.tb)}>{s.tag}</div>
-                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"2.6rem",fontWeight:900,lineHeight:1,marginBottom:".3rem" }}><GradientText><Counter target={s.v} plus={s.plus}/></GradientText></div>
-                    <div style={{ fontSize:11,color:C.mid,lineHeight:1.4 }}>{s.l}</div>
+                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.4rem,5.5vh,5rem)",fontWeight:900,lineHeight:1,margin:"auto 0" }}><GradientText><Counter target={s.v} plus={s.plus}/></GradientText></div>
+                    <div style={{ fontSize:"clamp(10px,1.4vh,13px)",color:C.mid,lineHeight:1.4 }}>{s.l}</div>
                   </div>
                 ))}
               </div>
@@ -512,16 +512,15 @@ export default function App() {
 
         {/* ── PANEL 7: COMPLAINTS ──────────────────────────────────────────── */}
         <section id="complaints" style={{ ...P(C.white) }}>
-          <Reveal>
+          <Reveal style={{ flexShrink:0 }}>
             <SLabel>Data protection complaints</SLabel>
             <SH2>Complaints in 2025/26</SH2>
-            <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.25rem",fontWeight:300 }}>53 complaints received — a significant increase on previous years, driven partly by domestic CCTV inclusion and growing public awareness of information rights.</p>
           </Reveal>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:"1.25rem",flex:1,minHeight:0 }}>
-            <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column" }}><CCard title="Total complaints by year (excl. domestic CCTV)" sub="Formal and informal investigations" style={{ flex:1 }}><ChartCanvas config={charts.Comp} height={80}/></CCard></Reveal>
-            <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column" }}><CCard title="2025/26 complaints by sector" sub="Including domestic CCTV (32% of total)" style={{ flex:1 }}><ChartCanvas config={charts.Sect} height={80}/></CCard></Reveal>
-            <Reveal direction="left" delay={0.1} style={{ display:"flex",flexDirection:"column" }}><CCard title="Nature of complaints 2025/26" sub="Subject access requests were most common" style={{ flex:1 }}><ChartCanvas config={charts.Nature} height={80}/></CCard></Reveal>
-            <Reveal direction="right" delay={0.1} style={{ display:"flex",flexDirection:"column" }}><CCard title="Complaint closure speed (stacked)" sub="Significant improvement — oldest open complaint just 6 months vs 11 months prior year" style={{ flex:1 }}><ChartCanvas config={charts.Speed} height={80}/></CCard></Reveal>
+          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gridTemplateRows:"1fr 1fr",gap:"1rem",flex:1,minHeight:0 }}>
+            <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Total complaints by year (excl. domestic CCTV)" sub="Formal and informal investigations" style={{ flex:1 }}><ChartCanvas config={charts.Comp} height={60}/></CCard></Reveal>
+            <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="2025/26 complaints by sector" sub="Including domestic CCTV (32% of total)" style={{ flex:1 }}><ChartCanvas config={charts.Sect} height={60}/></CCard></Reveal>
+            <Reveal direction="left" delay={0.1} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Nature of complaints 2025/26" sub="Subject access requests were most common" style={{ flex:1 }}><ChartCanvas config={charts.Nature} height={60}/></CCard></Reveal>
+            <Reveal direction="right" delay={0.1} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Complaint closure speed (stacked)" sub="Significant improvement — oldest open complaint just 6 months vs 11 months prior year" style={{ flex:1 }}><ChartCanvas config={charts.Speed} height={60}/></CCard></Reveal>
           </div>
         </section>
 
@@ -643,21 +642,20 @@ export default function App() {
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.5rem",fontWeight:300 }}>Income outperformed target by £11,091. Pay costs increased significantly, reflecting the doubling of staff — fully supported by Treasury-approved contingency funding of £285,000.</p>
           </Reveal>
           <Reveal delay={0.08} style={{ flex:1,display:"flex",flexDirection:"column",gap:"1.25rem",minHeight:0 }}>
-            <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"1.5rem",flex:1,minHeight:0 }}>
+            <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"1.5rem",flex:1,minHeight:0 }}>
               {[
-                { num:"£162,927",lbl:"Fee income (target £151,836)",note:"↑ £11,091 above target",accent:false },
-                { num:"£620,547",lbl:"Total pay costs including temporary staff",note:"Reflects doubling of team size during year",accent:false },
-                { num:"£125,590",lbl:"Information Commissioner's basic salary 2025/26",note:"All bandings published in full report",accent:true },
+                { num:"£162,927",lbl:"Fee income",sub:"Target was £151,836",note:"↑ £11,091 above target — strongest fee year to date" },
+                { num:"£620,547",lbl:"Total pay costs",sub:"Including temporary staff",note:"Reflects the doubling of the team from 5 to 10 staff during the year, supported by Treasury-approved contingency funding of £285,000" },
               ].map((fc) => (
-                <div key={fc.num} style={{ borderRadius:18,padding:"2.5rem 2rem",position:"relative",overflow:"hidden",border:fc.accent?"none":"1px solid rgba(0,0,0,.07)",background:fc.accent?G1:C.white,display:"flex",flexDirection:"column",justifyContent:"flex-end" }}>
-                  {!fc.accent && <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>}
-                  {/* decorative large number in background */}
-                  <div style={{ position:"absolute",top:"-.5rem",right:"1rem",fontFamily:"Arial,sans-serif",fontSize:"8rem",fontWeight:900,lineHeight:1,opacity:.04,color:fc.accent?"white":C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
-                  <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.8rem,3vw,3rem)",fontWeight:900,marginBottom:".5rem",lineHeight:1 }}>
-                    {fc.accent ? <span style={{ color:"white" }}>{fc.num}</span> : <GradientText>{fc.num}</GradientText>}
+                <div key={fc.num} style={{ borderRadius:18,padding:"2.5rem 2rem",position:"relative",overflow:"hidden",border:"1px solid rgba(0,0,0,.07)",background:C.white,display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
+                  <div style={{ position:"absolute",top:0,left:0,right:0,height:4,background:GH }}/>
+                  <div style={{ position:"absolute",bottom:"-1rem",right:"1rem",fontFamily:"Arial,sans-serif",fontSize:"clamp(5rem,12vh,11rem)",fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none",userSelect:"none" }}>{fc.num.replace(/[^0-9]/g,"").slice(0,3)}</div>
+                  <div>
+                    <div style={{ fontSize:"clamp(10px,1.2vh,12px)",letterSpacing:".1em",textTransform:"uppercase",color:C.mid,marginBottom:".5rem",fontWeight:500 }}>{fc.sub}</div>
+                    <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(2.2rem,5vh,4.5rem)",fontWeight:900,lineHeight:1,marginBottom:".5rem" }}><GradientText>{fc.num}</GradientText></div>
+                    <div style={{ fontSize:"clamp(14px,1.8vh,18px)",color:C.ink,fontWeight:600 }}>{fc.lbl}</div>
                   </div>
-                  <div style={{ fontSize:13,color:fc.accent?"rgba(255,255,255,.75)":C.mid,marginBottom:".35rem" }}>{fc.lbl}</div>
-                  <div style={{ fontSize:12,color:fc.accent?"rgba(255,255,255,.6)":C.t,fontWeight:500 }}>{fc.note}</div>
+                  <div style={{ fontSize:"clamp(11px,1.4vh,14px)",color:C.mid,lineHeight:1.7,fontWeight:300,maxWidth:"80%" }}>{fc.note}</div>
                 </div>
               ))}
             </div>
