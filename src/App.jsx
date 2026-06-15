@@ -440,14 +440,26 @@ export default function App() {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    let cooldown = false;
-    const lock = (ms) => { cooldown = true; setTimeout(() => { cooldown = false; }, ms); };
+    let locked = false;
+    let lockUntil = 0;
+    let unlockTO = null;
+    const reschedule = () => {
+      if (unlockTO) clearTimeout(unlockTO);
+      unlockTO = setTimeout(() => { locked = false; }, Math.max(0, lockUntil - performance.now()));
+    };
+    // Arm the lock for at least `ms` (the action's animation length).
+    const lock = (ms) => { locked = true; lockUntil = performance.now() + ms; reschedule(); };
     const onWheel = (e) => {
       if (window.innerWidth < 768) return;
       e.preventDefault();
-      // One gesture = one action. A trackpad fires a burst of momentum events;
-      // this gate ensures only the first of the burst is acted on.
-      if (cooldown) return;
+      // One gesture = one action. A trackpad fires a long burst of momentum
+      // events; while locked, keep extending the lock until the events stop
+      // for 180ms, so the tail of one swipe can't trigger a second action.
+      if (locked) {
+        lockUntil = Math.max(lockUntil, performance.now() + 180);
+        reschedule();
+        return;
+      }
       const dir = e.deltaY > 0 ? 1 : -1;
       const panelW = el.clientWidth;
       const cur = Math.round(el.scrollLeft / panelW);
@@ -522,7 +534,7 @@ export default function App() {
       el.scrollTo({ left: next * panelW, behavior: "smooth" });
     };
     window.addEventListener("wheel", onWheel, { passive: false });
-    return () => window.removeEventListener("wheel", onWheel);
+    return () => { window.removeEventListener("wheel", onWheel); if (unlockTO) clearTimeout(unlockTO); };
   }, [openStudy, closeStudy, snapCarousel]);
 
   useEffect(() => {
