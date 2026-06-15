@@ -441,9 +441,13 @@ export default function App() {
     const el = containerRef.current;
     if (!el) return;
     let cooldown = false;
+    const lock = (ms) => { cooldown = true; setTimeout(() => { cooldown = false; }, ms); };
     const onWheel = (e) => {
       if (window.innerWidth < 768) return;
       e.preventDefault();
+      // One gesture = one action. A trackpad fires a burst of momentum events;
+      // this gate ensures only the first of the burst is acted on.
+      if (cooldown) return;
       const dir = e.deltaY > 0 ? 1 : -1;
       const panelW = el.clientWidth;
       const cur = Math.round(el.scrollLeft / panelW);
@@ -456,6 +460,7 @@ export default function App() {
           if (phase === "open") {
             // Close current study, smoothly scroll carousel to next card
             const nextPos = csIdxRef.current + 1;
+            lock(700);
             closeStudy(() => {
               csCarouselPos.current = nextPos;
               snapCarousel(Math.min(nextPos, CASE_STUDIES.length - 1), "smooth");
@@ -466,22 +471,27 @@ export default function App() {
           if (csCarouselPos.current >= CASE_STUDIES.length) {
             // All done — advance to next panel, reset carousel silently after transition
             csCarouselPos.current = 0;
+            lock(900);
             el.scrollTo({ left: (cur + 1) * panelW, behavior: "smooth" });
             setTimeout(() => snapCarousel(0), 900);
           } else {
+            lock(700);
             openStudy(csCarouselPos.current);
           }
         } else {
           if (phase === "open") {
             // Close current study, stay at this card
+            lock(700);
             closeStudy(null);
             return;
           }
           // phase === "closed"
           if (csCarouselPos.current === 0) {
+            lock(750);
             el.scrollTo({ left: (cur - 1) * panelW, behavior: "smooth" });
           } else {
             csCarouselPos.current--;
+            lock(700);
             openStudy(csCarouselPos.current); // openStudy does its own instant snap before measuring
           }
         }
@@ -494,19 +504,19 @@ export default function App() {
           const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 20;
           const atStart = track.scrollLeft <= 20;
           if (dir === 1 && !atEnd) {
+            lock(500);
             track.scrollBy({ left: (track.firstElementChild?.offsetWidth ?? 300) + 20, behavior:"smooth" });
             return;
           }
           if (dir === -1 && !atStart) {
+            lock(500);
             track.scrollBy({ left: -((track.firstElementChild?.offsetWidth ?? 300) + 20), behavior:"smooth" });
             return;
           }
         }
       }
 
-      if (cooldown) return;
-      cooldown = true;
-      setTimeout(() => { cooldown = false; }, 750);
+      lock(750);
       const total = Math.round(el.scrollWidth / panelW);
       const next = Math.max(0, Math.min(total - 1, cur + dir));
       el.scrollTo({ left: next * panelW, behavior: "smooth" });
