@@ -412,6 +412,7 @@ export default function App() {
   }, []);
 
   const openStudy = useCallback((idx) => {
+    csCarouselPos.current = idx;
     snapCarousel(idx);
     const start = cardClip(idx);
     applyPhase("expanding", idx);
@@ -436,6 +437,25 @@ export default function App() {
 
   // Tracks which card the carousel is resting at (so next open knows where to expand from)
   const csCarouselPos = useRef(0);
+
+  // Keep csCarouselPos in sync with manual drags of the case-studies track
+  useEffect(() => {
+    const track = caseTrackRef.current;
+    if (!track) return;
+    const onScroll = () => {
+      if (csPhaseRef.current !== "closed") return;
+      const center = track.scrollLeft + track.clientWidth / 2;
+      let nearest = 0, best = Infinity;
+      cardRefs.current.forEach((card, i) => {
+        if (!card) return;
+        const dist = Math.abs((card.offsetLeft + card.offsetWidth / 2) - center);
+        if (dist < best) { best = dist; nearest = i; }
+      });
+      csCarouselPos.current = nearest;
+    };
+    track.addEventListener("scroll", onScroll, { passive: true });
+    return () => track.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -468,43 +488,40 @@ export default function App() {
       if (cur === CASE_PANEL) {
         if (phase === "expanding" || phase === "contracting") return;
 
-        if (dir === 1) {
-          if (phase === "open") {
-            // Close current study, smoothly scroll carousel to next card
-            const nextPos = csIdxRef.current + 1;
-            lock(700);
-            closeStudy(() => {
-              csCarouselPos.current = nextPos;
-              snapCarousel(Math.min(nextPos, CASE_STUDIES.length - 1), "smooth");
-            });
-            return;
-          }
-          // phase === "closed"
-          if (csCarouselPos.current >= CASE_STUDIES.length) {
-            // All done — advance to next panel, reset carousel silently after transition
-            csCarouselPos.current = 0;
-            lock(900);
-            el.scrollTo({ left: (cur + 1) * panelW, behavior: "smooth" });
-            setTimeout(() => snapCarousel(0), 900);
+        if (phase === "open") {
+          if (dir === 1) {
+            const idx = csIdxRef.current;
+            if (idx >= CASE_STUDIES.length - 1) {
+              // Last card — close and move straight on to the next panel
+              lock(900);
+              closeStudy(() => {
+                el.scrollTo({ left: (cur + 1) * panelW, behavior: "smooth" });
+              });
+            } else {
+              // Close current study, smoothly scroll carousel to next card
+              lock(700);
+              closeStudy(() => snapCarousel(idx + 1, "smooth"));
+            }
           } else {
-            lock(700);
-            openStudy(csCarouselPos.current);
-          }
-        } else {
-          if (phase === "open") {
             // Close current study, stay at this card
             lock(700);
             closeStudy(null);
-            return;
           }
-          // phase === "closed"
-          if (csCarouselPos.current === 0) {
+          return;
+        }
+
+        // phase === "closed" — carousel remembers wherever it last rested
+        const pos = csCarouselPos.current;
+        if (dir === 1) {
+          lock(700);
+          openStudy(pos);
+        } else {
+          if (pos === 0) {
             lock(750);
             el.scrollTo({ left: (cur - 1) * panelW, behavior: "smooth" });
           } else {
-            csCarouselPos.current--;
             lock(700);
-            openStudy(csCarouselPos.current); // openStudy does its own instant snap before measuring
+            openStudy(pos - 1); // openStudy does its own instant snap before measuring
           }
         }
         return;
