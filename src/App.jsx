@@ -438,23 +438,29 @@ export default function App() {
   // Tracks which card the carousel is resting at (so next open knows where to expand from)
   const csCarouselPos = useRef(0);
 
-  // Keep csCarouselPos in sync with manual drags of the case-studies track
+  // Keep csCarouselPos in sync with manual drags of the case-studies track.
+  // Only syncs once scrolling has fully settled, so it never races the
+  // programmatic snap animations that openStudy/closeStudy already track exactly.
   useEffect(() => {
     const track = caseTrackRef.current;
     if (!track) return;
+    let settleTO = null;
     const onScroll = () => {
-      if (csPhaseRef.current !== "closed") return;
-      const center = track.scrollLeft + track.clientWidth / 2;
-      let nearest = 0, best = Infinity;
-      cardRefs.current.forEach((card, i) => {
-        if (!card) return;
-        const dist = Math.abs((card.offsetLeft + card.offsetWidth / 2) - center);
-        if (dist < best) { best = dist; nearest = i; }
-      });
-      csCarouselPos.current = nearest;
+      if (settleTO) clearTimeout(settleTO);
+      settleTO = setTimeout(() => {
+        if (csPhaseRef.current !== "closed") return;
+        const center = track.scrollLeft + track.clientWidth / 2;
+        let nearest = 0, best = Infinity;
+        cardRefs.current.forEach((card, i) => {
+          if (!card) return;
+          const dist = Math.abs((card.offsetLeft + card.offsetWidth / 2) - center);
+          if (dist < best) { best = dist; nearest = i; }
+        });
+        csCarouselPos.current = nearest;
+      }, 150);
     };
     track.addEventListener("scroll", onScroll, { passive: true });
-    return () => track.removeEventListener("scroll", onScroll);
+    return () => { track.removeEventListener("scroll", onScroll); if (settleTO) clearTimeout(settleTO); };
   }, []);
 
   useEffect(() => {
@@ -499,8 +505,11 @@ export default function App() {
               });
             } else {
               // Close current study, smoothly scroll carousel to next card
-              lock(700);
-              closeStudy(() => snapCarousel(idx + 1, "smooth"));
+              lock(900);
+              closeStudy(() => {
+                csCarouselPos.current = idx + 1;
+                snapCarousel(idx + 1, "smooth");
+              });
             }
           } else {
             // Close current study, stay at this card
