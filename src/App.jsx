@@ -412,7 +412,6 @@ export default function App() {
   }, []);
 
   const openStudy = useCallback((idx) => {
-    csCarouselPos.current = idx;
     snapCarousel(idx);
     const start = cardClip(idx);
     applyPhase("expanding", idx);
@@ -434,34 +433,6 @@ export default function App() {
       then?.();
     }, 480);
   }, [applyPhase, cardClip]);
-
-  // Tracks which card the carousel is resting at (so next open knows where to expand from)
-  const csCarouselPos = useRef(0);
-
-  // Keep csCarouselPos in sync with manual drags of the case-studies track.
-  // Only syncs once scrolling has fully settled, so it never races the
-  // programmatic snap animations that openStudy/closeStudy already track exactly.
-  useEffect(() => {
-    const track = caseTrackRef.current;
-    if (!track) return;
-    let settleTO = null;
-    const onScroll = () => {
-      if (settleTO) clearTimeout(settleTO);
-      settleTO = setTimeout(() => {
-        if (csPhaseRef.current !== "closed") return;
-        const center = track.scrollLeft + track.clientWidth / 2;
-        let nearest = 0, best = Infinity;
-        cardRefs.current.forEach((card, i) => {
-          if (!card) return;
-          const dist = Math.abs((card.offsetLeft + card.offsetWidth / 2) - center);
-          if (dist < best) { best = dist; nearest = i; }
-        });
-        csCarouselPos.current = nearest;
-      }, 150);
-    };
-    track.addEventListener("scroll", onScroll, { passive: true });
-    return () => { track.removeEventListener("scroll", onScroll); if (settleTO) clearTimeout(settleTO); };
-  }, []);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -493,51 +464,16 @@ export default function App() {
 
       if (cur === CASE_PANEL) {
         if (phase === "expanding" || phase === "contracting") return;
-
         if (phase === "open") {
-          if (dir === 1) {
-            const idx = csIdxRef.current;
-            if (idx >= CASE_STUDIES.length - 1) {
-              // Last card — close and move straight on to the next panel
-              lock(900);
-              closeStudy(() => {
-                el.scrollTo({ left: (cur + 1) * panelW, behavior: "smooth" });
-              });
-            } else {
-              // Close current study, smoothly scroll carousel to next card
-              lock(900);
-              closeStudy(() => {
-                csCarouselPos.current = idx + 1;
-                snapCarousel(idx + 1, "smooth");
-              });
-            }
-          } else {
-            // Close current study, stay at this card
-            lock(700);
-            closeStudy(null);
-          }
+          // Any scroll while a study is open just closes it back to the carousel.
+          lock(700);
+          closeStudy(null);
           return;
         }
-
-        // phase === "closed" — carousel remembers wherever it last rested
-        const pos = csCarouselPos.current;
-        if (dir === 1) {
-          lock(700);
-          openStudy(pos);
-        } else {
-          if (pos === 0) {
-            lock(750);
-            el.scrollTo({ left: (cur - 1) * panelW, behavior: "smooth" });
-          } else {
-            lock(700);
-            openStudy(pos - 1); // openStudy does its own instant snap before measuring
-          }
-        }
-        return;
       }
 
-      if (cur === REG_PANEL || cur === PRIO_PANEL) {
-        const track = (cur === REG_PANEL ? regTrackRef : prioTrackRef).current;
+      if (cur === REG_PANEL || cur === PRIO_PANEL || cur === CASE_PANEL) {
+        const track = (cur === REG_PANEL ? regTrackRef : cur === PRIO_PANEL ? prioTrackRef : caseTrackRef).current;
         if (track) {
           const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 20;
           const atStart = track.scrollLeft <= 20;
@@ -561,7 +497,7 @@ export default function App() {
     };
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => { window.removeEventListener("wheel", onWheel); if (unlockTO) clearTimeout(unlockTO); };
-  }, [openStudy, closeStudy, snapCarousel]);
+  }, [closeStudy]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -881,6 +817,9 @@ export default function App() {
                 <div style={{ fontSize:10,letterSpacing:".12em",textTransform:"uppercase",marginBottom:".75rem",color:c.bg===C.white?C.mid:"rgba(255,255,255,.65)",fontWeight:500 }}>{c.tag}</div>
                 <div style={{ fontFamily:"Arial,sans-serif",fontSize:"1.2rem",color:c.bg===C.white?C.ink:"white",lineHeight:1.3,marginBottom:".6rem",fontWeight:700 }}>{c.title}</div>
                 <div style={{ fontSize:12,color:c.bg===C.white?C.mid:"rgba(255,255,255,.65)",lineHeight:1.6 }}>{c.body}</div>
+                <div style={{ marginTop:".9rem",alignSelf:"flex-start",display:"inline-flex",alignItems:"center",gap:".4rem",fontSize:10,letterSpacing:".06em",textTransform:"uppercase",fontWeight:700,padding:".4rem .75rem",borderRadius:999,background:c.bg===C.white?"rgba(0,0,0,.05)":"rgba(255,255,255,.16)",color:c.bg===C.white?C.ink:"white" }}>
+                  Click to open <span aria-hidden="true">→</span>
+                </div>
               </div>
             ))}
           </HScrollTrack>
