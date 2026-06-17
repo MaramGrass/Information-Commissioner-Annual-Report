@@ -674,36 +674,45 @@ export default function App() {
         </section>
 
         {/* ── PANEL 2: FOREWORD ────────────────────────────────────────────── */}
-        <section id="foreword" style={{ ...P(C.paper) }}>
-          <div style={{ display:"grid",gridTemplateColumns:m("1fr","200px 1fr"),gap:m("1.5rem","4vw"),height:m("auto","100%"),alignItems:"start" }}>
-            {/* Photo + byline */}
-            <Reveal direction="left" style={{ display:"flex",flexDirection:"column",gap:"1rem" }}>
-              <div style={{ width:m("120px","100%"),aspectRatio:"3/4",borderRadius:16,overflow:"hidden",background:C.lite,flexShrink:0 }}>
-                <img src="/Alex head with background.png" alt="Dr Alexandra Delaney-Bhattacharya" style={{ width:"100%",height:"100%",objectFit:"cover",objectPosition:"top",display:"block" }} />
-              </div>
-              <div style={{ fontSize:".82rem",color:C.mid }}>
-                <strong style={{ color:C.ink,display:"block",fontWeight:600,marginBottom:".2rem" }}>Dr Alexandra Delaney-Bhattacharya</strong>
-                Information Commissioner<br/>May 2026
+        <section id="foreword" style={{ ...P(C.paper), padding:m("8vw 5vw 6vw",0) }}>
+          <div style={{ display:"grid",gridTemplateColumns:m("1fr","clamp(280px,34vw,460px) 1fr"),height:"100%",overflow:"hidden" }}>
+            {/* Photo — full-bleed left column */}
+            <Reveal direction="left" style={{ position:"relative",overflow:"hidden",display:m("none","block") }}>
+              <img src="/Alex head with background.png" alt="Dr Alexandra Delaney-Bhattacharya" style={{ width:"100%",height:"100%",objectFit:"cover",objectPosition:"top center",display:"block" }} />
+              <div style={{ position:"absolute",inset:0,background:"linear-gradient(to top, rgba(13,13,26,.75) 0%, transparent 55%)",pointerEvents:"none" }}/>
+              <div style={{ position:"absolute",bottom:"2.5rem",left:"2.5rem",right:"2.5rem" }}>
+                <strong style={{ color:"white",display:"block",fontWeight:700,fontSize:"1rem",marginBottom:".25rem" }}>Dr Alexandra Delaney-Bhattacharya</strong>
+                <span style={{ color:"rgba(255,255,255,.7)",fontSize:".85rem" }}>Information Commissioner, May 2026</span>
               </div>
             </Reveal>
-            {/* Text */}
-            <Reveal direction="right" style={{ display:"flex",flexDirection:"column",minHeight:0,overflow:"hidden" }}>
+            {/* Text — scrollable right column */}
+            <Reveal direction="right" style={{ display:"flex",flexDirection:"column",padding:m(0,"7vh 5vw 4vh"),overflow:"hidden" }}>
+              {/* Mobile-only byline */}
+              {mob && <div style={{ display:"flex",gap:"1rem",alignItems:"center",marginBottom:"1.25rem" }}>
+                <div style={{ width:64,height:64,borderRadius:"50%",overflow:"hidden",flexShrink:0 }}>
+                  <img src="/Alex head with background.png" alt="" style={{ width:"100%",height:"100%",objectFit:"cover",objectPosition:"top" }}/>
+                </div>
+                <div style={{ fontSize:".82rem",color:C.mid }}>
+                  <strong style={{ color:C.ink,display:"block",fontWeight:600 }}>Dr Alexandra Delaney-Bhattacharya</strong>
+                  Information Commissioner, May 2026
+                </div>
+              </div>}
               <SLabel>Information Commissioner's foreword</SLabel>
               <SH2>A year of significant change</SH2>
               <GradBar/>
-              <p style={{ fontFamily:"Arial,sans-serif",fontSize:m(".95rem","clamp(.95rem,1.3vw,1.2rem)"),fontStyle:"italic",fontWeight:300,lineHeight:1.6,color:C.ink,marginBottom:"1.25rem",paddingLeft:"1rem",borderLeft:`3px solid ${C.t}`,flexShrink:0 }}>
+              <p style={{ fontFamily:"Arial,sans-serif",fontSize:m(".9rem","clamp(.9rem,1.15vw,1.1rem)"),fontStyle:"italic",fontWeight:300,lineHeight:1.6,color:C.ink,marginBottom:"1rem",paddingLeft:"1rem",borderLeft:`3px solid ${C.t}`,flexShrink:0 }}>
                 "Our strategy for 2026/27, <em>Compliance Through Collaboration</em>, reflects our commitment to listening, learning, and working together to protect the people of the Isle of Man."
               </p>
-              <div style={{ fontSize:m(".82rem",".85rem"),color:C.mid,lineHeight:1.85,fontWeight:300,columns:1,flex:m("none",1),minHeight:0,overflow:m("visible","hidden") }}>
-                <p style={{ marginBottom:".7rem" }}>This has been a year of significant change for the Information Commissioner's Office. As technology advances and the ways in which data is processed become increasingly complex, the need for trusted, effective regulation has never been greater.</p>
-                <p style={{ marginBottom:".7rem" }}>In response to growing regulatory demands, we have focused on strengthening our core capabilities, increasing our impact, and supporting both people and organisations across the Isle of Man.</p>
-                <p style={{ marginBottom:".7rem" }}>Building on the progress made in 2024/25, our work has been guided by the five priority areas introduced in last year's annual report: Fixing our foundations, achieving financial independence, reducing backlogs of casework and streamlining how we process this work, educating and promoting compliance, and shaping the future of the office.</p>
-                <p style={{ marginBottom:".7rem" }}>I am proud of the progress we have made over the past year in each of these areas. This includes growing our team and bringing in new skills and capabilities to support the delivery of our regulatory work.</p>
-                <p style={{ marginBottom:".7rem" }}>The pace of change continues to accelerate, and we have played an active role in informing and contributing to policy development. We responded to consultations on Freedom of Information and the Data Assets Register, publishing our views to help inform wider discussion and decision-making.</p>
-                <p style={{ marginBottom:".7rem" }}>We have also continued to modernise the office, updating both our registration system and internal technology, with further improvements already underway.</p>
-                <p style={{ marginBottom:".7rem" }}>Another major milestone this year was the delivery of our fee consultation — an important step in supporting the office's long-term sustainability. We consulted on a proposed tiered, risk-based approach to registration fees linked to organisational employee headcount. Having carefully considered feedback from 81 respondents, our final recommendations include reduced upper-tier fees alongside a turnover-based provision.</p>
-                <p style={{ marginBottom:".7rem" }}>Engagement has been a central theme throughout the year. We have taken a more proactive approach, delivering a wide range of speaking engagements and participating in national and international discussions, enabling us both to share our expertise and to learn from others.</p>
-                <p style={{ marginBottom:".7rem" }}>International cooperation is both a legal obligation and a strategic necessity for a small island jurisdiction. Article 50 of the Applied GDPR formally requires us to engage with overseas counterparts — and rightly so, because data flows do not stop at borders.</p>
+              <div style={{ fontSize:m(".82rem",".83rem"),color:C.mid,lineHeight:1.8,fontWeight:300,flex:m("none",1),minHeight:0,overflowY:m("visible","auto"),scrollbarWidth:"thin",scrollbarColor:`${C.t}22 transparent`,textAlign:"justify",hyphens:"auto" }}>
+                <p style={{ marginBottom:".65rem" }}>This has been a year of significant change for the Information Commissioner's Office. As technology advances and the ways in which data is processed become increasingly complex, the need for trusted, effective regulation has never been greater.</p>
+                <p style={{ marginBottom:".65rem" }}>In response to growing regulatory demands, we have focused on strengthening our core capabilities, increasing our impact, and supporting both people and organisations across the Isle of Man.</p>
+                <p style={{ marginBottom:".65rem" }}>Building on the progress made in 2024/25, our work has been guided by the five priority areas introduced in last year's annual report: Fixing our foundations, achieving financial independence, reducing backlogs of casework and streamlining how we process this work, educating and promoting compliance, and shaping the future of the office.</p>
+                <p style={{ marginBottom:".65rem" }}>I am proud of the progress we have made over the past year in each of these areas. This includes growing our team and bringing in new skills and capabilities to support the delivery of our regulatory work.</p>
+                <p style={{ marginBottom:".65rem" }}>The pace of change continues to accelerate, and we have played an active role in informing and contributing to policy development. We responded to consultations on Freedom of Information and the Data Assets Register, publishing our views to help inform wider discussion and decision-making.</p>
+                <p style={{ marginBottom:".65rem" }}>We have also continued to modernise the office, updating both our registration system and internal technology, with further improvements already underway.</p>
+                <p style={{ marginBottom:".65rem" }}>Another major milestone this year was the delivery of our fee consultation — an important step in supporting the office's long-term sustainability. We consulted on a proposed tiered, risk-based approach to registration fees linked to organisational employee headcount. Having carefully considered feedback from 81 respondents, our final recommendations include reduced upper-tier fees alongside a turnover-based provision.</p>
+                <p style={{ marginBottom:".65rem" }}>Engagement has been a central theme throughout the year. We have taken a more proactive approach, delivering a wide range of speaking engagements and participating in national and international discussions, enabling us both to share our expertise and to learn from others.</p>
+                <p style={{ marginBottom:".65rem" }}>International cooperation is both a legal obligation and a strategic necessity for a small island jurisdiction. Article 50 of the Applied GDPR formally requires us to engage with overseas counterparts — and rightly so, because data flows do not stop at borders.</p>
                 <p>Finally, I would like to thank my team for their professionalism, dedication, and commitment throughout a demanding year. Their hard work underpins everything we have achieved and will continue to drive our progress in the future.</p>
               </div>
             </Reveal>
