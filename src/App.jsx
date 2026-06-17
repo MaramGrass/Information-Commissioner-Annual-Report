@@ -81,6 +81,9 @@ function PopCard({ children, delay = 0, style = {} }) {
   );
 }
 
+// Registry so the scroll handler can dismiss tooltips on any chart when the panel changes.
+const activeCharts = new Set();
+
 function ChartCanvas({ config, height = 160 }) {
   const ref = useRef(null);
   const chartRef = useRef(null);
@@ -99,10 +102,14 @@ function ChartCanvas({ config, height = 160 }) {
           delay: (ctx) => ctx.type === "data" ? ctx.dataIndex * 90 : 0,
         };
         chartRef.current = new Chart(ref.current, config);
+        activeCharts.add(chartRef.current);
       }
     }, { threshold: 0.1 });
     if (ref.current) observer.observe(ref.current);
-    return () => { observer.disconnect(); if (chartRef.current) chartRef.current.destroy(); };
+    return () => {
+      observer.disconnect();
+      if (chartRef.current) { activeCharts.delete(chartRef.current); chartRef.current.destroy(); }
+    };
   }, []);
   return <div style={{ position:"relative",flex:1,minHeight:height }}><canvas ref={ref} /></div>;
 }
@@ -506,7 +513,11 @@ export default function App() {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const onScroll = () => setScrollPct((el.scrollLeft / (el.scrollWidth - el.clientWidth)) * 100);
+    const onScroll = () => {
+      setScrollPct((el.scrollLeft / (el.scrollWidth - el.clientWidth)) * 100);
+      // Clear any stuck chart tooltips when the panel changes.
+      activeCharts.forEach(c => { c.tooltip.setActiveElements([], {x:0,y:0}); c.update('none'); });
+    };
     el.addEventListener("scroll", onScroll);
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
