@@ -549,7 +549,7 @@ export default function App() {
 
   const gl = { color:"#eceaf4" };
   const charts = {
-    FOI:{ type:"bar",data:{ labels:["23/24 Q1","Q2","Q3","Q4","24/25 Q1","Q2","Q3","Q4","25/26 Q1","Q2","Q3","Q4"],datasets:[{ label:"New requests",data:[6,3,7,5,5,9,6,2,3,8,4,9],backgroundColor:C.p+"99",borderRadius:4 },{ label:"Decision notices",data:[2,1,0,1,1,0,4,0,0,1,5,11],backgroundColor:C.t,borderRadius:4 }] },options:{ responsive:true,maintainAspectRatio:false,plugins:{ legend:{ display:true,position:"top",labels:{ padding:12,usePointStyle:true,pointStyleWidth:10,font:{size:10} } } },scales:{ y:{ grid:gl,ticks:{stepSize:2} },x:{ grid:{display:false},ticks:{maxRotation:45,font:{size:9}} } } } },
+    FOI:{ type:"bar",data:{ labels:["23/24 Q1","Q2","Q3","Q4","24/25 Q1","Q2","Q3","Q4","25/26 Q1","Q2","Q3","Q4"],datasets:[{ label:"New requests",data:[6,3,7,5,5,9,6,2,1,8,6,9],backgroundColor:C.p+"99",borderRadius:4 },{ label:"Decision notices",data:[2,1,0,1,1,0,4,0,0,1,4,11],backgroundColor:C.t,borderRadius:4 }] },options:{ responsive:true,maintainAspectRatio:false,plugins:{ legend:{ display:true,position:"top",labels:{ padding:12,usePointStyle:true,pointStyleWidth:10,font:{size:10} } } },scales:{ y:{ grid:gl,ticks:{stepSize:2} },x:{ grid:{display:false},ticks:{maxRotation:45,font:{size:9}} } } } },
     Comp:{ type:"bar",data:{ labels:["2023/24","2024/25","2025/26"],datasets:[{ data:[20,14,36],backgroundColor:[C.t+"55",C.t+"88",C.t],borderRadius:6,borderSkipped:false }] },options:{ responsive:true,maintainAspectRatio:false,scales:{ y:{ grid:gl },x:{ grid:{display:false} } } } },
     Sect:{ type:"doughnut",data:{ labels:["Public sector","Private sector","Domestic CCTV"],datasets:[{ data:[38,30,32],backgroundColor:[C.p,C.t,C.s],borderWidth:0,hoverOffset:6 }] },options:{ responsive:true,maintainAspectRatio:false,cutout:"66%",plugins:{ legend:{ display:true,position:"bottom",labels:{ padding:12,usePointStyle:true,pointStyleWidth:10,font:{size:10} } } } } },
     Nature:{ type:"bar",data:{ labels:["SAR","Disclosure","Transparency","Security","Lawfulness","Other"],datasets:[{ data:[21,8,3,2,1,1],backgroundColor:[C.p,C.t,C.s,C.o,C.b,C.p+"88"],borderRadius:5,borderSkipped:false }] },options:{ responsive:true,maintainAspectRatio:false,indexAxis:"y",scales:{ x:{ grid:gl },y:{ grid:{display:false} } } } },
@@ -791,7 +791,7 @@ export default function App() {
           <Reveal>
             <SLabel>Freedom of information</SLabel>
             <SH2>FOI decision reviews 2025/26</SH2>
-            <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.25rem",fontWeight:300 }}>24 applications received. With the new FOI Specialist in post from June 2025, closed reviews nearly doubled to 21, with 11 decision notices published in Q4 alone.</p>
+            <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:"1.25rem",fontWeight:300 }}>24 new review requests received in 2025/26. Total cases closed reached 21 — up from 14 the previous year — with 16 decision notices published, including 11 in Q4 alone.</p>
           </Reveal>
           <div style={{ display:"grid",gridTemplateColumns:m("1fr","3fr 2fr"),gap:m("1rem","3vw"),flex:m("none",1),minHeight:0 }}>
             <Reveal direction="left" style={{ display:"flex",flexDirection:"column" }}>
@@ -801,15 +801,16 @@ export default function App() {
             </Reveal>
             <Reveal direction="right" style={{ display:"flex",flexDirection:"column",gap:".6rem",flex:1,minHeight:0 }}>
               {[
-                { c:C.p,title:"Backlog peaked at 33",body:"Reached 33 in Q3 2025/26, driven by legacy capacity issues following senior departures in 2023." },
-                { c:C.t,title:"FOI Specialist appointed June 2025",body:"Productivity surged immediately — 12 requests closed in Q4, 11 as published decision notices." },
-                { c:C.b,title:"Quarterly statistics published",body:"From April 2026 the ICO began publishing rolling 12-month FOI statistics in collaboration with OCSIA." },
-                { c:C.o,title:"Practical refusals training",body:"Targeted training for public authorities on practical refusals held December 2025, with further sessions planned." },
+                { c:C.p, stat:"21", label:"cases closed in 2025/26", body:"Up from 14 in 2024/25 and 11 in 2023/24 — with 12 of those 21 closed in Q4 alone." },
+                { c:C.t, stat:"16", label:"decision notices published", body:"More than three times 2024/25's total of 5, and four times the 4 published in 2023/24." },
+                { c:C.b, stat:"13", label:"notices required PA to act", body:"Up from just 2 in 2024/25 — reflecting a significant increase in the impact and reach of ICO decisions." },
+                { c:C.o, stat:"33→30", label:"backlog: peak then recovery", body:"Open requests peaked at 33 in Q3 2025/26. Improved throughput in Q4 brought the total down to 30 by year end." },
               ].map((ins) => (
-                <div key={ins.title} className="ins-item" style={{ flex:1,padding:"1rem 1.25rem",borderRadius:12,borderLeft:`4px solid ${ins.c}`,background:C.white,boxShadow:"0 2px 12px rgba(0,0,0,.04)",transition:"transform .25s, box-shadow .25s",display:"flex",flexDirection:"column",justifyContent:"center",position:"relative",overflow:"hidden" }}>
-                  <div style={{ position:"absolute",right:"1rem",top:"50%",transform:"translateY(-50%)",fontFamily:"Arial,sans-serif",fontSize:"4rem",fontWeight:900,color:ins.c,opacity:.04,lineHeight:1,pointerEvents:"none" }}>→</div>
-                  <div style={{ fontSize:"clamp(13px,1.1vw,15px)",fontWeight:700,color:C.ink,marginBottom:".3rem" }}>{ins.title}</div>
-                  <div style={{ fontSize:"clamp(11px,0.9vw,13px)",color:C.mid,lineHeight:1.6 }}>{ins.body}</div>
+                <div key={ins.label} className="ins-item" style={{ flex:1,padding:"1rem 1.25rem",borderRadius:12,borderLeft:`4px solid ${ins.c}`,background:C.white,boxShadow:"0 2px 12px rgba(0,0,0,.04)",transition:"transform .25s, box-shadow .25s",display:"flex",flexDirection:"column",justifyContent:"center",position:"relative",overflow:"hidden" }}>
+                  <div style={{ position:"absolute",right:"1rem",top:"50%",transform:"translateY(-50%)",fontFamily:"Arial,sans-serif",fontSize:"3.5rem",fontWeight:900,color:ins.c,opacity:.06,lineHeight:1,pointerEvents:"none" }}>{ins.stat}</div>
+                  <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.2rem,1.6vw,1.6rem)",fontWeight:900,color:ins.c,lineHeight:1,marginBottom:".25rem" }}>{ins.stat}</div>
+                  <div style={{ fontSize:"clamp(11px,0.85vw,13px)",fontWeight:700,color:C.ink,marginBottom:".3rem",textTransform:"uppercase",letterSpacing:".04em" }}>{ins.label}</div>
+                  <div style={{ fontSize:"clamp(10px,0.8vw,12px)",color:C.mid,lineHeight:1.6 }}>{ins.body}</div>
                 </div>
               ))}
             </Reveal>
