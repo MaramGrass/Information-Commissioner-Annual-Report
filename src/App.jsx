@@ -779,7 +779,7 @@ export default function App() {
           <Reveal delay={0.06} style={{ flex:m("none",1),display:"flex",flexDirection:"column",gap:"0.5rem",minHeight:0 }}>
             {[
               [{ tag:"People affected",tc:C.t,tb:"rgba(42,191,191,.1)",v:31600,l:"Estimated impacted by personal data breaches" },{ tag:"Breaches reported",tc:C.p,tb:"rgba(123,79,191,.1)",v:200,l:"Personal data breaches — up from 152 in 2024/25" },{ tag:"Total complaints",tc:C.b,tb:"rgba(30,127,214,.1)",v:53,l:"Including domestic CCTV — up from 25 last year" },{ tag:"FOI reviews",tc:C.t,tb:"rgba(42,191,191,.1)",v:24,l:"Applications for a decision received" },{ tag:"Staff",tc:C.o,tb:"rgba(138,139,58,.1)",v:10,l:"Members of staff — doubled from 5" }],
-              [{ tag:"Fee consultation",tc:C.p,tb:"rgba(123,79,191,.1)",v:81,l:"Responses to our registration fees consultation" },{ tag:"Survey",tc:C.t,tb:"rgba(42,191,191,.1)",v:300,plus:true,l:"Organisations in our island-wide DP survey" },{ tag:"Events",tc:C.b,tb:"rgba(30,127,214,.1)",v:20,plus:true,l:"Domestic events attended or spoken at" },{ tag:"Decisions",tc:C.o,tb:"rgba(138,139,58,.1)",v:21,l:"FOI requests closed — nearly double prior year" },{ tag:"Regulatory actions",tc:C.p,tb:"rgba(123,79,191,.1)",v:5,l:"Enforcement actions including 4 reprimands" }],
+              [{ tag:"Fee consultation",tc:C.p,tb:"rgba(123,79,191,.1)",v:81,l:"Responses to our registration fees consultation" },{ tag:"Survey",tc:C.t,tb:"rgba(42,191,191,.1)",v:300,plus:true,l:"Organisations in our island-wide Data Protection survey" },{ tag:"Events",tc:C.b,tb:"rgba(30,127,214,.1)",v:20,plus:true,l:"Domestic events attended or spoken at" },{ tag:"Decisions",tc:C.o,tb:"rgba(138,139,58,.1)",v:21,l:"FOI requests closed — nearly double prior year" },{ tag:"Regulatory actions",tc:C.p,tb:"rgba(123,79,191,.1)",v:5,l:"Enforcement actions including 4 reprimands" }],
             ].map((row, ri) => (
               <div key={ri} style={{ flex:m("none",1),display:"grid",gridTemplateColumns:m("repeat(2,1fr)","repeat(5,1fr)"),gap:2,background:C.lite,borderRadius:16,overflow:"hidden" }}>
                 {row.map((s, si) => (
@@ -814,7 +814,7 @@ export default function App() {
               {[
                 { c:C.p, stat:"21", label:"cases closed in 2025/26", body:"Up from 14 in 2024/25 and 11 in 2023/24 — with 12 of those 21 closed in Q4 alone." },
                 { c:C.t, stat:"16", label:"decision notices published", body:"More than three times 2024/25's total of 5, and four times the 4 published in 2023/24." },
-                { c:C.b, stat:"13", label:"notices required PA to act", body:"Up from just 2 in 2024/25 — reflecting a significant increase in the impact and reach of ICO decisions." },
+                { c:C.b, stat:"13", label:"notices required Public Authority to act", body:"Up from just 2 in 2024/25 — reflecting a significant increase in the impact and reach of ICO decisions." },
                 { c:C.o, stat:"33→30", label:"backlog: peak then recovery", body:"Open requests peaked at 33 in Q3 2025/26. Improved throughput in Q4 brought the total down to 30 by year end." },
               ].map((ins) => (
                 <div key={ins.label} className="ins-item" style={{ flex:1,padding:"1rem 1.25rem",borderRadius:12,borderLeft:`4px solid ${ins.c}`,background:C.white,boxShadow:"0 2px 12px rgba(0,0,0,.04)",transition:"transform .25s, box-shadow .25s",display:"flex",flexDirection:"column",justifyContent:"center",position:"relative",overflow:"hidden" }}>
