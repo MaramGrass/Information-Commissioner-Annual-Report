@@ -812,10 +812,10 @@ export default function App() {
             </Reveal>
             <Reveal direction="right" style={{ display:"flex",flexDirection:"column",gap:".6rem",flex:1,minHeight:0 }}>
               {[
-                { c:C.p, stat:"21", label:"cases closed in 2025/26", body:"Up from 14 in 2024/25 and 11 in 2023/24 — with 12 of those 21 closed in Q4 alone." },
-                { c:C.t, stat:"16", label:"decision notices published", body:"More than three times 2024/25's total of 5, and four times the 4 published in 2023/24." },
-                { c:C.b, stat:"13", label:"notices required Public Authority to act", body:"Up from just 2 in 2024/25 — reflecting a significant increase in the impact and reach of ICO decisions." },
-                { c:C.o, stat:"33→30", label:"backlog: peak then recovery", body:"Open requests peaked at 33 in Q3 2025/26. Improved throughput in Q4 brought the total down to 30 by year end." },
+                { c:C.p, stat:"21", label:"Cases closed in 2025/26", body:"Up from 14 in 2024/25 and 11 in 2023/24 — with 12 of those 21 closed in Q4 alone." },
+                { c:C.t, stat:"16", label:"Decision notices published", body:"More than three times 2024/25's total of 5, and four times the 4 published in 2023/24." },
+                { c:C.b, stat:"13", label:"Notices required Public Authority to act", body:"Up from just 2 in 2024/25 — reflecting a significant increase in the impact and reach of ICO decisions." },
+                { c:C.o, stat:"33→30", label:"Backlog: peak then recovery", body:"Open requests peaked at 33 in Q3 2025/26. Improved throughput in Q4 brought the total down to 30 by year end." },
               ].map((ins) => (
                 <div key={ins.label} className="ins-item" style={{ flex:1,padding:"1rem 1.25rem",borderRadius:12,borderLeft:`4px solid ${ins.c}`,background:C.white,boxShadow:"0 2px 12px rgba(0,0,0,.04)",transition:"transform .25s, box-shadow .25s",display:"flex",flexDirection:"column",justifyContent:"center",position:"relative",overflow:"hidden" }}>
                   <div style={{ position:"absolute",right:"1rem",top:"50%",transform:"translateY(-50%)",fontFamily:"Arial,sans-serif",fontSize:"3.5rem",fontWeight:900,color:ins.c,opacity:.06,lineHeight:1,pointerEvents:"none" }}>{ins.stat}</div>
