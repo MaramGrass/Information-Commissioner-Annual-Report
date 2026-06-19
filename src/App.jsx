@@ -672,7 +672,7 @@ export default function App() {
             { display:"flex",alignItems:"center",gap:"1.5rem",borderTop:"1px solid rgba(0,0,0,.07)",paddingTop:"1.25rem",zIndex:2,flexWrap:"wrap",marginTop:"2rem",position:"relative" },
             { position:"absolute",bottom:"2rem",left:"6vw",right:"7rem",display:"flex",alignItems:"center",gap:"2.5rem",borderTop:"1px solid rgba(0,0,0,.07)",paddingTop:"1.25rem",zIndex:2,flexWrap:"wrap" }
           )}>
-            {[{v:200,l:"Breaches"},{v:53,l:"Complaints"},{v:31600,l:"People Impacted by a data breach"},{v:10,l:"Staff"},{v:3,810,l:"Phone calls answered"}].map((t,i) => (
+            {[{v:200,l:"Breaches"},{v:53,l:"Complaints"},{v:31600,l:"People Impacted by a data breach"},{v:10,l:"Staff"},{v:3810,l:"Phone calls answered"}].map((t,i) => (
               <div key={i} style={{ display:"flex",flexDirection:"column",gap:".2rem",flexShrink:0 }}>
                 <div style={{ fontFamily:"Arial,sans-serif",fontSize:m("1.3rem","1.6rem"),fontWeight:700,lineHeight:1 }}><GradientText><Counter target={t.v}/></GradientText></div>
                 <div style={{ fontSize:11,color:C.mid }}>{t.l}</div>
