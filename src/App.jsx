@@ -820,7 +820,7 @@ export default function App() {
                 <div key={ins.label} className="ins-item" style={{ flex:1,padding:"1rem 1.25rem",borderRadius:12,borderLeft:`4px solid ${ins.c}`,background:C.white,boxShadow:"0 2px 12px rgba(0,0,0,.04)",transition:"transform .25s, box-shadow .25s",display:"flex",flexDirection:"column",justifyContent:"center",position:"relative",overflow:"hidden" }}>
                   <div style={{ position:"absolute",right:"1rem",top:"50%",transform:"translateY(-50%)",fontFamily:"Arial,sans-serif",fontSize:"3.5rem",fontWeight:900,color:ins.c,opacity:.06,lineHeight:1,pointerEvents:"none" }}>{ins.stat}</div>
                   <div style={{ fontFamily:"Arial,sans-serif",fontSize:"clamp(1.2rem,1.6vw,1.6rem)",fontWeight:900,color:ins.c,lineHeight:1,marginBottom:".25rem" }}>{ins.stat}</div>
-                  <div style={{ fontSize:"clamp(11px,0.85vw,13px)",fontWeight:700,color:C.ink,marginBottom:".3rem",textTransform:"uppercase",letterSpacing:".04em" }}>{ins.label}</div>
+                  <div style={{ fontSize:"clamp(11px,0.85vw,13px)",fontWeight:700,color:C.ink,marginBottom:".3rem",letterSpacing:".01em" }}>{ins.label}</div>
                   <div style={{ fontSize:"clamp(10px,0.8vw,12px)",color:C.mid,lineHeight:1.6 }}>{ins.body}</div>
                 </div>
               ))}
