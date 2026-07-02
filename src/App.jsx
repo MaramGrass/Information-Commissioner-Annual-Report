@@ -373,6 +373,7 @@ function NavOverlay({ open, onClose, onNavigate, onPrivacy }) {
 
 const tagStyle = (color, bg) => ({ fontSize:10,letterSpacing:".1em",textTransform:"uppercase",padding:"3px 10px",borderRadius:20,display:"inline-block",marginBottom:".6rem",fontWeight:500,background:bg,color });
 
+const FOREWORD_PANEL = 1;
 const CASE_PANEL = 5;
 const REG_PANEL  = 9;
 const PRIO_PANEL = 10;
@@ -400,6 +401,7 @@ export default function App() {
   const caseTrackRef = useRef(null);
   const prioTrackRef = useRef(null);
   const regTrackRef  = useRef(null);
+  const forewordScrollRef = useRef(null);
 
   const applyPhase = useCallback((phase, idx) => {
     csPhaseRef.current = phase;
@@ -472,6 +474,21 @@ export default function App() {
       const panelW = el.clientWidth;
       const cur = Math.round(el.scrollLeft / panelW);
       const phase = csPhaseRef.current;
+
+      // Foreword: let the wheel scroll the (often overflowing) text column
+      // vertically first; only move to the next/prev panel once it bottoms
+      // out or tops out. No lock while scrolling text, so it feels native.
+      if (cur === FOREWORD_PANEL) {
+        const sc = forewordScrollRef.current;
+        if (sc) {
+          const atBottom = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 2;
+          const atTop = sc.scrollTop <= 0;
+          if ((dir === 1 && !atBottom) || (dir === -1 && !atTop)) {
+            sc.scrollTop += e.deltaY;
+            return;
+          }
+        }
+      }
 
       if (cur === CASE_PANEL) {
         if (phase === "expanding" || phase === "contracting") return;
@@ -718,7 +735,7 @@ export default function App() {
               <p style={{ fontFamily:"Arial,sans-serif",fontSize:m(".9rem","clamp(.9rem,1.15vw,1.1rem)"),fontStyle:"italic",fontWeight:300,lineHeight:1.6,color:C.ink,marginBottom:"1rem",paddingLeft:"1rem",borderLeft:`3px solid ${C.t}`,flexShrink:0 }}>
                 "The principle Marion asserted in a New York courtroom over 100 years ago is the same one we are defending in 2026 — but the urgency is greater."
               </p>
-              <div style={{ fontSize:m(".82rem",".83rem"),color:C.mid,lineHeight:1.8,fontWeight:300,flex:m("none",1),minHeight:0,overflowY:m("visible","auto"),WebkitOverflowScrolling:"touch",overscrollBehavior:"contain",scrollbarWidth:"thin",scrollbarColor:`${C.t}55 transparent`,textAlign:m("left","justify"),hyphens:"auto",paddingRight:m(0,".75rem") }}>
+              <div ref={forewordScrollRef} style={{ fontSize:m(".82rem",".83rem"),color:C.mid,lineHeight:1.8,fontWeight:300,flex:m("none",1),minHeight:0,overflowY:m("visible","auto"),WebkitOverflowScrolling:"touch",overscrollBehavior:"contain",scrollbarWidth:"thin",scrollbarColor:`${C.t}55 transparent`,textAlign:m("left","justify"),hyphens:"auto",paddingRight:m(0,".75rem") }}>
                 <p style={{ marginBottom:".65rem" }}>In 1890, a US Broadway actress named Marion Manola discovered that a photographer had secretly captured her image wearing a pair of tights on stage and was distributing it without her consent. She went to court to stop publication and won. A decade later, Abigail Roberson found her face on thousands of flour advertisements across the country causing her significant distress. She sued citing invasion of privacy, and her victory was overturned on appeal. The public outcry that followed led New York to enact the first statutory privacy law in the United States in 1903.</p>
                 <p style={{ marginBottom:".65rem" }}>These women were not arguing about data. They were arguing about dignity and about the right to control how they were represented and to whom. That same instinct runs through so much of the history of privacy. Many communities have relied on privacy not as a preference but as a form of protection, including developing their own language and networks to create belonging while staying safe from harm.</p>
                 <p style={{ marginBottom:".65rem" }}>The principle is the same across all of these stories: personal information is not simply there for others to take, exploit, or expose. Everyone deserves agency over their own story and for their information to be handled lawfully, fairly, and transparently.</p>
