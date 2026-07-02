@@ -101,6 +101,10 @@ function ChartCanvas({ config, height = 160 }) {
           easing: "easeOutQuart",
           delay: (ctx) => ctx.type === "data" ? ctx.dataIndex * 90 : 0,
         };
+        // Hover updates must be instant. Otherwise the staggered entrance
+        // animation above re-runs on every hover, so tooltips only flicker
+        // briefly on one bar before the next move restarts it.
+        Chart.defaults.transitions.active = { animation: { duration: 0, delay: 0 } };
         chartRef.current = new Chart(ref.current, config);
         activeCharts.add(chartRef.current);
       }
