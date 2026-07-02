@@ -552,10 +552,18 @@ export default function App() {
     }
   }, [mob]);
 
-  useEffect(() => { if (navOpen) document.body.style.overflow = "hidden"; }, [navOpen]);
+  useEffect(() => {
+    // Lock background scroll while the menu is open; on close, restore the
+    // right value — on mobile the page must scroll again (otherwise it stays
+    // frozen and menu navigation can't move), on desktop it stays locked.
+    document.body.style.overflow = navOpen ? "hidden" : (mob ? "auto" : "hidden");
+  }, [navOpen, mob]);
 
   const scrollToPanel = useCallback((id) => {
     if (mob) {
+      // Make sure the page is scrollable before scrolling to the target;
+      // the menu may have just closed and left the body lock in place.
+      document.body.style.overflow = "auto";
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior:"smooth" });
       return;
