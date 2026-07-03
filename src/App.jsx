@@ -238,11 +238,12 @@ function CCard({ title, sub, children, dark = false, style: s = {} }) {
 function BreachBars() {
   const bars = [
     { lbl:"Art. 5(1)(f) — Integrity & confidentiality",w:80,pct:"80%",op:1 },
-    { lbl:"Art. 32 — Security / cyber incidents",w:4,pct:"4%",op:.75 },
-    { lbl:"Art. 24 — Controller responsibilities",w:2,pct:"2%",op:.65 },
-    { lbl:"Art. 5(1)(d) — Accuracy of records",w:3,pct:"3%",op:.65 },
-    { lbl:"Applied LED — Law enforcement",w:1,pct:"1%",op:.55 },
-    { lbl:"Determined not to be a breach",w:7,pct:"7%",op:.5 },
+    { lbl:"Art. 32 — Security of processing / cyber",w:4,pct:"4%",op:.8 },
+    { lbl:"Art. 5(1)(d) — Accuracy",w:3,pct:"3%",op:.7 },
+    { lbl:"Art. 24 — Responsibility of the controller",w:2,pct:"2%",op:.6 },
+    { lbl:"Art. 5(1)(b) — Purpose limitation",w:2,pct:"2%",op:.55 },
+    { lbl:"Art. 5(1)(c) — Data minimisation",w:1,pct:"1%",op:.5 },
+    { lbl:"Art. 5(1)(e) — Storage limitation",w:0,pct:"0%",op:.45 },
   ];
   const ref = useRef(null);
   const [vis, setVis] = useState(false);
@@ -563,8 +564,7 @@ export default function App() {
     FOI:{ type:"bar",data:{ labels:["23/24 Q1","Q2","Q3","Q4","24/25 Q1","Q2","Q3","Q4","25/26 Q1","Q2","Q3","Q4"],datasets:[{ label:"New requests",data:[6,3,7,5,5,9,6,2,1,8,6,9],backgroundColor:C.p+"99",borderRadius:4 },{ label:"Decision notices",data:[2,1,0,1,1,0,4,0,0,1,4,11],backgroundColor:C.t,borderRadius:4 }] },options:{ responsive:true,maintainAspectRatio:false,plugins:{ legend:{ display:true,position:"top",labels:{ padding:12,usePointStyle:true,pointStyleWidth:10,font:{size:10} } } },scales:{ y:{ grid:gl,ticks:{stepSize:2} },x:{ grid:{display:false},ticks:{maxRotation:45,font:{size:9}} } } } },
     Comp:{ type:"bar",data:{ labels:["2023/24","2024/25","2025/26"],datasets:[{ data:[20,14,36],backgroundColor:[C.t+"55",C.t+"88",C.t],borderRadius:6,borderSkipped:false }] },options:{ responsive:true,maintainAspectRatio:false,scales:{ y:{ grid:gl },x:{ grid:{display:false} } } } },
     Sect:{ type:"doughnut",data:{ labels:["Public sector","Private sector","Domestic CCTV"],datasets:[{ data:[38,30,32],backgroundColor:[C.p,C.t,C.s],borderWidth:0,hoverOffset:6 }] },options:{ responsive:true,maintainAspectRatio:false,cutout:"66%",plugins:{ legend:{ display:true,position:"bottom",labels:{ padding:12,usePointStyle:true,pointStyleWidth:10,font:{size:10} } } } } },
-    Nature:{ type:"bar",data:{ labels:["SAR","Disclosure","Transparency","Security","Lawfulness","Other"],datasets:[{ data:[21,8,3,2,1,1],backgroundColor:[C.p,C.t,C.s,C.o,C.b,C.p+"88"],borderRadius:5,borderSkipped:false }] },options:{ responsive:true,maintainAspectRatio:false,indexAxis:"y",scales:{ x:{ grid:gl },y:{ grid:{display:false} } } } },
-    Speed:{ type:"bar",data:{ labels:["2023/24","2024/25","2025/26"],datasets:[{ label:"< 3 months",data:[9,3,21],backgroundColor:C.t,borderRadius:4 },{ label:"3–6 months",data:[6,1,3],backgroundColor:C.s,borderRadius:4 },{ label:"6–12 months",data:[3,4,0],backgroundColor:C.p+"99",borderRadius:4 },{ label:"12+ months",data:[2,0,0],backgroundColor:C.p+"44",borderRadius:4 }] },options:{ responsive:true,maintainAspectRatio:false,plugins:{ legend:{ display:true,position:"top",labels:{ padding:10,usePointStyle:true,pointStyleWidth:10,font:{size:10} } } },scales:{ x:{ stacked:true,grid:{display:false} },y:{ stacked:true,grid:gl } } } },
+    Nature:{ type:"bar",data:{ labels:["SAR","Domestic CCTV","Disclosure","Other"],datasets:[{ data:[21,17,7,8],backgroundColor:[C.p,C.t,C.s,C.p+"88"],borderRadius:5,borderSkipped:false }] },options:{ responsive:true,maintainAspectRatio:false,indexAxis:"y",scales:{ x:{ grid:gl },y:{ grid:{display:false} } } } },
     BrY:{ type:"bar",data:{ labels:["2022/23","2023/24","2024/25","2025/26"],datasets:[{ data:[264,250,152,200],backgroundColor:[C.t+"44",C.t+"66",C.t+"99",C.t],borderRadius:6,borderSkipped:false }] },options:{ responsive:true,maintainAspectRatio:false,scales:{ y:{ grid:gl },x:{ grid:{display:false} } } } },
     BrS:{ type:"doughnut",data:{ labels:["Public sector","Private sector"],datasets:[{ data:[52,48],backgroundColor:[C.p,C.t],borderWidth:0,hoverOffset:6 }] },options:{ responsive:true,maintainAspectRatio:false,cutout:"66%",plugins:{ legend:{ display:true,position:"bottom",labels:{ padding:12,usePointStyle:true,pointStyleWidth:10,font:{size:10} } } } } },
     Spec:{ type:"line",data:{ labels:["2023/24","2024/25","2025/26"],datasets:[{ data:[46,27,29],borderColor:"white",backgroundColor:"rgba(255,255,255,.15)",borderWidth:2.5,fill:true,tension:.4,pointBackgroundColor:"white",pointRadius:6 }] },options:{ responsive:true,maintainAspectRatio:false,scales:{ y:{ grid:{ color:"rgba(255,255,255,.12)" },ticks:{ color:"rgba(255,255,255,.65)",callback:(v)=>v+"%" },min:0,max:55 },x:{ grid:{display:false},ticks:{ color:"rgba(255,255,255,.65)" } } } } },
@@ -869,8 +869,7 @@ export default function App() {
           <div style={{ display:"grid",gridTemplateColumns:m("1fr","1fr 1fr"),gridTemplateRows:m("auto","1fr 1fr"),gap:"1rem",flex:m("none",1),minHeight:0 }}>
             <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Total complaints by year (excl. domestic CCTV)" sub="Formal and informal investigations" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Comp} height={m(200,60)}/></CCard></Reveal>
             <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="2025/26 complaints by sector" sub="Including domestic CCTV (32% of total)" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Sect} height={m(200,60)}/></CCard></Reveal>
-            <Reveal direction="left" delay={0.1} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Nature of complaints 2025/26" sub="Subject access requests were most common" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Nature} height={m(200,60)}/></CCard></Reveal>
-            <Reveal direction="right" delay={0.1} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Complaint closure speed (stacked)" sub="Significant improvement — oldest open complaint just 6 months vs 11 months prior year" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Speed} height={m(200,60)}/></CCard></Reveal>
+            <Reveal direction="left" delay={0.1} style={{ display:"flex",flexDirection:"column",minHeight:0,gridColumn:m("auto","1 / -1") }}><CCard title="Nature of complaints 2025/26" sub="Subject access requests were most common" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Nature} height={m(200,60)}/></CCard></Reveal>
           </div>
         </section>
 
