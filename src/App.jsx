@@ -238,11 +238,12 @@ function CCard({ title, sub, children, dark = false, style: s = {} }) {
 function BreachBars() {
   const bars = [
     { lbl:"Art. 5(1)(f) — Integrity & confidentiality",w:80,pct:"80%",op:1 },
-    { lbl:"Art. 32 — Security / cyber incidents",w:4,pct:"4%",op:.75 },
-    { lbl:"Art. 24 — Controller responsibilities",w:2,pct:"2%",op:.65 },
-    { lbl:"Art. 5(1)(d) — Accuracy of records",w:3,pct:"3%",op:.65 },
-    { lbl:"Applied LED — Law enforcement",w:1,pct:"1%",op:.55 },
-    { lbl:"Determined not to be a breach",w:7,pct:"7%",op:.5 },
+    { lbl:"Art. 32 — Security of processing / cyber",w:4,pct:"4%",op:.8 },
+    { lbl:"Art. 5(1)(d) — Accuracy",w:3,pct:"3%",op:.7 },
+    { lbl:"Art. 24 — Responsibility of the controller",w:2,pct:"2%",op:.6 },
+    { lbl:"Art. 5(1)(b) — Purpose limitation",w:2,pct:"2%",op:.55 },
+    { lbl:"Art. 5(1)(c) — Data minimisation",w:1,pct:"1%",op:.5 },
+    { lbl:"Art. 5(1)(e) — Storage limitation",w:0,pct:"0%",op:.45 },
   ];
   const ref = useRef(null);
   const [vis, setVis] = useState(false);
