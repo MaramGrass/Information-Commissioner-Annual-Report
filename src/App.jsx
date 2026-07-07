@@ -98,8 +98,17 @@ function ChartCanvas({ config, height = 160 }) {
         Chart.defaults.plugins.legend.display = false;
         Chart.defaults.plugins.tooltip.enabled = true;
         Chart.defaults.interaction = { mode: "nearest", intersect: true };
-        // Snappy hover response so tooltips don't lag behind the cursor.
-        Chart.defaults.transitions.active = { animation: { duration: 120 } };
+        // Make the hover ("active") state change instant. A timed active
+        // transition competed with the tooltip's fade below: the animator
+        // finished the active transition first and froze the tooltip's opacity
+        // partway (~0.3, near-invisible), so the figure never appeared. Instant
+        // is also the snappiest hover response.
+        Chart.defaults.transitions.active = { animation: { duration: 0 } };
+        // Give the tooltip its own short fade so it isn't governed by the
+        // 1600ms entrance animation below (which otherwise left the value
+        // invisible on a normal quick hover). The non-zero duration also
+        // schedules the canvas repaint that actually paints the tooltip.
+        Chart.defaults.plugins.tooltip.animations = { opacity: { duration: 150 } };
         Chart.defaults.animation = {
           duration: 1600,
           easing: "easeOutQuart",
