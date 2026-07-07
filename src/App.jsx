@@ -905,8 +905,8 @@ export default function App() {
             <SH2>Complaints in 2025/26</SH2>
           </Reveal>
           <div style={{ display:"grid",gridTemplateColumns:m("1fr","1fr 1fr"),gridTemplateRows:m("auto","1fr 1fr"),gap:"1rem",flex:m("none",1),minHeight:0 }}>
-            <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Total complaints by year (incl. domestic CCTV)" sub="Formal and informal investigations" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Comp} height={m(200,60)}/></CCard></Reveal>
-            <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="2025/26 complaints by sector" sub="Including domestic CCTV (32% of total)" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Sect} height={m(200,60)}/></CCard></Reveal>
+            <Reveal direction="left" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="Total complaints by year" sub="Complaints more than doubled in 2025/6" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Comp} height={m(200,60)}/></CCard></Reveal>
+            <Reveal direction="right" delay={0.05} style={{ display:"flex",flexDirection:"column",minHeight:0 }}><CCard title="2025/26 complaints by sector" sub="All figures are in %" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Sect} height={m(200,60)}/></CCard></Reveal>
             <Reveal direction="left" delay={0.1} style={{ display:"flex",flexDirection:"column",minHeight:0,gridColumn:m("auto","1 / -1") }}><CCard title="Nature of complaints 2025/26" sub="Subject access requests were most common" style={{ flex:m("none",1) }}><ChartCanvas config={charts.Nature} height={m(200,60)}/></CCard></Reveal>
           </div>
         </section>
