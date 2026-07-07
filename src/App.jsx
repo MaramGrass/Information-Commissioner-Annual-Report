@@ -660,7 +660,7 @@ export default function App() {
           ))}
           <div style={{ padding:m("1.5rem 0","4rem 0"),position:"relative",zIndex:2 }}>
             <div style={{ display:"inline-flex",alignItems:"center",gap:12,marginBottom:"1.5rem" }}>
-              <div style={{ background:GH,padding:"6px 18px",borderRadius:40,fontSize:11,letterSpacing:".15em",textTransform:"uppercase",color:"white",fontWeight:500 }}>Annual Report · June 2026</div>
+              <div style={{ background:GH,padding:"6px 18px",borderRadius:40,fontSize:11,letterSpacing:".15em",textTransform:"uppercase",color:"white",fontWeight:500 }}>Annual Report · July 2026</div>
             </div>
             <h1 style={{ fontFamily:"Arial,sans-serif",fontSize:m("clamp(2.2rem,8vw,3.2rem)","clamp(2.8rem,5vw,5rem)"),lineHeight:1.05,marginBottom:"1.25rem",fontWeight:900 }}>
               <GradientText>Information</GradientText>
