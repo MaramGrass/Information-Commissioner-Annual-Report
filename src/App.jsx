@@ -950,7 +950,7 @@ export default function App() {
                   { tag:"Information notices",tc:C.b,tb:"rgba(30,127,214,.1)",num:"0",l:"No information notices issued" },
                   { tag:"Enforcement notices",tc:C.o,tb:"rgba(138,139,58,.1)",num:"0",l:"No enforcement notices issued" },
                   { tag:"Maximum penalty",tc:C.t,tb:"rgba(42,191,191,.1)",num:"£1m",l:"Maximum monetary penalty available for serious infringements" },
-                  { tag:"Tribunal costs",tc:C.p,tb:"rgba(123,79,191,.1)",num:"8",l:"Investigations – Partnered with Guernsey, Jersey and UK regulators on first international investigation" },
+                  { tag:"Investigations",tc:C.p,tb:"rgba(123,79,191,.1)",num:"8",l:"Investigations – Partnered with Guernsey, Jersey and UK regulators on first international investigation" },
                 ].map((sc) => (
                   <div key={sc.tag} style={{ flex:"0 0 240px",scrollSnapAlign:"start",background:C.white,borderRadius:18,padding:"1.5rem",border:"1px solid rgba(0,0,0,.07)",position:"relative",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end" }}>
                     <div style={{ position:"absolute",top:"-.5rem",right:".75rem",fontFamily:"Arial,sans-serif",fontSize:"5rem",fontWeight:900,lineHeight:1,opacity:.04,color:C.p,pointerEvents:"none" }}>{sc.num}</div>
