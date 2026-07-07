@@ -117,7 +117,16 @@ function ChartCanvas({ config, height = 160 }) {
       if (chartRef.current) { activeCharts.delete(chartRef.current); chartRef.current.destroy(); }
     };
   }, []);
-  return <div style={{ position:"relative",flex:1,minHeight:height }}><canvas ref={ref} /></div>;
+  // Dismiss the tooltip when the cursor leaves the chart, otherwise the last
+  // hovered value stays painted on the canvas and can't be cleared.
+  const clearTooltip = () => {
+    const c = chartRef.current;
+    if (!c) return;
+    c.setActiveElements([]);
+    c.tooltip.setActiveElements([], { x: 0, y: 0 });
+    c.update("none");
+  };
+  return <div onMouseLeave={clearTooltip} style={{ position:"relative",flex:1,minHeight:height }}><canvas ref={ref} /></div>;
 }
 
 const CASE_STUDIES = [
