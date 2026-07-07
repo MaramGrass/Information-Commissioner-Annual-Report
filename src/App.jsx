@@ -946,7 +946,7 @@ export default function App() {
               <HScrollTrack innerRef={regTrackRef}>
                 {[
                   { tag:"Warnings",tc:C.t,tb:"rgba(42,191,191,.1)",num:"1",l:"1 warning issued to a public sector organisation in 2025/26" },
-                  { tag:"Reprimands",tc:C.p,tb:"rgba(123,79,191,.1)",num:"4",l:"Payroll Partners · Manx Care · QEII High School · Shell Shipping Ltd" },
+                  { tag:"Reprimands",tc:C.p,tb:"rgba(123,79,191,.1)",num:"4",l:"Payroll Partners · Manx Care · QEII High School ·  Shell Ship Management Limited" },
                   { tag:"Information notices",tc:C.b,tb:"rgba(30,127,214,.1)",num:"0",l:"No information notices issued" },
                   { tag:"Enforcement notices",tc:C.o,tb:"rgba(138,139,58,.1)",num:"0",l:"No enforcement notices issued" },
                   { tag:"Maximum penalty",tc:C.t,tb:"rgba(42,191,191,.1)",num:"£1m",l:"Maximum monetary penalty available for serious infringements" },
@@ -973,7 +973,7 @@ export default function App() {
         <section id="priorities" style={{ ...P(C.off) }}>
           <Reveal>
             <SLabel>Looking ahead</SLabel>
-            <SH2>Strategy 2026/27: Compliance through collaboration</SH2>
+            <SH2>Strategy 2026/27: Compliance Through Collaboration</SH2>
             <p style={{ fontSize:".85rem",color:C.mid,lineHeight:1.7,maxWidth:600,marginBottom:".75rem",fontWeight:300 }}>Our strategic direction for the year ahead, shaped by listening to those we regulate and the communities we serve.</p>
           </Reveal>
           <div style={{ flex:1,display:"flex",flexDirection:"column",minHeight:0,margin:"0 -6vw" }}>
